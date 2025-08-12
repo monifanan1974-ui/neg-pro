@@ -1,93 +1,66 @@
-# backend/api.py
-from __future__ import annotations
-import os
-from flask import Flask, request, jsonify, redirect, url_for, send_from_directory
-from flask_cors import CORS
+# Import necessary libraries from Flask
+# request: to handle incoming data from the request
+# jsonify: to create a proper JSON response with headers
+from flask import Flask, request, jsonify
 
-HERE = os.path.dirname(__file__)
-ROOT = os.path.abspath(os.path.join(HERE, ".."))
+# Initialize the Flask application
+app = Flask(__name__)
 
-TEMPLATES_DIR = os.path.join(HERE, "templates")
-FRONTEND_DIR  = os.path.join(ROOT, "frontend")
-PUBLIC_DIR    = os.path.join(ROOT, "public")
-
-from engine_entrypoint import QuestionnaireEngine
-
-app = Flask(__name__, template_folder=TEMPLATES_DIR, static_url_path=None, static_folder=None)
-CORS(app)
-
-def _dir(p): return os.path.isdir(p)
-def _file(p): return os.path.isfile(p)
-def _ls(p):
-    try: return sorted(os.listdir(p)) if _dir(p) else []
-    except Exception: return []
-
-@app.get("/health")
-def health():
-    return jsonify({
-        "status":"ok","service":"NegotiationPro API","version":"2025-08-12",
-        "frontend_dir": FRONTEND_DIR, "frontend_exists": _dir(FRONTEND_DIR), "frontend_files": _ls(FRONTEND_DIR),
-        "public_dir": PUBLIC_DIR,     "public_exists": _dir(PUBLIC_DIR),     "public_files": _ls(PUBLIC_DIR),
-        "active_static_root": FRONTEND_DIR if _dir(FRONTEND_DIR) else PUBLIC_DIR
-    }), 200
-
-@app.get("/")
-def root():
-    return redirect(url_for("app_index_slash"))  # תמיד עם סלאש
-
-# חשוב: /app עושה רידיירקט ל-/app/ כדי שיחסי יעבדו
-@app.get("/app")
-def app_index_redirect():
-    return redirect(url_for("app_index_slash"))
-
-# זה ה־index בפועל
-@app.get("/app/")
-def app_index_slash():
-    idx = os.path.join(FRONTEND_DIR, "index.html")
-    if _file(idx): return send_from_directory(FRONTEND_DIR, "index.html")
-    idx = os.path.join(PUBLIC_DIR, "index.html")
-    if _file(idx): return send_from_directory(PUBLIC_DIR, "index.html")
-    return ("index.html not found. Put it under 'frontend/' (preferred) or 'public/'.", 404)
-
-# נכסים יחסית ל-/app/  → /app/report_embed.js, /app/questionnaire.json ...
-@app.get("/app/<path:fn>")
-def app_assets(fn):
-    p = os.path.join(FRONTEND_DIR, fn)
-    if _file(p): return send_from_directory(FRONTEND_DIR, fn)
-    p = os.path.join(PUBLIC_DIR, fn)
-    if _file(p): return send_from_directory(PUBLIC_DIR, fn)
-    return (f"File not found under frontend/ or public/: {fn}", 404)
-
-# (אופציונלי) גישה ישירה
-@app.get("/frontend/<path:fn>")
-def serve_frontend(fn):
-    p = os.path.join(FRONTEND_DIR, fn)
-    if _file(p): return send_from_directory(FRONTEND_DIR, fn)
-    return (f"File not found: {p}", 404)
-
-@app.get("/public/<path:fn>")
-def serve_public(fn):
-    p = os.path.join(PUBLIC_DIR, fn)
-    if _file(p): return send_from_directory(PUBLIC_DIR, fn)
-    return (f"File not found: {p}", 404)
-
-# ---------- API ----------
+# Define the endpoint for processing the questionnaire report
+# It only accepts POST requests
 @app.post("/questionnaire/report")
 def questionnaire_report():
-    payload = request.get_json(silent=True) or {}
-    answers = payload.get("questionnaire") or payload.get("answers") or {}
-    if not isinstance(answers, dict) or not answers:
-        return jsonify({"status":"error","reason":"No answers provided (expected JSON with 'questionnaire' or 'answers')."}), 400
+    """
+    Receives questionnaire data, validates it, and prepares it for report generation.
+    """
+    # --- Step 1: Securely get the JSON payload ---
+    # request.get_json(silent=True) will return None if the request is not a valid JSON,
+    # instead of crashing the application.
+    payload = request.get_json(silent=True)
 
-    engine = QuestionnaireEngine(debug=os.getenv("DEBUG","true").lower() in ("1","true","yes"))
-    result = engine.run(answers)
-    http = 200 if (result.get("status") == "ok" and result.get("html")) else 500
-    return jsonify(result), http
+    # --- Step 2: Input Validation ---
+    # This is the "bouncer" at the door of your API.
 
+    # Check 1: Was there any JSON payload at all?
+    if payload is None:
+        # Return a 400 Bad Request error with a clear message
+        return jsonify({"error": "Invalid request: The request body must be a valid JSON."}), 400
+
+    # Check 2: Try to get the answers dictionary from the payload.
+    # We flexibly check for 'questionnaire' or 'answers' as the key.
+    answers = payload.get("questionnaire") or payload.get("answers")
+
+    # Check 3: Is the 'answers' block a dictionary?
+    # isinstance() is the correct way to check the type of a variable.
+    if not isinstance(answers, dict):
+        return jsonify({"error": "Invalid data format: The 'answers' or 'questionnaire' field must be a dictionary."}), 400
+
+    # Check 4: Is the dictionary of answers empty?
+    if not answers:
+        return jsonify({"error": "Invalid data: The 'answers' dictionary cannot be empty."}), 400
+
+    # --- Step 3: If all checks passed, proceed with the logic ---
+    
+    # At this point, we know that 'answers' is a non-empty dictionary.
+    # We can now safely work with it.
+    
+    # For debugging and development, it's good to print what you received.
+    print("Received valid answers for processing:", answers)
+
+    # TODO: Add your actual logic here.
+    # For example, call the negotiation engine, generate the report, etc.
+    # engine_result = advanced_negotiation_engine.process(answers)
+
+    # --- Step 4: Return a success response ---
+    # Return a 200 OK status with a confirmation message.
+    # It's good practice to return the data you received to confirm it was processed correctly.
+    return jsonify({
+        "status": "success",
+        "message": "Questionnaire data received and validated successfully.",
+        "received_data": answers
+    }), 200
+
+# This part allows you to run the Flask server directly for testing
 if __name__ == "__main__":
-    port = int(os.getenv("PORT", "5000"))
-    debug = os.getenv("DEBUG", "true").lower() in ("1","true","yes","y")
-    print("==== NegotiationPro API ====")
-    print(f"Listening on http://localhost:{port} (Debug={debug})")
-    print(f"[static root] frontend = {FRONTEND_DIR}")
-    app.run(host="0.0.0.0", port=port, debug=debug)
+    # debug=True allows the server to auto-reload when you save changes
+    app.run(debug=True, port=5000)
