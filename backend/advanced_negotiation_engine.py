@@ -1,265 +1,207 @@
 # backend/advanced_negotiation_engine.py
-# V3 – Super KB + Advanced Rule Engine integration
+# Clean, English-only implementation.
+# Purpose: produce a compact plan + reasons + chart_data from a lightweight
+# questionnaire/inputs payload, with a stable shape consumed by v2 engine
+# and the report builder. No external services are required.
 
-import os
-import json
-from typing import Dict, Any, List, Tuple
+from __future__ import annotations
+import os, json
+from dataclasses import dataclass, asdict
+from typing import Any, Dict, List, Optional, Tuple
 
-from persona_profiler import PersonaProfiler
-from market_intel import MarketIntel
-from simulation_manager import SimulationManager
-from tactic_composer import TacticComposer
-from rule_engine_expansion import RuleEngineExpansion
+CurrencyMap = {
+    "UK": "£",
+    "GB": "£",
+    "GBR": "£",
+    "US": "$",
+    "USA": "$",
+    "CA": "$",
+    "EU": "€",
+    "DE": "€",
+    "FR": "€",
+    "ES": "€",
+    "IT": "€",
+}
 
-try:
-    import openai
-    _OPENAI_OK = True
-except ImportError:
-    _OPENAI_OK = False
-
-def _safe_load(path: str) -> dict:
+def _read_json(path: str) -> Dict[str, Any]:
     try:
         with open(path, "r", encoding="utf-8") as f:
             return json.load(f)
     except Exception:
         return {}
 
-def _fmt_range(lo: str, hi: str) -> str:
-    lo = (lo or "").strip(); hi = (hi or "").strip()
-    if lo and hi: return f"{lo}–{hi}"
-    return lo or hi or "a market-aligned range"
+def _to_list(v: Any) -> List[str]:
+    if v is None: 
+        return []
+    if isinstance(v, list):
+        return [str(x) for x in v if str(x).strip()]
+    if isinstance(v, str):
+        parts = [p.strip() for p in v.replace(";", ",").split(",")]
+        return [p for p in parts if p]
+    return [str(v)]
 
-def _to_list(x): return x if isinstance(x, list) else ([x] if x else [])
+def _first_non_empty(*vals: Any, default: str = "") -> str:
+    for v in vals:
+        s = "" if v is None else str(v).strip()
+        if s:
+            return s
+    return default
+
+def _currency_for(country: str | None) -> str:
+    if not country:
+        return "£"
+    up = country.strip().upper()
+    return CurrencyMap.get(up, "£")
+
+@dataclass
+class Profile:
+    persona: str = "neutral"
+    power: str = "peer"
+    country: str = "UK"
+    context_level: str = "low"
+    user_style: str = "Analytical"
+
+@dataclass
+class Plan:
+    opening_variants: List[str]
+    counters: List[str]
+    scenarios: List[Dict[str, str]]
 
 class AdvancedNegotiationEngine:
+    """Minimal, self-contained v1 engine.
+    Returns a dictionary with keys expected by v2:
+      - chart_data: { currency, salary: { anchor, low, high } }
+      - rules: { matches, recommendations, tone_overrides }
+      - reasons: { highlights, tone_reason, rules_matched }
+      - debug: { profile, extras }
+    """
+
     def __init__(self, kb: Dict[str, Any] | None = None, data_dir: str | None = None, debug: bool = False):
-        self.debug = bool(debug)
-        self.data_dir = data_dir or os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__))), "data")
+        self.debug = debug
+        self.data_dir = data_dir or os.path.join(os.path.dirname(__file__), "data")
+        self.kb = kb or {}
+        # Optional files (if present we use them, otherwise fallback silently)
+        self.rulebook = _read_json(os.path.join(self.data_dir, "rulebook.json"))
+        self.super_kb = _read_json(os.path.join(self.data_dir, "super_kb.json"))
 
-        # Load JSONs in /data (including super_kb.json)
-        if kb is None:
-            self.kb = {}
-            if os.path.isdir(self.data_dir):
-                for f in os.listdir(self.data_dir):
-                    if f.lower().endswith(".json"):
-                        self.kb[f] = _safe_load(os.path.join(self.data_dir, f))
-        else:
-            self.kb = kb
+    # --- mapping helpers ----------------------------------------------------
+    def _map(self, payload: Dict[str, Any]) -> Dict[str, Any]:
+        # Accept both payloads:
+        #   { "questionnaire": {...} }  or  { "inputs": {...} }
+        src = payload.get("questionnaire") or payload.get("inputs") or {}
+        m: Dict[str, Any] = {}
 
-        self.super_kb = self.kb.get("super_kb.json") or _safe_load(os.path.join(self.data_dir, "super_kb.json"))
+        m["country"] = _first_non_empty(src.get("country"), "UK")
+        m["persona"] = _first_non_empty(src.get("counterpart_persona"), src.get("persona"), "neutral")
+        m["user_style"] = _first_non_empty(src.get("communication_style"), src.get("user_style"), "Analytical")
+        m["power"] = _first_non_empty(src.get("counterpart_power"), src.get("power"), "peer")
+        m["context_level"] = _first_non_empty(src.get("context_level"), "low")
 
-        self.profiler = PersonaProfiler(self.data_dir)
-        self.market = MarketIntel(self.data_dir)
-        self.tactic_composer = TacticComposer(self.kb)
+        m["role"] = _first_non_empty(src.get("role"), src.get("target_title"), "Senior Editor")
+        m["seniority"] = _first_non_empty(src.get("seniority"), "mid")
 
-        playlets_data = self.kb.get("simulation-playlets.json", {})
-        dilemmas_data = self.kb.get("user-dilemmas.json", {})
-        self.simulation_manager = SimulationManager(playlets_data, dilemmas_data)
+        # Numbers are kept as strings to avoid culture issues; UI/HTML will render them.
+        m["target_salary"] = _first_non_empty(src.get("target_salary"), src.get("anchor_value"))
+        m["range_low"] = _first_non_empty(src.get("range_low"), (src.get("salary_range") or [None, None])[0])
+        m["range_high"] = _first_non_empty(src.get("range_high"), (src.get("salary_range") or [None, None])[1])
 
-        self.rules = RuleEngineExpansion(self.super_kb, self.super_kb)
+        m["impacts"] = _to_list(src.get("impacts") or src.get("achievements"))
+        m["market_sources"] = _to_list(src.get("market_sources") or ["Glassdoor", "Levels.fyi"])
+        m["priorities"] = _to_list(src.get("priorities") or src.get("priorities_ranked"))
+        m["primary_objective"] = _first_non_empty(src.get("primary_objective"), "alignment")
+        m["risk_tolerance"] = int(src.get("risk_tolerance") or 3)
 
-    # ---------- Stage A: Collect & Enrich ----------
-    def collect_and_enrich(self, payload: Dict[str, Any]) -> Dict[str, Any]:
-        answers = payload.get("answers") or {}
-        return {
-            "industry": answers.get("industry"),
-            "role": answers.get("role") or answers.get("target_title"),
-            "seniority": answers.get("seniority") or "mid",
-            "country": answers.get("country") or "UK",
-            "communication_style": answers.get("communication_style") or answers.get("user_style"),
-            "counterpart_persona": answers.get("counterpart_persona"),
-            "challenges": _to_list(answers.get("challenges")),
-            "personality_tone": payload.get("tone") or "neutral",
-            "impacts": _to_list(answers.get("impacts")),
-            "market_sources": _to_list(answers.get("market_sources")) or ["Glassdoor", "Levels.fyi"],
-            "range_low": answers.get("range_low") or (answers.get("salary_range") or [None, None])[0] or "",
-            "range_high": answers.get("range_high") or (answers.get("salary_range") or [None, None])[1] or "",
-            "target_salary": answers.get("target_salary") or answers.get("anchor_value") or "",
-            # rule context:
-            "risk_tolerance": answers.get("risk_tolerance", 3),
-            "primary_objective": answers.get("primary_objective", ""),
-            "loss_aversion": answers.get("loss_aversion", False),
-            "stalling": answers.get("stalling", False),
-            "decision_delay_days": answers.get("decision_delay_days", 0),
-            "user_style": answers.get("communication_style") or ""
-        }
+        return m
 
-    # ---------- Stage B: Persona ----------
-    def build_persona(self, enriched: Dict[str, Any]) -> Dict[str, Any]:
-        return self.profiler.build(enriched)
-
-    # ---------- Stage C: Market + Plan ----------
-    def _currency_symbol(self, country_code: str) -> str:
-        cc = (country_code or "").upper()
-        if cc in ("UK", "GB", "ENGLAND"): return "£"
-        if cc in ("US", "USA"): return "$"
-        return "€"
-
-    def build_core_plan(self, enriched: Dict[str, Any], profile: Dict[str, Any]) -> Tuple[Dict[str, Any], Dict[str, str]]:
-        intel = self.market.build(enriched, profile)
-        symbol = self._currency_symbol(profile.get("country"))
-        tail, anchor_val = self.market.numeric_anchor(
-            intel["range_low"], intel["range_high"], enriched.get("target_salary"),
-            persona=profile["persona"], risk=enriched.get("risk_tolerance", 3), symbol=symbol
+    def _build_profile(self, m: Dict[str, Any]) -> Profile:
+        return Profile(
+            persona=m.get("persona","neutral"),
+            power=m.get("power","peer"),
+            country=m.get("country","UK"),
+            context_level=m.get("context_level","low"),
+            user_style=m.get("user_style","Analytical"),
         )
-        rng = _fmt_range(intel["range_low"], intel["range_high"])
-        sources = ", ".join(intel["sources"])
-        proofs = ", ".join(intel["impacts"]) if intel["impacts"] else "recent measurable results"
 
-        base_opening = "Before we dive into specifics, I want to make sure we’re aligned on a shared goal: a solution that works for both sides over the long term. From your perspective, what would a successful outcome look like?"
-        anchor_text = f"Based on current market data ({sources}) and my delivered results ({proofs}), a range of {rng} is standard. {tail}"
-
-        plan = {
-            "posture": "Controlled Assertiveness",
-            "opening": base_opening,
-            "anchor": anchor_text,
-            "pivot": "Let’s align on scope, title, and compensation first; then we can revisit perks.",
-            "opening_variants": {
-                "soft": base_opening.replace("I want to make sure we’re aligned on a shared goal:", "Would you be open to aligning on a shared goal?"),
-                "neutral": base_opening,
-                "firm": base_opening.replace("I want to make sure we’re aligned on a shared goal:", "I want to be clear on a shared goal:")
+    def _chart_data(self, m: Dict[str, Any]) -> Dict[str, Any]:
+        cur = _currency_for(m.get("country"))
+        anchor = m.get("target_salary") or ""
+        low = m.get("range_low") or None
+        high = m.get("range_high") or None
+        def _num(x: Optional[str]) -> Optional[float]:
+            if x is None: return None
+            s = str(x).strip().lower().replace(",", "")
+            for sym in ("£","$","€"): s = s.replace(sym,"")
+            if not s: return None
+            try:
+                if s.endswith("k"):
+                    return float(s[:-1]) * 1000.0
+                return float(s)
+            except Exception:
+                return None
+        return {
+            "currency": cur,
+            "salary": {
+                "anchor": _num(anchor),
+                "low": _num(low),
+                "high": _num(high),
             }
         }
-        meta_reasons = {
-            "range_reason": "Based on user-provided data." if enriched.get("range_low") else "Inferred from local market data as no user range was provided.",
-            "anchor_reason": f"Anchor tuned to persona '{profile.get('persona','default')}' and risk tolerance."
-        }
-        return {"intel": intel, "plan": plan, "meta": {"range": rng, "anchor_value": anchor_val}}, meta_reasons
 
-    # ---------- Stage D: Rules ----------
-    def _apply_rules(self, enriched: Dict[str, Any], profile: Dict[str, Any]) -> Dict[str, Any]:
-        ctx = {
-            "counterpart_persona": (profile.get("persona") or "").split(" (")[0],
-            "risk_tolerance": enriched.get("risk_tolerance", 3),
-            "culture": profile.get("culture"),
-            "country": profile.get("country"),
-            "user_style": enriched.get("user_style") or profile.get("decision_style",""),
-            "primary_objective": enriched.get("primary_objective",""),
-            "loss_aversion": bool(enriched.get("loss_aversion", False)),
-            "stalling": bool(enriched.get("stalling", False)),
-            "decision_delay_days": int(enriched.get("decision_delay_days", 0))
-        }
-        return self.rules.evaluate_all(ctx)
+    def _compose_plan(self, m: Dict[str, Any]) -> Plan:
+        cur = _currency_for(m.get("country"))
+        anchor = m.get("target_salary") or (m.get("range_high") or "")
+        anchor_str = f"{cur}{anchor}" if isinstance(anchor, (int, float)) else (str(anchor) or "your target")
 
-    def _merge_rule_output(self, plan: Dict[str, Any], rule_out: Dict[str, Any], profile: Dict[str, Any]) -> Dict[str, Any]:
-        recs = rule_out.get("recommendations") or []
-        extra_openers: List[str] = []
-        micro_tactics: List[Dict[str, str]] = []
-        bias_tips: List[str] = []
-        psych_tips: List[str] = []
+        openings = [
+            f"Thanks for the discussion. Based on role and scope, I would like to align around {anchor_str}.",
+            "Before numbers, can we confirm success criteria for both sides?",
+        ]
+        counters = [
+            "If budget is tight: propose a path-to-target with a 6-month KPI review.",
+            "If title is constrained: secure scope/title note and revisit in 3–6 months.",
+        ]
+        scenarios = [
+            {"id": "lowball", "trigger": "Lowball offer", "reply": "Anchor back near your target, trade scope/timing if needed."},
+            {"id": "stall",   "trigger": "Stall or delay", "reply": "Set a clear decision window (e.g., 5 business days)."},
+        ]
+        return Plan(opening_variants=openings, counters=counters, scenarios=scenarios)
 
-        for item in recs:
-            if not isinstance(item, dict):
-                continue
-            if "best_openers" in item and isinstance(item["best_openers"], list):
-                extra_openers.extend([str(x) for x in item["best_openers"]])
-            if item.get("id") and item.get("text"):
-                micro_tactics.append({"id": item["id"], "how_to_use": item["text"], "why": item.get("why","")})
-            if item.get("mitigation"):
-                bias_tips.extend([str(x) for x in item["mitigation"]])
-            if item.get("recommended_actions"):
-                psych_tips.extend([str(x) for x in item["recommended_actions"]])
-
-        tone = profile.get("tone") or "neutral"
-        for t in rule_out.get("tone_overrides", []):
-            tone = t; break
-
-        culture = profile.get("culture")
-        cult_advices = []
-        if (self.super_kb.get("culture_advice") or {}):
-            if culture == "high":
-                cult_advices = _to_list((self.super_kb["culture_advice"]).get("high_context"))
-            else:
-                cult_advices = _to_list((self.super_kb["culture_advice"]).get("low_context"))
-
+    def _reasons(self, m: Dict[str, Any], plan: Plan) -> Dict[str, Any]:
+        highlights = [
+            "Lead with facts that matter to an analytical counterpart.",
+            "Use an assertive but collaborative tone.",
+            "Offer a review path if budget or title is the main constraint.",
+        ]
+        if m.get("impacts"):
+            highlights.insert(0, f"Show 1–2 quantified impacts (e.g., {', '.join(m['impacts'][:2])}).")
         return {
-            "extra_openers": extra_openers[:3],
-            "micro_from_rules": micro_tactics[:4],
-            "bias_tips": bias_tips[:4],
-            "psych_tips": psych_tips[:4],
-            "tone_override": tone,
-            "culture_tips": cult_advices[:3]
+            "highlights": highlights,
+            "tone_reason": "Selected for counterpart style and culture fit.",
         }
 
-    # ---------- Stage F: Final (Markdown) ----------
-    def _render_markdown(self, profile: Dict[str, Any], plan: Dict[str, Any],
-                         extras: Dict[str, Any], core_meta: Dict[str, Any], intel: Dict[str, Any]) -> str:
-        p = profile; pl = plan
-        def bullets(arr): return "\n".join([f"- {x}" for x in (arr or [])]) or "- (none)"
-        micro_lines = []
-        for m in (extras.get("micro_from_rules") or []):
-            line = f"**{m.get('id','TACTIC')}** — {m.get('how_to_use','')}"
-            if m.get("why"): line += f" _(why: {m['why']})_"
-            micro_lines.append(line)
-
-        openers = [pl["opening"]] + (extras.get("extra_openers") or [])
-        opening_block = "\n".join([f"- {x}" for x in openers])
-
-        md = f"""# Counterpart Psychological Profile
-- **Persona:** {p.get('persona','-')}
-- **Culture:** {p.get('culture','-')}
-- **Decision Style:** {p.get('decision_style','-')}
-- **Motivations:** {", ".join(p.get('motivations', []))}
-- **Fears:** {", ".join(p.get('fears', []))}
-
-# Your Strategic Game Plan
-- **Overall Posture:** {'Value Articulator' if 'Friend' in p.get('persona','') else 'Controlled Assertiveness'}
-- **Anchor:** {pl.get('anchor')}
-- **Pivot:** {pl.get('pivot')}
-
-**Opening options (tone={extras.get('tone_override','neutral')}):**
-{opening_block}
-
-# Power Micro-Tactics (AI-picked)
-{bullets(micro_lines)}
-
-# Bias Management (targeted)
-{bullets(extras.get('bias_tips'))}
-
-# Psychology Actions (why this works)
-{bullets(extras.get('psych_tips'))}
-
-# Culture Fit Tips
-{bullets(extras.get('culture_tips'))}
-
-# Meta
-- **Market Range:** {core_meta.get('range')}
-- **Anchor Value:** {core_meta.get('anchor_value')}
-"""
-        return md.strip()
-
+    # --- public API ----------------------------------------------------------
     def run(self, payload: Dict[str, Any]) -> Dict[str, Any]:
-        enriched = self.collect_and_enrich(payload)
-        profile = self.build_persona(enriched)
+        mapped = self._map(payload)
+        profile = asdict(self._build_profile(mapped))
+        plan = self._compose_plan(mapped)
+        reasons = self._reasons(mapped, plan)
+        chart = self._chart_data(mapped)
 
-        base, reasons = self.build_core_plan(enriched, profile)
-        intel = base["intel"]; plan = base["plan"]; core_meta = base["meta"]
+        # Keep shape compatible with v2 and report builder
+        rule_out = {"matches": [], "recommendations": [], "tone_overrides": []}
 
-        rule_out = self._apply_rules(enriched, profile)
-        extras = self._merge_rule_output(plan, rule_out, profile)
-
-        tone = extras.get("tone_override") or profile.get("tone") or enriched.get("personality_tone","neutral")
-        if tone in plan.get("opening_variants", {}):
-            plan["opening"] = plan["opening_variants"][tone]
-
-        md = self._render_markdown(profile, plan, extras, core_meta, intel)
+        extras = {
+            "inputs_mapped": mapped,
+            "plan": asdict(plan),
+        }
 
         return {
-            "status": "success",
-            "format": "md",
-            "card": md,
-            "ui_payload": {
-                "openings": plan.get("opening_variants"),
-                "scenarios": [
-                    {"id":"lowball","trigger":"Lowball offer","reply":"I appreciate the offer. It may help if I clarify unique value — e.g., [impact #1], [impact #2] — since we may be valuing scope differently."},
-                    {"id":"stall","trigger":"Stall / Delay","reply":"I understand careful consideration. Could we align a 5-business-day decision window?"}
-                ]
-            },
-            "reasons": {
-                **reasons,
-                "rules_matched": rule_out.get("matches"),
-                "tone_reason": "Tone selected by AI triggers and culture fit."
-            },
-            "rules": rule_out,                     # <— נגיש ל-report
-            "debug": {"profile": profile if self.debug else None, "extras": extras if self.debug else None}
+            "status": "ok",
+            "engine": "v1",
+            "chart_data": chart,
+            "profile": profile,
+            "plan": asdict(plan),
+            "reasons": {**reasons, "rules_matched": rule_out.get("matches")},
+            "rules": rule_out,                      # available to report
+            "debug": {"profile": profile if self.debug else None, "extras": extras if self.debug else None},
         }
