@@ -1,0 +1,33 @@
+{
+  "_metadata": {
+    "version": "1.0.0",
+    "description": "Maps common negotiation responses to trigger words and recommended counter-tactic IDs.",
+    "lastUpdated": "2025-08-08"
+  },
+  "response_types": [
+    {
+      "id": "LOWBALL",
+      "label": "Lowball Offer",
+      "trigger_words": ["budget", "limited", "too high", "tight", "can't afford"],
+      "recommended_counter_ids": ["CTR-LOWBALL-01"]
+    },
+    {
+      "id": "STALL",
+      "label": "Delay / Stall",
+      "trigger_words": ["later", "next week", "need time", "circle back", "review this"],
+      "recommended_counter_ids": ["CTR-STALL-01"]
+    },
+    {
+      "id": "TOPIC_SHIFT",
+      "label": "Topic Shift",
+      "trigger_words": ["another point", "different angle", "by the way", "speaking of"],
+      "recommended_counter_ids": ["PVOT-FOCUS-01"]
+    },
+    {
+      "id": "PERSONAL_ATTACK",
+      "label": "Personal Attack / Devaluing",
+      "trigger_words": ["unrealistic", "you don't understand", "unprofessional", "inexperienced"],
+      "recommended_counter_ids": ["DEESC-BOUNDARY-01"]
+    }
+  ]
+}

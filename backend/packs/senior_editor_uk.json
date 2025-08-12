@@ -1,0 +1,51 @@
+{
+  "meta": {
+    "id": "senior_editor_uk",
+    "role_keywords": ["senior editor", "content editor"],
+    "regions": ["uk", "london", "england"],
+    "industries": ["publishing", "media", "tech"],
+    "currency": "GBP"
+  },
+  "marketA": {
+    "label": "Scenario A — Senior Editor (London, GBP)",
+    "p25": 36000,
+    "median": 48000,
+    "p75": 58000,
+    "anchor": 58000,
+    "floor": 50000,
+    "fallback": "£52–54k + 6-month review to £58k on KPIs."
+  },
+  "marketB": {
+    "label": "Scenario B — Expanded Scope (Lead/Head)",
+    "p25": 60000,
+    "median": 68000,
+    "p75": 75000,
+    "anchor": 71000,
+    "floor": 64000,
+    "fallback": "£66–68k + 6-month KPI review."
+  },
+  "narrative": {
+    "summary": "We lead with facts for an Analyst-type counterpart, present a London-aligned range, and anchor near p75 only if scope/title match. Two quantified proof points support the ask. Decide within 5 business days."
+  },
+  "evidence": [
+    { "label": "Cycle reduction", "value": 28, "suffix": "%", "detail": "25→18 days across 12 campaigns" },
+    { "label": "On-time delivery", "value": 100, "suffix": "%", "detail": "12/12 vs 72% prior year" },
+    { "label": "Creator retention", "value": 11, "suffix": "pp", "detail": "+11 percentage points YoY" }
+  ],
+  "pairs": [
+    { "they": "Budget is tight.", "you": "Two quick facts: 28% faster cycles and 12/12 on-time. For London p75 ≈ £58k — let’s align at £58k with a 6-month KPI review." },
+    { "they": "Let’s focus on perks.", "you": "Perks after base. If scope stays ‘Senior Editor’, target £56–58k. If scope expands, a ‘Lead’ title at £70–72k makes sense." },
+    { "they": "We can’t change the title.", "you": "Then close at £56–58k and set a written KPI ladder to revisit the title in 6 months." },
+    { "they": "We’ll revisit next month.", "you": "Parallel timelines — set a 5-day decision window." },
+    { "they": "Your range feels high.", "you": "Aligned to London data + impact metrics; consider £54–56k with a 6-month path to £58k on KPIs." }
+  ],
+  "trades": [
+    { "give": "Flexible start (±2–4 weeks)", "get": "Explicit title “Senior Editor (Lead)” + scope statement" },
+    { "give": "Quarterly review cadence", "get": "Base at £58k (A) / £71k (B)" },
+    { "give": "One cross-team initiative/Q", "get": "Written KPI ladder tied to 6-month salary review" }
+  ],
+  "sources": [
+    { "name": "Glassdoor — Senior Editor, London", "url": "https://www.glassdoor.co.uk/Salaries/london-senior-editor-salary-SRCH_IL.0,6_IM1035_KO7,20.htm", "checked": "Aug 2025" },
+    { "name": "ONS — ASHE earnings context", "url": "https://www.ons.gov.uk/employmentandlabourmarket/peopleinwork/earningsandworkinghours", "checked": "Oct 2024" }
+  ]
+}

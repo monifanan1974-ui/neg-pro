@@ -1,0 +1,103 @@
+<!doctype html>
+<html lang="en" data-theme="dark">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<title>NegotiationPro – Smart Questionnaire</title>
+
+<!-- שורה שמתקנת את כל הכתובות היחסיות -->
+<base href="/app/">
+
+<style>
+  :root{
+    --bg:#0b1220; --panel:#0e1627; --card:#121a2b; --ink:#f0f4ff; --mut:#9fb3d4; --line:#1f2a44;
+    --accent:#7c9cff; --ok:#22c55e; --warn:#f59e0b; --err:#ef4444;
+  }
+  *{box-sizing:border-box}
+  html,body{margin:0;background:var(--bg);color:var(--ink);font-family:Inter,system-ui,Segoe UI,Roboto,Arial,sans-serif}
+  .wrap{max-width:1100px;margin:20px auto;padding:0 16px}
+  header{display:flex;justify-content:space-between;align-items:center;margin-bottom:12px}
+  .brand{font-weight:900;letter-spacing:.2px}
+  .chip{border:1px solid var(--line);background:#0b1730;color:var(--mut);border-radius:999px;padding:4px 10px;font-size:12px}
+  .grid{display:grid;grid-template-columns:repeat(12,1fr);gap:16px}
+  .span12{grid-column:span 12}.span8{grid-column:span 8}.span4{grid-column:span 4}
+  .card{background:var(--card);border:1px solid var(--line);border-radius:16px;padding:16px}
+  h1{margin:0 0 10px;font-size:22px}
+  h2{margin:0 0 10px;font-size:18px}
+  p.mut{color:var(--mut);margin:0 0 12px}
+  button{background:var(--accent);color:#03102b;border:0;border-radius:12px;padding:10px 14px;font-weight:700;cursor:pointer}
+  button.ghost{background:#0b1730;color:var(--ink);border:1px solid var(--line)}
+  button:disabled{opacity:.6;cursor:not-allowed}
+  .steps{display:flex;gap:8px;align-items:center;margin:8px 0 12px}
+  .dot{width:10px;height:10px;border-radius:999px;background:#1c2640;border:1px solid #223052;opacity:.7}
+  .dot.active{background:var(--accent);opacity:1}
+  .progress{height:8px;border-radius:999px;background:#0b1730;border:1px solid var(--line);overflow:hidden}
+  .progress > b{display:block;height:100%;background:var(--accent);width:0%}
+  .qwrap{display:flex;flex-direction:column;gap:12px}
+  .q{border:1px dashed #203055;border-radius:12px;padding:12px;background:#101a33}
+  .q label{display:block;color:var(--mut);font-size:12px;margin-bottom:6px}
+  input[type=text],input[type=number],textarea,select{
+    width:100%;background:#0b1730;border:1px solid var(--line);color:var(--ink);border-radius:10px;padding:10px
+  }
+  .row{display:flex;gap:10px;align-items:center;flex-wrap:wrap}
+  .opt{display:flex;gap:8px;align-items:center;padding:8px 10px;border:1px solid #1d2947;border-radius:10px;background:#0c1732}
+  .error{color:var(--err);font-size:12px;margin-top:6px}
+  .note{color:var(--mut);font-size:12px}
+  .right{display:flex;gap:8px;align-items:center;margin-left:auto}
+  iframe.report{width:100%;min-height:1200px;border:1px solid var(--line);border-radius:14px;background:#0e1627}
+  .toast{position:fixed;right:16px;bottom:16px;background:#122042;border:1px solid #1f2a44;color:var(--ink);padding:10px 12px;border-radius:12px;opacity:0;transform:translateY(10px);transition:all .25s}
+  .toast.show{opacity:1;transform:none}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header>
+    <div class="row" style="gap:12px">
+      <div class="brand">Negotiation<strong>Pro</strong></div>
+      <span class="chip">Smart Questionnaire</span>
+    </div>
+    <div class="right">
+      <button id="prefill" class="ghost" type="button">Prefill</button>
+      <button id="reset" class="ghost" type="button">Reset</button>
+    </div>
+  </header>
+
+  <main class="grid">
+    <section class="card span8">
+      <h1>Answer the steps</h1>
+      <p class="mut">Next/Back, שמירה אוטומטית, וחוקים שמסתירים שאלות שלא רלוונטיות.</p>
+
+      <div class="steps" id="steps"></div>
+      <div class="progress"><b id="bar"></b></div>
+
+      <form id="qnForm" novalidate class="qwrap"></form>
+
+      <div class="row" style="justify-content:space-between;margin-top:4px">
+        <button id="back" class="ghost" type="button">Back</button>
+        <div class="right">
+          <span id="status" class="note"></span>
+          <button id="next" type="button">Next</button>
+          <button id="build" type="button" style="display:none">Build Report</button>
+        </div>
+      </div>
+    </section>
+
+    <section class="card span4">
+      <h2>Payload Preview</h2>
+      <textarea id="payload" rows="16" spellcheck="false"></textarea>
+      <p class="note" style="margin-top:6px">נשמר אוטומטית ל־localStorage. אפשר לערוך ידנית (זה מה שישלח).</p>
+    </section>
+
+    <section class="card span12">
+      <h2>Report</h2>
+      <iframe id="report" class="report" title="Negotiation Report"></iframe>
+    </section>
+  </main>
+</div>
+
+<div id="toast" class="toast">Saved</div>
+
+<!-- נשאר יחסי, אבל בזכות <base href="/app/"> זה נטען כ-/app/report_embed.js -->
+<script src="report_embed.js"></script>
+</body>
+</html>

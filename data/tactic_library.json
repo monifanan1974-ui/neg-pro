@@ -1,0 +1,71 @@
+{
+  "_metadata": {
+    "version": "1.1.1",
+    "description": "A library of reusable tactical blocks for the Sofi Pro engine.",
+    "lastUpdated": "2025-08-08"
+  },
+  "tactics": {
+    "openers": [
+      {
+        "id": "OPN-COLLAB-01",
+        "name": "Collaborative Frame Opener",
+        "text": "Before we dive into the details, I'd like to make sure we're aligned on the main goal: finding a solution that works well for both of us in the long run. What does a successful outcome look like from your perspective?",
+        "best_for_persona": [
+          "Analytical",
+          "Friendly"
+        ],
+        "tactic_type": "Framing"
+      },
+      {
+        "id": "OPN-ASSERT-01",
+        "name": "Confident Value Statement",
+        "text": "Thanks for your time today. My goal is to establish a partnership where the value we both receive is clear and significant. Based on the unique contribution I can make here, I'm confident we can reach an agreement that reflects that.",
+        "best_for_persona": [
+          "Dominator",
+          "Fox"
+        ],
+        "tactic_type": "Anchoring"
+      }
+    ],
+    "counters": [
+      {
+        "id": "CTR-LOWBALL-01",
+        "name": "Reframe from Price to Value",
+        "text": "I appreciate the offer. Perhaps it would be helpful if I clarified the unique value and the specific results I bring to the table, as it seems we might be valuing the role differently. For example...",
+        "triggered_by": "Lowball Offer",
+        "tactic_type": "Reframing"
+      },
+      {
+        "id": "CTR-STALL-01",
+        "name": "Leverage Time Pressure",
+        "text": "I understand the need to consider things carefully. To be transparent, I do have other opportunities with timelines, so it would be helpful to know what a realistic timeframe for a decision looks like on your end.",
+        "triggered_by": "Delay / Stall",
+        "tactic_type": "Creating Urgency"
+      },
+      {
+        "id": "PVOT-FOCUS-01",
+        "name": "Refocus Pivot",
+        "text": "That’s a useful point. Let’s park it for a moment and come back to it right after we align on the core terms.",
+        "tactic_type": "Pivot"
+      },
+      {
+        "id": "DEESC-BOUNDARY-01",
+        "name": "Calm Boundary Setting",
+        "text": "I want to keep this conversation productive and professional. Let’s stick to the facts of the deal so we can find a solution that works for both of us.",
+        "tactic_type": "De-escalation"
+      }
+    ],
+    "micro_tactics": [
+      {
+        "id": "PSYCH-SILENCE-01",
+        "name": "Strategic Silence",
+        "description": "After they make an offer, especially a poor one, pause for 3-5 seconds before responding. This creates pressure and often encourages them to elaborate or improve their offer without you saying a word."
+      },
+      {
+        "id": "PSYCH-MIRROR-01",
+        "name": "Language Mirroring",
+        "description": "Subtly repeat the last few words of their statement as a question (e.g., If they say 'Our budget is very tight', you respond '...very tight?'). This builds rapport and encourages them to explain further."
+      }
+    ]
+  }
+}

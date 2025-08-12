@@ -1,0 +1,7 @@
+{
+    "aggressive": {
+        "name": "Aggressive",
+        "keywords": ["demand", "must", "now", "ultimatum"],
+        "speechPatterns": [".*!$", "have to.*", "must.*"]
+    }
+}

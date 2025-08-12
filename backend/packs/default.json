@@ -1,0 +1,50 @@
+{
+  "meta": {
+    "id": "default",
+    "role_keywords": [],
+    "regions": [],
+    "industries": [],
+    "currency": "GBP"
+  },
+  "marketA": {
+    "label": "Scenario A — Base Role (GBP)",
+    "p25": 40000,
+    "median": 50000,
+    "p75": 60000,
+    "anchor": 60000,
+    "floor": 48000,
+    "fallback": "Median minus 2k floor; 6-month KPI review."
+  },
+  "marketB": {
+    "label": "Scenario B — Expanded Scope",
+    "p25": 55000,
+    "median": 65000,
+    "p75": 75000,
+    "anchor": 72000,
+    "floor": 60000,
+    "fallback": "Scope/title increase + KPI milestones."
+  },
+  "narrative": {
+    "summary": "Lead with facts for the counterpart, present a market-aligned range, and anchor close to p75 if scope/title match. Keep a 5-day decision window."
+  },
+  "evidence": [
+    { "label": "Impact metric #1", "value": 20, "suffix": "%", "detail": "Example improvement" },
+    { "label": "Reliability", "value": 100, "suffix": "%", "detail": "On-time milestone delivery" }
+  ],
+  "pairs": [
+    { "they": "Budget is tight.", "you": "Two quick facts + median/p75 reference; propose KPI-linked review in 6 months." },
+    { "they": "Let’s talk perks.", "you": "Perks after base; align base/title first." },
+    { "they": "We can’t change the title.", "you": "Then close near median/p75; set KPI ladder to revisit title." },
+    { "they": "We’ll revisit next month.", "you": "Parallel timelines—set a 5-day decision window." },
+    { "they": "Your range feels high.", "you": "Align to current market data and quantified impact; propose conditional fallback." }
+  ],
+  "trades": [
+    { "give": "Flexible start date", "get": "Clear title + scope statement" },
+    { "give": "Quarterly review cadence", "get": "Base near p75 or KPI path" },
+    { "give": "Cross-team initiative", "get": "Written KPI ladder to salary review" }
+  ],
+  "sources": [
+    { "name": "Market Source A", "url": "https://example.com", "checked": "Aug 2025" },
+    { "name": "Market Source B", "url": "https://example.org", "checked": "Aug 2025" }
+  ]
+}

@@ -1,0 +1,59 @@
+{
+  "description": "Real-world negotiation dilemmas from forums and communities",
+  "version": "1.0",
+  "dilemmas": [
+    {
+      "id": "DL001",
+      "title": "Salary expectation too low",
+      "situation": "User stated lower salary than desired during initial screening",
+      "emotional_state": [
+        "regret",
+        "anxiety"
+      ],
+      "common_triggers": [
+        "Asked prematurely",
+        "Lack of market data"
+      ],
+      "phased_solution": {
+        "immediate": "Frame as new information: 'After deeper research, the market range is...'",
+        "preventative": "Train with range-anchoring simulations"
+      },
+      "linked_personas": [
+        "tech_employee",
+        "anxious_negotiator"
+      ],
+      "cultural_variations": {
+        "US": "Be direct with revised numbers",
+        "UK": "Use softening language: 'I wonder if we might revisit...'"
+      }
+    },
+    {
+      "id": "DL002",
+      "title": "Counterparty dismisses data",
+      "situation": "Hiring manager laughs when citing Glassdoor data",
+      "emotional_state": [
+        "embarrassment",
+        "doubt"
+      ],
+      "rebuttal_strategies": [
+        "Cite multiple sources: 'Glassdoor, Levels.fyi, and industry reports show...'",
+        "Pivot to value: 'My requested salary reflects the unique value I bring in...'"
+      ],
+      "data_validation_required": true
+    }
+  ],
+  "stats": {
+    "last_updated": "2025-10-15",
+    "sources": [
+      "Glassdoor",
+      "Reddit",
+      "LinkedIn"
+    ],
+    "verified_rate": 92.7
+  },
+  "_metadata": {
+    "version": "1.0.1",
+    "lang": "en",
+    "lastUpdated": "2025-08-08"
+  }
+}

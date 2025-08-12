@@ -1,0 +1,126 @@
+{
+  "metadata": {
+    "version": "1.2",
+    "description": "Simulation-based negotiation scenarios for training and analysis.",
+    "language": "en",
+    "lang": "en",
+    "lastUpdated": "2025-08-08"
+  },
+  "playlets": [
+    {
+      "id": "raise_request",
+      "title": "The Raise",
+      "persona_fit": [
+        "anxious_negotiator",
+        "junior_employee"
+      ],
+      "learning_outcomes": [
+        "anchoring",
+        "confidence_building",
+        "objective_criteria"
+      ],
+      "scenes": [
+        {
+          "scene_id": "scene1",
+          "role": "manager",
+          "text": "Why do you think now is the right time for a raise?",
+          "options": [
+            "Because my responsibilities increased.",
+            "Because others make more."
+          ],
+          "feedback": {
+            "Because my responsibilities increased.": "Good framing. Focus on value.",
+            "Because others make more.": "Avoid comparisons. Focus on your contribution."
+          },
+          "impact_score": {
+            "anchoring": 2,
+            "confidence_building": 1
+          }
+        },
+        {
+          "scene_id": "scene2",
+          "role": "employee",
+          "text": "I’d like to revisit my compensation based on recent achievements.",
+          "options": [
+            "List specific achievements",
+            "Say you feel undervalued"
+          ],
+          "feedback": {
+            "List specific achievements": "Excellent. Objective justification increases credibility.",
+            "Say you feel undervalued": "Be careful with emotion-based claims. Stay factual."
+          },
+          "impact_score": {
+            "objective_criteria": 2
+          }
+        }
+      ]
+    },
+    {
+      "id": "client_conflict",
+      "title": "The Client Clash",
+      "persona_fit": [
+        "freelancer",
+        "project_manager"
+      ],
+      "learning_outcomes": [
+        "de_escalation",
+        "framing",
+        "interest_based_negotiation"
+      ],
+      "scenes": [
+        {
+          "scene_id": "scene1",
+          "role": "client",
+          "text": "I’m not happy with the direction of this project.",
+          "options": [
+            "What specifically isn’t working?",
+            "We followed your guidelines."
+          ],
+          "feedback": {
+            "What specifically isn’t working?": "Opens space for collaborative repair.",
+            "We followed your guidelines.": "Feels defensive. May escalate."
+          },
+          "impact_score": {
+            "de_escalation": 2,
+            "framing": 1
+          }
+        }
+      ]
+    },
+    {
+      "id": "remote_tension",
+      "title": "The Remote Dilemma",
+      "persona_fit": [
+        "team_leader",
+        "remote_worker"
+      ],
+      "learning_outcomes": [
+        "power_dynamics",
+        "transparency",
+        "value_creation"
+      ],
+      "scenes": [
+        {
+          "scene_id": "scene1",
+          "role": "manager",
+          "text": "We’re reconsidering remote work. It’s affecting productivity.",
+          "options": [
+            "Can we review performance data?",
+            "I think that’s unfair."
+          ],
+          "feedback": {
+            "Can we review performance data?": "Great – you're shifting to objective ground.",
+            "I think that’s unfair.": "Avoid loaded language. Stay data-driven."
+          },
+          "impact_score": {
+            "transparency": 2,
+            "power_dynamics": 1
+          }
+        }
+      ]
+    }
+  ],
+  "_metadata": {
+    "version": "1.0.1"
+  }
+}

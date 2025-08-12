@@ -1,0 +1,52 @@
+{
+  "description": "Data source reliability assessment and contextual warnings",
+  "sources": [
+    {
+      "name": "Glassdoor",
+      "coverage": [
+        "US",
+        "UK",
+        "India"
+      ],
+      "reliability_by_role": {
+        "software_engineer": {
+          "rating": "B+",
+          "known_bias": "Inflated by 10-15% for FAANG roles"
+        },
+        "marketing_manager": {
+          "rating": "A-",
+          "notes": "Accurate within 5% for mid-sized companies"
+        }
+      },
+      "recommended_use": "Initial reference only - always cross-check"
+    }
+  ],
+  "validation_rules": [
+    {
+      "id": "VR001",
+      "condition": "user.cited_single_source == 'Glassdoor'",
+      "action": "show_warning",
+      "message": "Glassdoor data alone may not reflect actual offers - add local cost-of-living data?"
+    },
+    {
+      "id": "VR002",
+      "condition": "salary_data.spread > 40%",
+      "action": "suggest_cross_check",
+      "sources": [
+        "BLS.gov",
+        "Levels.fyi",
+        "Industry reports"
+      ]
+    }
+  ],
+  "dynamic_adjustments": {
+    "cost_of_living_multiplier": {
+      "San_Francisco": 1.78,
+      "Berlin": 1.12,
+      "Tel_Aviv": 1.35
+    }
+  },
+  "_metadata": {
+    "version": "1.0.1"
+  }
+}

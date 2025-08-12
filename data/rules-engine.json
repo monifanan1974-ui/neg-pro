@@ -1,0 +1,86 @@
+{
+  "description": "Advanced rule-set with multi-part recommendations, compatible with the updated engine.",
+  "rules": [
+    {
+      "id": "R003-Default-Persona-Strategy",
+      "strategy": "Collaborative Information Gathering",
+      "tags": [
+        "opening",
+        "collaborative"
+      ],
+      "base_confidence": 0.85,
+      "conditions": {
+        "persona": {
+          "types": [
+            "default"
+          ]
+        },
+        "emotions": [
+          "neutral",
+          "anxiety"
+        ]
+      },
+      "recommendations": [
+        {
+          "text": "1. **Build Rapport First:** Start with a collaborative tone. Ask open-ended questions like 'What would a successful outcome look like for you?' to understand their core interests.",
+          "tone": "collaborative"
+        },
+        {
+          "text": "2. **Present Objective Criteria:** Instead of saying 'I want more,' say 'Based on my research of market rates for this role (citing sources like Glassdoor and Levels.fyi), a salary in the range of X to Y is standard.' This anchors the conversation in facts, not feelings.",
+          "tone": "analytical"
+        },
+        {
+          "text": "3. **State Your Goal Clearly but Flexibly:** Frame your primary goal as a starting point for discussion. For example: 'I'm targeting a base salary of Z, and I'm also interested in discussing the overall package, including performance bonuses.'",
+          "tone": "assertive"
+        }
+      ]
+    },
+    {
+      "id": "R004-Aggressive-Persona-Strategy",
+      "strategy": "De-escalation and Control",
+      "tags": [
+        "difficult",
+        "anchoring"
+      ],
+      "base_confidence": 0.9,
+      "conditions": {
+        "persona": {
+          "types": [
+            "aggressive"
+          ]
+        }
+      },
+      "recommendations": [
+        {
+          "text": "Maintain a calm and neutral tone. Do not mirror their aggression. Use fact-based language to de-escalate and steer the conversation back to objective points.",
+          "tone": "calm"
+        }
+      ]
+    },
+    {
+      "id": "R005-Anxiety-Emotion-Strategy",
+      "strategy": "Confidence Building and Reassurance",
+      "tags": [
+        "emotional",
+        "reassurance"
+      ],
+      "base_confidence": 0.9,
+      "conditions": {
+        "emotions": [
+          "anxiety"
+        ]
+      },
+      "recommendations": [
+        {
+          "text": "Acknowledge the pressure of the situation. Saying 'I understand these can be tough conversations' can build trust and lower tension.",
+          "tone": "empathetic"
+        }
+      ]
+    }
+  ],
+  "_metadata": {
+    "version": "1.0.1",
+    "lang": "en",
+    "lastUpdated": "2025-08-08"
+  }
+}

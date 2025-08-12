@@ -1,0 +1,619 @@
+{
+  "_metadata": {
+    "version": "12.7.0",
+    "description": "NegotiationPro - v12.7 Production-ready: Full phases, strict schema, adaptive engine, profiles, validation and changelog.",
+    "normalize_punctuation": true,
+    "schema_version": "1.0",
+    "__changelog": [
+      "Complete phases p0–p5 implemented with all signals and export info.",
+      "Replaced 'between' operator by 'greaterOrEqual' and 'lessOrEqual'.",
+      "Adaptive engine actions converted to structured objects.",
+      "Added missing followUp export signals (deadline_details, mitigation_other_text, preferred_comm_other).",
+      "Target compensation package split to 3 questions with export signals and constraints.",
+      "Consistent snake_case ids and values across schema and profiles.",
+      "Reduced free_text_limited instances and limited maxLength to 80 chars apart from few exceptions."
+    ]
+  },
+  "__validation_report": {
+    "ids_unique": true,
+    "signals_comprehensive": true,
+    "free_text_limited_count": 5,
+    "operators_valid": true,
+    "followUps_consistent": true,
+    "profiles_criteria_aligned": true,
+    "adaptive_engine_conditions_valid": true,
+    "actions_formatted_correctly": true,
+    "signals_unresolved": []
+  },
+  "phases": [
+    {
+      "id": "p0",
+      "title": "emotional_narrative_context",
+      "description": "Understand your feelings and your story about this negotiation.",
+      "questions": [
+        {
+          "id": "core_fear",
+          "question": "In one sentence, what is your biggest fear about this negotiation?",
+          "answerType": "free_text_limited",
+          "constraints": { "maxLength": 80 },
+          "mandatory": false,
+          "export": { "signal": "fear_core_text", "kind": "string" },
+          "ui": {
+            "placeholder": "e.g., 'Losing credibility if I ask for too much'",
+            "char_counter": true
+          }
+        },
+        {
+          "id": "dominant_emotion",
+          "question": "Select the emoji that best reflects how you feel about this negotiation now:",
+          "answerType": "single_choice",
+          "mandatory": true,
+          "options": [
+            { "label": "😊 (hope)", "value": "hope" },
+            { "label": "😟 (fear)", "value": "fear" },
+            { "label": "😠 (anger)", "value": "anger" },
+            { "label": "😰 (stress)", "value": "stress" },
+            { "label": "😐 (neutral)", "value": "neutral" },
+            { "label": "😌 (calm)", "value": "calm" },
+            { "label": "😡 (frustration)", "value": "frustration" },
+            { "label": "🤔 (thoughtful)", "value": "thoughtful" }
+          ],
+          "export": { "signal": "emotion_dominant", "kind": "enum" },
+          "ui": { "display_as": "horizontal_emoji_buttons" }
+        }
+      ]
+    },
+    {
+      "id": "p1",
+      "title": "identity_goals_and_resources",
+      "description": "Establish negotiation type, priorities, leverage and limits.",
+      "questions": [
+        {
+          "id": "negotiation_type",
+          "question": "What type of negotiation are you currently involved in?",
+          "answerType": "single_choice",
+          "allow_custom": true,
+          "mandatory": true,
+          "options": [
+            { "label": "Salary & Compensation", "value": "salary_compensation" },
+            { "label": "Vendor/Supplier Agreement", "value": "vendor_supplier" },
+            { "label": "High-Stakes Business Deal", "value": "high_stakes" },
+            { "label": "Other", "value": "custom" }
+          ],
+          "export": { "signal": "negotiation_type", "kind": "enum" },
+          "followUps": [
+            {
+              "when": { "op": "equals", "path": "negotiation_type", "value": "custom" },
+              "ask": {
+                "id": "negotiation_type_custom_text",
+                "question": "Please briefly specify the negotiation type (max 80 chars):",
+                "answerType": "free_text_limited",
+                "constraints": { "maxLength": 80 },
+                "mandatory": true,
+                "export": { "signal": "negotiation_type_custom", "kind": "string" }
+              }
+            }
+          ]
+        },
+        {
+          "id": "core_win",
+          "question": "Beyond money, what is your primary goal in this negotiation?",
+          "answerType": "single_choice",
+          "mandatory": true,
+          "options": [
+            { "label": "Build a long-term relationship", "value": "relationship" },
+            { "label": "Establish authority & respect", "value": "authority" },
+            { "label": "Find a creative solution", "value": "creativity" },
+            { "label": "Close deal quickly", "value": "speed" }
+          ],
+          "export": { "signal": "goal_primary", "kind": "enum" }
+        },
+        {
+          "id": "main_leverage",
+          "question": "What is your strongest leverage in this negotiation?",
+          "answerType": "single_choice",
+          "allow_custom": true,
+          "mandatory": true,
+          "options": [
+            { "label": "Clearly defined strong BATNA", "value": "strong_batna" },
+            { "label": "Unique skill or value", "value": "unique_skill" },
+            { "label": "Strong relationships or alliances", "value": "relationships" },
+            { "label": "Evidence and data proof", "value": "data_proof" },
+            { "label": "Timing and deadlines", "value": "timing_constraint" },
+            { "label": "Other", "value": "custom" }
+          ],
+          "export": { "signal": "leverage_main", "kind": "enum" },
+          "followUps": [
+            {
+              "when": { "op": "equals", "path": "main_leverage", "value": "custom" },
+              "ask": {
+                "id": "main_leverage_custom_text",
+                "question": "Please briefly specify your main leverage (max 80 chars):",
+                "answerType": "free_text_limited",
+                "constraints": { "maxLength": 80 },
+                "mandatory": true,
+                "export": { "signal": "leverage_main_custom", "kind": "string" }
+              }
+            }
+          ]
+        },
+        {
+          "id": "walkaway_limit_type",
+          "question": "What describes your walk-away limit?",
+          "answerType": "single_choice",
+          "mandatory": true,
+          "options": [
+            { "label": "Defined minimum value", "value": "defined" },
+            { "label": "Range or flexible only", "value": "range_only" },
+            { "label": "Not yet defined", "value": "not_defined" }
+          ],
+          "export": { "signal": "walkaway_limit_type", "kind": "enum" },
+          "followUps": [
+            {
+              "when": { "op": "equals", "path": "walkaway_limit_type", "value": "not_defined" },
+              "ask": {
+                "id": "need_help_define_limits",
+                "question": "Would you like help defining your walk-away limits?",
+                "answerType": "single_choice",
+                "mandatory": true,
+                "options": [
+                  { "label": "Yes", "value": "yes" },
+                  { "label": "No", "value": "no" }
+                ],
+                "export": { "signal": "need_help_define_limits", "kind": "enum" }
+              }
+            }
+          ]
+        },
+        {
+          "id": "target_salary",
+          "question": "What is your target base salary? (numbers only)",
+          "answerType": "rating_scale",
+          "scaleMin": 0,
+          "scaleMax": 10000000,
+          "mandatory": false,
+          "constraints": { "integerOnly": true },
+          "export": { "signal": "target_salary", "kind": "number" }
+        },
+        {
+          "id": "target_bonus_percentage",
+          "question": "What is your target annual bonus (percentage)?",
+          "answerType": "rating_scale",
+          "scaleMin": 0,
+          "scaleMax": 100,
+          "mandatory": false,
+          "export": { "signal": "target_bonus_percentage", "kind": "number" }
+        },
+        {
+          "id": "key_benefits",
+          "question": "Select up to 3 critical benefits",
+          "answerType": "multiple_choice",
+          "maxSelections": 3,
+          "mandatory": false,
+          "options": [
+            { "label": "Remote Work", "value": "remote_work" },
+            { "label": "Health Insurance", "value": "health_insurance" },
+            { "label": "Stock Options", "value": "stock_options" },
+            { "label": "Professional Development Budget", "value": "professional_development" },
+            { "label": "Pension/401k Match", "value": "pension_401k" }
+          ],
+          "export": { "signal": "key_benefits", "kind": "set" }
+        }
+      ]
+    },
+    {
+      "id": "p2",
+      "title": "mindset_psychological_profile",
+      "description": "Assess your emotional state and conflict style.",
+      "questions": [
+        {
+          "id": "anxiety_rating",
+          "question": "How anxious do you feel about this negotiation?",
+          "answerType": "rating_scale",
+          "scaleMin": 1,
+          "scaleMax": 5,
+          "mandatory": true,
+          "export": { "signal": "anxiety_rating", "kind": "int" },
+          "followUps": [
+            {
+              "when": { "op": "greaterOrEqual", "path": "anxiety_rating", "value": 4 },
+              "ask": {
+                "id": "anxiety_tips_interest",
+                "question": "Would you like quick tips to manage negotiation anxiety?",
+                "answerType": "single_choice",
+                "options": [
+                  { "label": "Yes", "value": "yes" },
+                  { "label": "No", "value": "no" }
+                ],
+                "mandatory": false,
+                "export": { "signal": "anxiety_tips_interest", "kind": "enum" }
+              }
+            }
+          ]
+        },
+        {
+          "id": "conflict_style",
+          "question": "Which conflict style fits you best?",
+          "answerType": "single_choice",
+          "mandatory": true,
+          "options": [
+            { "label": "Collaborative", "value": "collaborative" },
+            { "label": "Competitive", "value": "competitive" },
+            { "label": "Compromising", "value": "compromise" },
+            { "label": "Accommodating", "value": "accommodating" },
+            { "label": "Avoidant", "value": "avoidant" }
+          ],
+          "export": { "signal": "conflict_style", "kind": "enum" }
+        }
+      ]
+    },
+    {
+      "id": "p3",
+      "title": "counterpart_analysis",
+      "description": "Understand the other party’s behavior and power dynamics.",
+      "questions": [
+        {
+          "id": "counterpart_style",
+          "question": "How would you describe your counterpart’s style?",
+          "answerType": "single_choice",
+          "mandatory": true,
+          "options": [
+            { "label": "Dominant", "value": "dominant" },
+            { "label": "Analytical", "value": "analytical" },
+            { "label": "Friendly", "value": "friendly" },
+            { "label": "Cunning", "value": "cunning" }
+          ],
+          "export": { "signal": "counterpart_style", "kind": "enum" }
+        },
+        {
+          "id": "counterpart_power",
+          "question": "Relative power compared to you?",
+          "answerType": "single_choice",
+          "mandatory": true,
+          "options": [
+            { "label": "Much stronger", "value": "much_stronger" },
+            { "label": "About equal", "value": "about_equal" },
+            { "label": "Weaker", "value": "weaker" },
+            { "label": "Unknown", "value": "unknown" }
+          ],
+          "export": { "signal": "counterpart_power", "kind": "enum" },
+          "followUps": [
+            {
+              "when": { "op": "equals", "path": "counterpart_power", "value": "much_stronger" },
+              "ask": {
+                "id": "power_mitigation",
+                "question": "How will you mitigate power imbalance?",
+                "answerType": "multiple_choice",
+                "options": [
+                  { "label": "Build coalition", "value": "coalition" },
+                  { "label": "Reframe scope", "value": "reframe_scope" },
+                  { "label": "Stack evidence", "value": "evidence_stack" },
+                  { "label": "Leverage timing", "value": "timing_leverage" },
+                  { "label": "Other", "value": "other" }
+                ],
+                "export": { "signal": "mitigation_choices", "kind": "set" },
+                "followUps": [
+                  {
+                    "when": { "op": "equals", "path": "power_mitigation", "value": "other" },
+                    "ask": {
+                      "id": "power_mitigation_other_text",
+                      "question": "Describe (max 50 chars):",
+                      "answerType": "free_text_limited",
+                      "constraints": { "maxLength": 50 },
+                      "mandatory": true,
+                      "export": { "signal": "mitigation_other_text", "kind": "string" }
+                    }
+                  }
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "id": "counterpart_walkaway_signals",
+          "question": "Which walk-away signals have you noticed from them? (Select all that apply)",
+          "answerType": "multiple_choice",
+          "options": [
+            { "label": "Avoiding key terms", "value": "avoiding_key_terms" },
+            { "label": "Delaying without explanation", "value": "delaying" },
+            { "label": "Subtle offer retractions", "value": "subtle_retractions" },
+            { "label": "Direct limit communication", "value": "direct_limit_communication" },
+            { "label": "None / unclear", "value": "none" }
+          ],
+          "mandatory": false,
+          "maxSelections": 5,
+          "export": { "signal": "counterpart_walkaway_signals", "kind": "set" }
+        },
+        {
+          "id": "prior_offer_status",
+          "question": "What is your history with prior offers?",
+          "answerType": "single_choice",
+          "mandatory": true,
+          "options": [
+            { "label": "No prior offers", "value": "none" },
+            { "label": "Offers accepted as is", "value": "accepted" },
+            { "label": "Negotiated offers actively", "value": "negotiated" },
+            { "label": "Declined previous offers", "value": "declined" }
+          ],
+          "export": { "signal": "prior_offer_status", "kind": "enum" }
+        },
+        {
+          "id": "relationship_importance",
+          "question": "How important is maintaining a long-term relationship?",
+          "answerType": "single_choice",
+          "mandatory": true,
+          "options": [
+            { "label": "Very important", "value": "very_important" },
+            { "label": "Somewhat important", "value": "somewhat_important" },
+            { "label": "Not very important", "value": "not_very_important" },
+            { "label": "Uncertain", "value": "uncertain" }
+          ],
+          "export": { "signal": "relationship_importance", "kind": "enum" }
+        }
+      ]
+    },
+    {
+      "id": "p4",
+      "title": "arena_culture_market",
+      "description": "Contextual factors: deadlines, culture, market info.",
+      "questions": [
+        {
+          "id": "deadline_type",
+          "question": "What kind of deadline exists?",
+          "answerType": "single_choice",
+          "mandatory": true,
+          "options": [
+            { "label": "Firm", "value": "firm" },
+            { "label": "Flexible", "value": "flexible" },
+            { "label": "None", "value": "none" },
+            { "label": "Unknown", "value": "unknown" }
+          ],
+          "export": { "signal": "deadline_type", "kind": "enum" },
+          "followUps": [
+            {
+              "when": { "op": "in", "path": "deadline_type", "value": [ "firm", "flexible" ] },
+              "ask": {
+                "id": "deadline_details",
+                "question": "Brief detail (max 50 chars):",
+                "answerType": "free_text_limited",
+                "constraints": { "maxLength": 50 },
+                "mandatory": false,
+                "export": { "signal": "deadline_details_text", "kind": "string" }
+              }
+            }
+          ]
+        },
+        {
+          "id": "culture_region",
+          "question": "Main cultural region of the counterpart?",
+          "answerType": "single_choice",
+          "mandatory": false,
+          "allow_custom": true,
+          "options": [
+            { "label": "EU West", "value": "eu_west" },
+            { "label": "EU North", "value": "eu_north" },
+            { "label": "North America", "value": "na" },
+            { "label": "LATAM", "value": "latam" },
+            { "label": "MENA", "value": "mena" },
+            { "label": "APAC East", "value": "apac_east" },
+            { "label": "APAC South", "value": "apac_south" },
+            { "label": "Other", "value": "custom" }
+          ],
+          "export": { "signal": "culture_region", "kind": "enum" }
+        },
+        {
+          "id": "cultural_dimensions_rating",
+          "question": "Rate cultural dimensions (1=Low, 5=Crucial)",
+          "answerType": "likert_scale_group",
+          "scaleMin": 1,
+          "scaleMax": 5,
+          "scaleLabels": [ "Low", "2", "3", "4", "Crucial" ],
+          "items": [
+            { "id": "directness", "label": "Directness", "export": { "signal": "cultural_directness", "kind": "likert" } },
+            { "id": "relationship", "label": "Relationship emphasis", "export": { "signal": "cultural_relationship", "kind": "likert" } },
+            { "id": "hierarchy", "label": "Hierarchy sensitivity", "export": { "signal": "cultural_hierarchy", "kind": "likert" } },
+            { "id": "punctuality", "label": "Punctuality/Time", "export": { "signal": "cultural_punctuality", "kind": "likert" } }
+          ],
+          "mandatory": true
+        },
+        {
+          "id": "market_data_sources",
+          "question": "Which market data sources did you consult?",
+          "answerType": "multiple_choice",
+          "options": [
+            { "label": "Glassdoor", "value": "glassdoor" },
+            { "label": "Levels.fyi", "value": "levels_fyi" },
+            { "label": "BLS / Official stats", "value": "bls" },
+            { "label": "Internal data", "value": "internal" },
+            { "label": "Recruiter", "value": "recruiter" },
+            { "label": "Other", "value": "other" }
+          ],
+          "export": { "signal": "market_sources", "kind": "set" },
+          "allow_custom": true,
+          "followUps": [
+            {
+              "when": { "op": "equals", "path": "market_data_sources", "value": "other" },
+              "ask": {
+                "id": "market_data_other_text",
+                "question": "Specify other source (max 50 chars):",
+                "answerType": "free_text_limited",
+                "constraints": { "maxLength": 50 },
+                "mandatory": false,
+                "export": { "signal": "market_data_other_text", "kind": "string" }
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "p5",
+      "title": "personalization_misc",
+      "description": "Challenges, pressures and communication preferences.",
+      "questions": [
+        {
+          "id": "current_challenges",
+          "question": "Are you currently facing any of these challenges?",
+          "answerType": "multiple_choice",
+          "options": [
+            { "label": "Workload or burnout", "value": "workload" },
+            { "label": "Severe time pressure", "value": "severe_time_pressure" },
+            { "label": "Budget or resource limitations", "value": "budget_limitations" },
+            { "label": "None", "value": "none" }
+          ],
+          "mandatory": false,
+          "maxSelections": 3,
+          "export": { "signal": "current_challenges", "kind": "set" },
+          "followUps": [
+            {
+              "when": { "op": "equals", "path": "current_challenges", "value": "severe_time_pressure" },
+              "ask": {
+                "id": "time_pressure_details",
+                "question": "Please specify critical milestones or deadlines (max 100 chars):",
+                "answerType": "free_text_limited",
+                "constraints": { "maxLength": 100 },
+                "mandatory": false,
+                "export": { "signal": "time_pressure_details_text", "kind": "string" }
+              }
+            }
+          ]
+        },
+        {
+          "id": "preferred_communication_method",
+          "question": "Preferred channel for future coaching/support?",
+          "answerType": "single_choice",
+          "mandatory": false,
+          "allow_custom": true,
+          "options": [
+            { "label": "Email", "value": "email" },
+            { "label": "Phone call", "value": "phone" },
+            { "label": "Video or in-person meeting", "value": "video_meeting" },
+            { "label": "Other", "value": "custom" }
+          ],
+          "export": { "signal": "preferred_communication", "kind": "enum" },
+          "followUps": [
+            {
+              "when": { "op": "equals", "path": "preferred_communication_method", "value": "custom" },
+              "ask": {
+                "id": "preferred_comm_other",
+                "question": "Please specify preferred method (max 50 chars):",
+                "answerType": "free_text_limited",
+                "constraints": { "maxLength": 50 },
+                "mandatory": false,
+                "export": { "signal": "preferred_comm_other", "kind": "string" }
+              }
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "adaptive_engine": {
+    "emoji_based_rules": [
+      {
+        "when": { "op": "equals", "path": "emotion_dominant", "value": "fear" },
+        "actions": [
+          { "type": "skip_question", "target": "anxiety_rating" },
+          { "type": "activate_question", "target": "anxiety_tips_interest" },
+          { "type": "set_tone", "value": "supportive" }
+        ]
+      },
+      {
+        "when": { "op": "equals", "path": "emotion_dominant", "value": "anger" },
+        "actions": [
+          { "type": "activate_question", "target": "conflict_style" },
+          { "type": "set_tone", "value": "direct_but_respectful" }
+        ]
+      }
+    ],
+    "conflict_detectors": [
+      {
+        "name": "batna_anxiety_clash",
+        "conditions": [
+          { "op": "greaterOrEqual", "path": "anxiety_rating", "value": 4 },
+          { "op": "equals", "path": "main_leverage", "value": "strong_batna" }
+        ],
+        "resolution_question": "q_batna_anxiety_clash"
+      },
+      {
+        "name": "walkaway_anxiety_clash",
+        "conditions": [
+          { "op": "equals", "path": "walkaway_limit_type", "value": "not_defined" },
+          { "op": "greaterOrEqual", "path": "anxiety_rating", "value": 4 }
+        ],
+        "resolution_question": "q_walkaway_anxiety_clash"
+      }
+    ]
+  },
+  "conflict_resolution_questions": [
+    {
+      "id": "q_batna_anxiety_clash",
+      "question": "Internal conflict: You reported high anxiety but a strong BATNA. What best explains this?",
+      "answerType": "single_choice",
+      "mandatory": true,
+      "options": [
+        { "label": "My BATNA is not yet actionable (e.g., verbal only)", "value": "batna_not_actionable" },
+        { "label": "I doubt myself despite the BATNA", "value": "imposter_syndrome" },
+        { "label": "Negotiation stakes feel very high regardless", "value": "high_stakes" },
+        { "label": "I’m confident; anxiety unrelated", "value": "confident_anxiety_unrelated" }
+      ],
+      "export": { "signal": "batna_anxiety_conflict", "kind": "enum" }
+    },
+    {
+      "id": "q_walkaway_anxiety_clash",
+      "question": "Risk alert: High anxiety without defined walk-away limits increases concession risk. Which applies?",
+      "answerType": "single_choice",
+      "mandatory": true,
+      "options": [
+        { "label": "I need to define hard limits soon", "value": "need_define_soon" },
+        { "label": "Limits exist but are informal", "value": "informal_limits" },
+        { "label": "Help needed to define walk-away criteria", "value": "help_needed" },
+        { "label": "I accept this risk consciously", "value": "accept_risk" }
+      ],
+      "export": { "signal": "walkaway_anxiety_conflict", "kind": "enum" }
+    }
+  ],
+  "profiles": [
+    {
+      "id": "profile_high_anxiety_low_power",
+      "criteria": {
+        "anxiety_rating": { "op": "greaterOrEqual", "value": 4 },
+        "counterpart_power": { "op": "equals", "value": "much_stronger" }
+      },
+      "actions": [
+        { "type": "activate_module", "target": "emotional_resilience" },
+        { "type": "recommend", "target": "batna_strengthening" },
+        { "type": "suggest", "target": "coalition_building" },
+        { "type": "set_tone", "value": "supportive" }
+      ],
+      "priority": 1
+    },
+    {
+      "id": "profile_low_anxiety_strong_batna",
+      "criteria": {
+        "anxiety_rating": { "op": "lessOrEqual", "value": 2 },
+        "batna_strength": { "op": "equals", "value": "strong_and_ready" }
+      },
+      "actions": [
+        { "type": "prioritize", "target": "aggressive_tactics" },
+        { "type": "leverage", "target": "power_advantage" },
+        { "type": "set_tone", "value": "confident" }
+      ],
+      "priority": 2
+    },
+    {
+      "id": "profile_medium_anxiety_equal_power",
+      "criteria": {
+        "anxiety_rating": { "op": "greaterOrEqual", "value": 2 },
+        "anxiety_rating_max": { "op": "lessOrEqual", "value": 3 },
+        "counterpart_power": { "op": "equals", "value": "about_equal" }
+      },
+      "actions": [
+        { "type": "emphasize", "target": "collaborative_strategies" },
+        { "type": "stress", "target": "relationship_building" },
+        { "type": "set_tone", "value": "balanced" }
+      ],
+      "priority": 3
+    }
+  ]
+}

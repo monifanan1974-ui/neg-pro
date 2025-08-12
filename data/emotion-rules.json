@@ -1,0 +1,12 @@
+{
+    "anger-rule1": {
+        "emotion": "anger",
+        "triggers": ["angry", "frustrating", "unfair"],
+        "intensity": 1.2
+    },
+    "anxiety-rule1": {
+        "emotion": "anxiety",
+        "triggers": ["worried", "concerned", "unsure"],
+        "intensity": 0.9
+    }
+}

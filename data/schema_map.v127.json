@@ -1,0 +1,17 @@
+{
+  "q_persona_desc": "counterpart_style",
+  "q_power": "counterpart_power",
+  "q_user_style": "conflict_style",
+  "q_salary_target": "target_salary",
+  "q_benefits": "key_benefits",
+  "q_country": "culture_region",
+  "q_risk": "anxiety_rating",
+  "q_prior_offers": "prior_offer_status",
+  "q_deadline": "deadline_type",
+  "q_market_sources": "market_data_sources",
+  "q_failed": "current_challenges",
+
+  "q_title": "target_title",
+  "q_achievements": "main_leverage",
+  "q_salary_range": "salary_range"
+}

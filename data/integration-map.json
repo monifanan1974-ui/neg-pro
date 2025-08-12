@@ -1,0 +1,7 @@
+{
+  "description": "Defines data flow to and from external APIs",
+  "map": {
+    "send_to_api": ["user_state", "BATNA_value", "region"],
+    "retain_internal": ["rules_applied", "persona_match"]
+  }
+}

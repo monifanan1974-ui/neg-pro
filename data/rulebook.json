@@ -1,0 +1,105 @@
+{
+  "_metadata": {
+    "version": "1.0.0",
+    "description": "NegotiationPro rulebook using context_keywords_any for automatic tactic injection."
+  },
+  "rule_categories": {
+    "compensation_tactics": {
+      "title": "Compensation Tactics",
+      "rules": [
+        {
+          "id": "CMP-001",
+          "title": "Anchor Framing for Salary Priority",
+          "priority": 9,
+          "condition": {
+            "context_keywords_any": ["prio:salary", "src:glassdoor", "src:levels.fyi"]
+          },
+          "action": "Open with market-aligned range, then present a specific anchor with one quantified proof before mentioning perks."
+        },
+        {
+          "id": "CMP-002",
+          "title": "Title-as-Value Trade",
+          "priority": 7,
+          "condition": {
+            "context_keywords_any": ["prio:title"]
+          },
+          "action": "If base salary stalls, propose upgraded title or scope expansion in return for mid-range compensation."
+        }
+      ]
+    },
+    "time_pressure": {
+      "title": "Time & Deadlines",
+      "rules": [
+        {
+          "id": "TMP-001",
+          "title": "Decision Window Ask",
+          "priority": 8,
+          "condition": {
+            "context_keywords_any": ["deadline"]
+          },
+          "action": "Request a realistic decision window and schedule a follow-up date to reduce open loops."
+        },
+        {
+          "id": "TMP-002",
+          "title": "Limited-Time Concession",
+          "priority": 6,
+          "condition": {
+            "context_keywords_any": ["deadline", "prio:speed (close fast)"]
+          },
+          "action": "Offer a small, reversible concession that expires by your stated deadline to focus momentum."
+        }
+      ]
+    },
+    "power_dynamics": {
+      "title": "Power Dynamics",
+      "rules": [
+        {
+          "id": "POW-001",
+          "title": "High-Power Counterpart",
+          "priority": 9,
+          "condition": {
+            "context_keywords_any": ["power:high"]
+          },
+          "action": "Lead with objective criteria and third-party data. Keep asks crisp and timeboxed to avoid endless evaluation."
+        },
+        {
+          "id": "POW-002",
+          "title": "Peer-Power Reciprocity",
+          "priority": 5,
+          "condition": {
+            "context_keywords_any": ["power:peer"]
+          },
+          "action": "Use reciprocity: trade a low-cost give for a high-value get (e.g., flexible start date ↔ clear title)."
+        }
+      ]
+    },
+    "market_sources": {
+      "title": "Market Source Nuance",
+      "rules": [
+        {
+          "id": "SRC-001",
+          "title": "Blend Sources",
+          "priority": 4,
+          "condition": {
+            "context_keywords_any": ["src:glassdoor", "src:levels.fyi", "src:recruiter quotes", "src:bls/industry report"]
+          },
+          "action": "Cite two independent sources to reduce pushback on single-source bias."
+        }
+      ]
+    },
+    "relationship_play": {
+      "title": "Relationship-Oriented Counterpart",
+      "rules": [
+        {
+          "id": "REL-001",
+          "title": "Warm Opener for 'Friend' Persona",
+          "priority": 6,
+          "condition": {
+            "persona": { "types": ["the friend", "collaborative"] }
+          },
+          "action": "Acknowledge the ongoing relationship first, then align on a shared long-term outcome before numbers."
+        }
+      ]
+    }
+  }
+}

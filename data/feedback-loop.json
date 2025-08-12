@@ -1,0 +1,57 @@
+{
+  "description": "Dynamic feedback system for negotiation strategies",
+  "feedback_triggers": [
+    {
+      "condition": "response == 'No change'",
+      "action": "serve_tactic",
+      "tactic_id": "R007",
+      "message": "Let's try summarizing agreements to regain momentum",
+      "escalation_level": "medium"
+    },
+    {
+      "condition": "response == 'Made things worse'",
+      "action": "activate_module",
+      "module": "crisis_handling",
+      "message": "Switching to damage control protocol",
+      "escalation_level": "high"
+    },
+    {
+      "condition": "response == 'Partial success'",
+      "action": "suggest_follow_up",
+      "template": "Propose a phased approach: 'Could we implement this portion now and revisit the rest next quarter?'"
+    }
+  ],
+  "adaptive_learning": {
+    "data_collection": [
+      "tactic_id",
+      "persona_type",
+      "country",
+      "outcome",
+      "negotiation_duration"
+    ],
+    "auto_update_rules": {
+      "failure_threshold": 40,
+      "min_cases": 50,
+      "action": "flag_for_review",
+      "review_team": "expert_panel"
+    },
+    "success_metrics": {
+      "conversion_rate": "target > 65%",
+      "satisfaction_score": "target > 8/10",
+      "time_to_resolution": "target < 72h"
+    }
+  },
+  "feedback_ui": {
+    "component": "adaptive_feedback_form",
+    "elements": [
+      "outcome_rating",
+      "effectiveness_slider",
+      "open_text_field"
+    ]
+  },
+  "_metadata": {
+    "version": "1.0.1",
+    "lang": "en",
+    "lastUpdated": "2025-08-08"
+  }
+}

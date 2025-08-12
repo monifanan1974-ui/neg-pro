@@ -1,0 +1,8 @@
+{
+  "description": "Glossary and semantic tags for NLP categorization",
+  "tags": [
+    {"id": "NEG001", "label": "BATNA", "definition": "Best Alternative to Negotiated Agreement"},
+    {"id": "NEG002", "label": "Integrative", "definition": "Negotiation aiming at mutual gain"},
+    {"id": "NEG003", "label": "Anchoring", "definition": "Setting a reference point in negotiation"}
+  ]
+}

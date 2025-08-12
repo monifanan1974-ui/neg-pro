@@ -1,0 +1,69 @@
+{
+  "data_sources": {},
+  "blocks": {
+    "openers": [
+      {
+        "id": "value_alignment_opener",
+        "text_template": "Before we dive into specifics, I want to make sure we’re aligned on a shared goal: a solution that works for both sides over the long term. From your perspective, what would a successful outcome look like?"
+      }
+    ],
+    "anchors": [
+      {
+        "id": "market_data_anchor",
+        "text_template": "Based on current market data ({{market_sources_text}}) and my delivered results ({{value_proofs_text}}), a range of {{market_range_text}} is standard. {{target_text}}"
+      }
+    ],
+    "pivots": [
+      {
+        "id": "bring_back_to_terms_pivot",
+        "text_template": "That’s helpful. Let’s park that for a moment and come back after we align on core terms — role scope, title, and compensation."
+      }
+    ],
+    "counters": [
+      {
+        "id": "lowball_counter_value_clarifier",
+        "trigger": "Lowball offer",
+        "text_template": "I appreciate the offer. It may help if I clarify the unique value and specific results I deliver — for instance, {{value_proofs_text}} — because it seems we’re valuing the role differently."
+      },
+      {
+        "id": "stall_counter_timeline",
+        "trigger": "Stall/Delay",
+        "text_template": "I understand careful consideration. To be transparent, I do have other timelines; could we agree on a realistic decision window?"
+      },
+      {
+        "id": "subject_change_counter",
+        "trigger": "Change of subject",
+        "text_template": "That’s useful. Let’s park it briefly and come back right after we align on scope, title, and compensation."
+      },
+      {
+        "id": "professional_boundary_counter",
+        "trigger": "Personal/unprofessional tone",
+        "text_template": "I’d like to keep this productive and professional. Let’s stick to the facts so we can find a solution that works for both sides."
+      }
+    ],
+    "micro_tactics": [
+      { "id": "PSYCH-SILENCE-01", "how_to_use": "After a weak offer, pause 3–5 seconds before responding.", "trigger": "Weak offer" },
+      { "id": "PSYCH-MIRROR-01", "how_to_use": "Mirror their last words as a question (\"...very tight?\")", "trigger": "Evasive answer" },
+      { "id": "culture_tuner_high_context", "how_to_use": "In high-context cultures, soften anchors (\"Would you consider…\")", "trigger": "High-context counterpart" }
+    ],
+    "glossary_terms": [
+      { "term": "Logrolling", "definition": "Trading across issues to create value." },
+      { "term": "Bounded Ethicality", "definition": "Being alert to hidden biases while staying ethical." },
+      { "term": "Loss Aversion", "definition": "People fear losses more than equal gains; frame to reduce perceived loss." }
+    ]
+  },
+  "example_generation": {
+    "inputs_example": {
+      "counterpart_persona": "budget_guard",
+      "counterpart_power": "peer",
+      "user_style": "diplomatic",
+      "goals": { "monetary": { "target_salary": "€78k", "range_low": "€74k", "range_high": "€82k" }, "title": { "target_title": "Senior Editor" }, "benefits": ["bonus","flexibility"] },
+      "leverage": { "value_proofs": ["Reduced edit cycle 28%","12 on-time campaigns"], "time_constraints": "next Friday" },
+      "culture": { "country": "Greece", "language": "en", "context_level": "high" },
+      "history": { "prior_offers": ["€72k + bonus"] },
+      "risk_tolerance": 3,
+      "priorities_ranked": ["salary","title","flexibility"],
+      "market_sources": ["Glassdoor","Levels.fyi"]
+    }
+  }
+}

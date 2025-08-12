@@ -1,0 +1,252 @@
+{
+  "_metadata": {
+    "version": "11.0.0",
+    "description": "Super Knowledge Base for NegotiationPro – psychology, tactics by phase, bias management, expanded personas, AI triggers with complex conditions",
+    "language": "en"
+  },
+  "psychology_models": {
+    "theories": [
+      {
+        "id": "prospect_theory",
+        "title": "Prospect Theory",
+        "summary": "People weigh losses more than equivalent gains.",
+        "tags": ["loss_aversion", "framing"],
+        "recommended_actions": [
+          "Frame offers as loss avoidance (what they might lose) rather than pure gain.",
+          "Show risk-reduction benefits explicitly."
+        ]
+      },
+      {
+        "id": "dual_process",
+        "title": "Dual-Process Theory",
+        "summary": "System 1 (fast, intuitive) and System 2 (slow, analytical) shape decisions.",
+        "tags": ["overthinking", "stalling"],
+        "recommended_actions": [
+          "If decisions stall, use stories/examples to engage System 1.",
+          "If decisions seem rushed, add objective criteria and pauses."
+        ]
+      },
+      {
+        "id": "self_determination",
+        "title": "Self-Determination",
+        "summary": "Autonomy, competence, relatedness drive motivation.",
+        "tags": ["autonomy", "competence", "relationship"],
+        "recommended_actions": [
+          "Offer two controlled choices to preserve autonomy.",
+          "Give small ‘wins’ that build competence.",
+          "Highlight shared goals for relatedness."
+        ]
+      }
+    ]
+  },
+  "tactics_by_phase": {
+    "opening": [
+      {
+        "id": "anchor_high",
+        "text": "Set a high (realistic) numeric anchor.",
+        "why": "Anchoring steers expectations early.",
+        "examples": ["Based on market medians and scope, I’m targeting {ANCHOR}."]
+      },
+      {
+        "id": "mutual_goal",
+        "text": "Invite alignment on a shared outcome.",
+        "why": "Builds collaboration frame.",
+        "examples": ["Before numbers, what would success look like for both sides?"]
+      }
+    ],
+    "discovery": [
+      {
+        "id": "ladder_questions",
+        "text": "Use laddering: ‘What makes that important?’",
+        "why": "Surfaces deeper interests.",
+        "examples": ["What’s the biggest risk if we don’t solve X this quarter?"]
+      },
+      {
+        "id": "strategic_silence",
+        "text": "Hold a 3–5s pause after a weak offer.",
+        "why": "Encourages elaboration or concession.",
+        "examples": ["…(count to 4 silently)… then ask a precise follow-up."]
+      }
+    ],
+    "bargaining": [
+      {
+        "id": "logrolling",
+        "text": "Trade low-priority issues for high-priority wins.",
+        "why": "Creates joint value when priorities differ.",
+        "examples": ["I can be flexible on start date if we align base with scope."]
+      },
+      {
+        "id": "split_value",
+        "text": "Decompose the ‘one price’ into multiple value components.",
+        "why": "Reduces fixed-pie bias.",
+        "examples": ["Let’s price scope A and scope B separately to match impact."]
+      }
+    ],
+    "closing": [
+      {
+        "id": "door_close",
+        "text": "Use a respectful ‘closing window’.",
+        "why": "Adds gentle urgency without pressure.",
+        "examples": ["Could we align this week? A 5‑business‑day window works on my side."]
+      },
+      {
+        "id": "minor_concession",
+        "text": "Offer a small final concession to enable signature.",
+        "why": "Signals good faith and momentum.",
+        "examples": ["If we align base, I can include X onboarding session."]
+      }
+    ]
+  },
+  "bias_management": [
+    {
+      "id": "anchoring_bias",
+      "name": "Anchoring Bias",
+      "description": "Overreliance on first number seen.",
+      "mitigation": [
+        "Introduce multiple objective references (benchmarks, scopes).",
+        "Counter-anchor with justified range."
+      ]
+    },
+    {
+      "id": "endowment_effect",
+      "name": "Endowment Effect",
+      "description": "People overvalue what they already ‘own’.",
+      "mitigation": [
+        "Speak as if the solution is already theirs (future pacing).",
+        "Show cost of losing the current path."
+      ]
+    },
+    {
+      "id": "framing_effect",
+      "name": "Framing Effect",
+      "description": "Different wording changes perceived value.",
+      "mitigation": [
+        "Reframe to risk‑reduction and long‑term outcomes.",
+        "Contrast scenarios: with vs. without this agreement."
+      ]
+    }
+  ],
+  "persona_expanded": [
+    {
+      "name": "The Dominator",
+      "profile": "Assertive, competitive, control-seeking.",
+      "best_openers": [
+        "I appreciate your time — let’s go straight to the point.",
+        "Let’s align scope and decision window up front."
+      ],
+      "counter_tactics": [
+        "Hold pace control with clear timeboxes.",
+        "Use crisp numbers and objective criteria."
+      ],
+      "tones": { "default": "firm", "backup": "neutral" }
+    },
+    {
+      "name": "The Analyst",
+      "profile": "Data-first, methodical, slow to decide.",
+      "best_openers": [
+        "I brought a concise benchmark summary; may I walk you through it?",
+        "Shall we agree success criteria before we price it?"
+      ],
+      "counter_tactics": [
+        "Show 2–3 sources; limit fluff.",
+        "Convert achievements to quantified ‘proof points’."
+      ],
+      "tones": { "default": "neutral", "backup": "firm" }
+    },
+    {
+      "name": "The Friend",
+      "profile": "Relationship-focused, avoids conflict.",
+      "best_openers": [
+        "I’m glad we’re tackling this together — what would long-term success look like?",
+        "Let’s align interests before specifics."
+      ],
+      "counter_tactics": [
+        "Affirm rapport; gently return to scope/base.",
+        "Avoid hard pressure; use options."
+      ],
+      "tones": { "default": "soft", "backup": "neutral" }
+    },
+    {
+      "name": "The Fox",
+      "profile": "Cunning, strategic, may use tricks.",
+      "best_openers": [
+        "Let’s make sure we’re optimizing for the same outcomes.",
+        "I suggest we park perks until we align on scope/base."
+      ],
+      "counter_tactics": [
+        "Name tactics neutrally; reset to criteria.",
+        "Ask clarifying questions; avoid rushed tradeoffs."
+      ],
+      "tones": { "default": "neutral", "backup": "firm" }
+    }
+  ],
+  "culture_advice": {
+    "high_context": [
+      "Soften requests (‘Would you consider…’).",
+      "Allow longer pauses; avoid public confrontation.",
+      "Emphasize continuity and face-saving."
+    ],
+    "low_context": [
+      "Be direct and concise.",
+      "Use clear numbers and timeboxes.",
+      "State decision criteria early."
+    ]
+  },
+  "ai_triggers": [
+    {
+      "id": "T1",
+      "priority": 90,
+      "condition": "counterpart_persona == 'The Dominator' AND risk_tolerance >= 4",
+      "fetch": [
+        "tactics_by_phase.opening.anchor_high",
+        "persona_expanded.The Dominator.best_openers",
+        "psychology_models.theories.prospect_theory",
+        "bias_management.anchoring_bias"
+      ],
+      "tone_override": "firm"
+    },
+    {
+      "id": "T2",
+      "priority": 85,
+      "condition": "counterpart_persona == 'The Analyst' OR user_style contains 'Analytical'",
+      "fetch": [
+        "tactics_by_phase.opening.mutual_goal",
+        "tactics_by_phase.discovery.ladder_questions",
+        "psychology_models.theories.dual_process"
+      ],
+      "tone_override": "neutral"
+    },
+    {
+      "id": "T3",
+      "priority": 80,
+      "condition": "counterpart_persona == 'The Friend' AND (culture == 'high' OR country in ['JP','KR','CN','AE','SA','QA','KW','IL'])",
+      "fetch": [
+        "tactics_by_phase.discovery.strategic_silence",
+        "tactics_by_phase.bargaining.logrolling",
+        "bias_management.framing_effect",
+        "psychology_models.theories.self_determination"
+      ],
+      "tone_override": "soft"
+    },
+    {
+      "id": "T4",
+      "priority": 70,
+      "condition": "loss_aversion == true OR primary_objective contains 'time'",
+      "fetch": [
+        "psychology_models.theories.prospect_theory",
+        "bias_management.endowment_effect",
+        "tactics_by_phase.closing.door_close"
+      ]
+    },
+    {
+      "id": "T5",
+      "priority": 60,
+      "condition": "stalling == true OR decision_delay_days >= 7",
+      "fetch": [
+        "psychology_models.theories.dual_process",
+        "tactics_by_phase.closing.door_close",
+        "tactics_by_phase.discovery.ladder_questions"
+      ]
+    }
+  ]
+}

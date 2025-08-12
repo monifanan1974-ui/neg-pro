@@ -1,0 +1,51 @@
+{
+  "description": "Quantitative metrics for negotiation success tracking",
+  "primary_metrics": [
+    {
+      "id": "M001",
+      "name": "Agreement Rate",
+      "definition": "Percentage of negotiations reaching agreement",
+      "target": ">75%",
+      "measurement_frequency": "per_negotiation"
+    },
+    {
+      "id": "M002",
+      "name": "Value Capture Index",
+      "definition": "Percentage of target value achieved",
+      "calculation": "(achieved_value / target_value) × 100",
+      "target": ">85%"
+    },
+    {
+      "id": "M003",
+      "name": "Relationship Preservation",
+      "definition": "Counterparty satisfaction rating post-negotiation",
+      "measurement": "5-point Likert scale",
+      "target": "≥4.2"
+    }
+  ],
+  "secondary_metrics": [
+    {
+      "id": "M101",
+      "name": "Time Efficiency",
+      "definition": "Hours from initiation to agreement",
+      "target": "<8 hours for standard negotiations"
+    },
+    {
+      "id": "M102",
+      "name": "Concession Balance",
+      "definition": "Ratio of user to counterparty concessions",
+      "target": "1:1 to 1:1.5"
+    }
+  ],
+  "reporting": {
+    "dashboard_components": [
+      "real-time_success_heatmap",
+      "persona_performance_comparison",
+      "regional_variance_analysis"
+    ],
+    "alert_thresholds": {
+      "agreement_rate": "<60%",
+      "value_capture": "<70%"
+    }
+  }
+}

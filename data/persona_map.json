@@ -1,0 +1,18 @@
+{
+  "_metadata": {
+    "version": "1.0.0",
+    "description": "Defines how to derive profiles from questionnaire answers and adapt output style.",
+    "lastUpdated": "2025-08-08"
+  },
+  "derived_fields": {
+    "self_profile": ["your_communication_style", "your_leverage"],
+    "counterpart_profile": ["counterpart_persona", "counterpart_loss_aversion"],
+    "leverage_equation": ["your_leverage", "negotiation_context", "primary_objective"]
+  },
+  "style_adapters": {
+    "Direct and to-the-point": { "tone": "assertive", "sentence_length": "short" },
+    "Diplomatic and collaborative": { "tone": "warm", "sentence_length": "medium" },
+    "Analytical and data-driven": { "tone": "analytical", "sentence_length": "medium" },
+    "Quiet and observant": { "tone": "calm", "sentence_length": "short" }
+  }
+}

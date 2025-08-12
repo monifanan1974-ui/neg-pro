@@ -1,0 +1,1026 @@
+{
+  "metadata": {
+    "version": "2.2",
+    "description": "The definitive, fully enriched, and documented knowledge base for the Sofi negotiation learning system.",
+    "glossary_tags": [
+      "anchoring",
+      "batna",
+      "bounded_ethicality",
+      "cognitive_bias",
+      "coalition",
+      "contingency_contract",
+      "cultural_intelligence",
+      "de_escalation",
+      "deliberate_practice",
+      "distributive_bargaining",
+      "ethics",
+      "explainable_ai",
+      "face_saving",
+      "fixed_pie_bias",
+      "framing",
+      "high_context_culture",
+      "interest_based_negotiation",
+      "integrative_negotiation",
+      "interests",
+      "logrolling",
+      "loss_aversion",
+      "low_context_culture",
+      "objective_criteria",
+      "pareto_improvement",
+      "power_dynamics",
+      "predictive_analytics",
+      "reservation_value",
+      "social_proof",
+      "transparency",
+      "trust",
+      "value_creation",
+      "zopa"
+    ],
+    "persona_fit": [
+      "anxious_negotiator",
+      "diplomat",
+      "experienced_negotiator",
+      "fundraiser",
+      "global_manager",
+      "hr_professional",
+      "investor",
+      "job_seeker",
+      "legal_counsel",
+      "manager",
+      "procurement_manager",
+      "sales_person",
+      "small_business_owner",
+      "startup_founder"
+    ],
+    "phases": [
+      "preparation",
+      "execution",
+      "post_negotiation_analysis"
+    ],
+    "relation_types": [
+      "foundation_for",
+      "builds_on",
+      "contrasts_with",
+      "mitigates",
+      "is_mitigated_by",
+      "assesses",
+      "is_assessed_by",
+      "relates_to"
+    ],
+    "difficulty_scale": {
+      "0": "All Levels",
+      "1": "Beginner",
+      "2": "Intermediate",
+      "3": "Advanced"
+    },
+    "lang": "en",
+    "lastUpdated": "2025-08-08"
+  },
+  "entries": [
+    {
+      "id": "FUND-001",
+      "title": "Negotiation Fundamentals & BATNA Analysis",
+      "category": "Core Concepts",
+      "tags": [
+        "zopa",
+        "reservation_value",
+        "value_creation",
+        "batna",
+        "interests",
+        "preparation"
+      ],
+      "difficulty": 1,
+      "difficultyLabel": "Beginner",
+      "summary": "Master the foundational concepts of negotiation, from thorough preparation and interest analysis to the critical skill of calculating your BATNA (Best Alternative to a Negotiated Agreement).",
+      "contentExample": {
+        "scenario": "Negotiating a first job offer",
+        "steps": [
+          "Research industry salary benchmarks.",
+          "Identify and quantify your BATNA.",
+          "Calculate your Reservation Value.",
+          "Prepare open-ended questions to uncover interests."
+        ],
+        "calculation": "Offer A: $100K×70% + Offer B: $95K×90% = Weighted BATNA of $85.5K",
+        "reliabilityNote": "Always cross-verify probabilities with market data."
+      },
+      "contentReflection": "How does knowing your exact BATNA value change the way you communicate during a negotiation?",
+      "book_insights": [
+        "Claiming vs. Creating Value (Ch.1-2, Negotiation Genius)",
+        "Package Reservation Value calculation (p.14, Negotiation Genius)"
+      ],
+      "practical_tools": [
+        "BATNA Strength Assessor",
+        "Multi-Issue Scoring System",
+        "Probability Estimator"
+      ],
+      "key_quotes": [
+        {
+          "quote": "Preparation is key to effective negotiation.",
+          "source": "Negotiation Genius, p.82"
+        },
+        {
+          "quote": "Your goal should be to maximize value, not just reach an agreement.",
+          "source": "Negotiation Genius, p.83"
+        }
+      ],
+      "appIntegration": {
+        "feature": "Guided Preparation Checklist",
+        "description": "An interactive checklist that guides users through preparation steps, including a built-in BATNA calculator.",
+        "codeExample": "batnaCalculator.calculate({ offers: [{val:100, prob:0.7}, {val:95, prob:0.9}] }); // Returns: { weightedBatna: 85500, highestOffer: 95000 }"
+      },
+      "emotionalTags": [
+        "uncertainty",
+        "confidence-building",
+        "decision-anxiety"
+      ],
+      "glossary_tags": [
+        "batna",
+        "zopa",
+        "reservation_value",
+        "value_creation",
+        "interests"
+      ],
+      "persona_fit": [
+        "job_seeker",
+        "anxious_negotiator",
+        "small_business_owner"
+      ],
+      "phases": [
+        "preparation"
+      ],
+      "relations": [
+        {
+          "type": "foundation_for",
+          "target_id": "STRAT-002"
+        },
+        {
+          "type": "foundation_for",
+          "target_id": "MODEL-001"
+        }
+      ],
+      "source": {
+        "deepseek": true,
+        "sofi5": true
+      },
+      "case_studies": [
+        {
+          "title": "The Freelancer's Dilemma",
+          "summary": "A freelance designer with two potential projects must calculate their BATNA to decide which project to accept and what their reservation price should be for each."
+        }
+      ]
+    },
+    {
+      "id": "MODEL-001",
+      "title": "Negotiation Models: Distributive vs. Integrative",
+      "category": "Strategy & Frameworks",
+      "tags": [
+        "distributive",
+        "integrative",
+        "win-lose",
+        "win-win",
+        "pie-slicing"
+      ],
+      "difficulty": 2,
+      "difficultyLabel": "Intermediate",
+      "summary": "Learn to identify and apply the two primary negotiation models: Distributive (win-lose) for claiming value, and Integrative (win-win) for creating it.",
+      "contentExample": {
+        "integrativeApproach": "In a vendor contract, offering extended payment terms for a licensing discount, creating value for both.",
+        "distributiveApproach": "In a used car sale, anchoring with a low initial offer to pull the final price down."
+      },
+      "contentReflection": "Think of a recent negotiation. Was it primarily distributive or integrative? What one action could you have taken to shift it towards a more integrative approach?",
+      "externalResources": [
+        {
+          "type": "Article",
+          "title": "Distributive vs. Integrative Negotiation",
+          "source": "Harvard PON",
+          "url": "https://www.pon.harvard.edu/daily/negotiation-skills-daily/distributive-vs-integrative-negotiation/"
+        }
+      ],
+      "appIntegration": {
+        "feature": "Strategy Simulator",
+        "description": "Simulate outcomes of applying distributive vs. integrative tactics in the same scenario.",
+        "codeExample": "simulationLoader.run('dist-vs-int-sim'); // Returns: A comparative outcome report."
+      },
+      "emotionalTags": [
+        "strategic-confidence",
+        "risk-assessment",
+        "competitiveness"
+      ],
+      "glossary_tags": [
+        "distributive_bargaining",
+        "integrative_negotiation",
+        "anchoring",
+        "value_creation",
+        "zopa"
+      ],
+      "persona_fit": [
+        "sales_person",
+        "procurement_manager",
+        "legal_counsel"
+      ],
+      "phases": [
+        "preparation",
+        "execution"
+      ],
+      "relations": [
+        {
+          "type": "contrasts_with",
+          "target_id": "FRAMEWORK-001"
+        }
+      ],
+      "source": {
+        "deepseek": true,
+        "sofi5": false
+      },
+      "case_studies": [
+        {
+          "title": "The Startup Acquisition",
+          "summary": "A negotiation between a startup and a large corporation. Initially distributive (focused only on price), it becomes integrative when they add issues like stock options, roles for the founders, and brand autonomy."
+        }
+      ]
+    },
+    {
+      "id": "FRAMEWORK-001",
+      "title": "Principled Negotiation Framework",
+      "category": "Strategy & Frameworks",
+      "tags": [
+        "harvard_model",
+        "interest-based",
+        "getting_to_yes"
+      ],
+      "difficulty": 2,
+      "difficultyLabel": "Intermediate",
+      "summary": "Implement the four core principles of Fisher and Ury's 'Getting to Yes' framework to transform adversarial conflicts into collaborative problem-solving.",
+      "corePrinciples": [
+        "Separate the people from the problem.",
+        "Focus on interests, not positions.",
+        "Invent options for mutual gain.",
+        "Insist on using objective criteria."
+      ],
+      "contentReflection": "Which of the four principles do you find most challenging to apply in high-pressure situations, and why?",
+      "externalResources": [
+        {
+          "type": "Book",
+          "title": "Getting to Yes",
+          "author": "Roger Fisher & William Ury",
+          "url": "https://www.pon.harvard.edu/shop/getting-to-yes/"
+        }
+      ],
+      "appIntegration": {
+        "feature": "Principles Quiz",
+        "description": "Test user understanding of the four principles through scenario-based questions.",
+        "codeExample": "quizEngine.load({id: 'principled-negotiation-quiz'}); // Returns a quiz object with questions."
+      },
+      "emotionalTags": [
+        "relationship-management",
+        "conflict-resolution",
+        "fairness"
+      ],
+      "glossary_tags": [
+        "interest_based_negotiation",
+        "objective_criteria",
+        "integrative_negotiation"
+      ],
+      "persona_fit": [
+        "manager",
+        "hr_professional",
+        "diplomat",
+        "startup_founder"
+      ],
+      "phases": [
+        "preparation",
+        "execution",
+        "post_negotiation_analysis"
+      ],
+      "relations": [
+        {
+          "type": "mitigates",
+          "target_id": "PSYCH-001"
+        }
+      ],
+      "source": {
+        "deepseek": true,
+        "sofi5": false
+      },
+      "case_studies": [
+        {
+          "title": "The Landlord-Tenant Dispute",
+          "summary": "A tenant wants a pet but the lease forbids it. Instead of arguing positions ('yes pet' vs 'no pet'), they focus on interests (tenant's companionship vs landlord's fear of property damage) and agree on a 'pet deposit' and specific cleaning clauses (objective criteria)."
+        }
+      ]
+    },
+    {
+      "id": "PSYCH-001",
+      "title": "Cognitive Biases in Negotiation",
+      "category": "Psychological Tactics",
+      "tags": [
+        "biases",
+        "decision_errors",
+        "framing",
+        "fixed-pie_bias"
+      ],
+      "difficulty": 3,
+      "difficultyLabel": "Advanced",
+      "summary": "Identify and counteract systematic judgment errors that can sabotage your negotiations, from the 'fixed-pie' bias to anchoring effects.",
+      "mitigation_strategies": [
+        "Engage 'System 2' (deliberate) thinking.",
+        "Appoint a devil's advocate.",
+        "Actively seek disconfirming information."
+      ],
+      "key_quotes": [
+        {
+          "quote": "Negotiators often see themselves as more fair, kind, and cooperative than their counterparts.",
+          "source": "Negotiation Genius, p.90"
+        },
+        {
+          "quote": "Our intuition, while powerful, is fundamentally flawed in predictable ways.",
+          "source": "Negotiation Genius, p.88"
+        }
+      ],
+      "appIntegration": {
+        "feature": "Bias Diagnostic Tool",
+        "description": "Helps users identify their potential biases before a negotiation."
+      },
+      "emotionalTags": [
+        "self-awareness",
+        "overconfidence"
+      ],
+      "glossary_tags": [
+        "cognitive_bias",
+        "fixed_pie_bias",
+        "framing",
+        "anchoring",
+        "bounded_ethicality"
+      ],
+      "persona_fit": [
+        "experienced_negotiator",
+        "manager",
+        "investor"
+      ],
+      "phases": [
+        "preparation",
+        "post_negotiation_analysis"
+      ],
+      "relations": [
+        {
+          "type": "is_mitigated_by",
+          "target_id": "FRAMEWORK-001"
+        },
+        {
+          "type": "is_assessed_by",
+          "target_id": "LEARN-001"
+        }
+      ],
+      "source": {
+        "deepseek": false,
+        "sofi5": true
+      },
+      "case_studies": [
+        {
+          "title": "2004 NHL Lockout",
+          "summary": "A classic example where a fixed-pie bias led to over $1 billion in losses due to reactive devaluation and a failure to find integrative solutions."
+        }
+      ]
+    },
+    {
+      "id": "PSYCH-002",
+      "title": "Advanced Influence & Persuasion Strategies",
+      "category": "Psychological Tactics",
+      "tags": [
+        "persuasion",
+        "framing",
+        "social_proof",
+        "loss_aversion"
+      ],
+      "difficulty": 2,
+      "difficultyLabel": "Intermediate",
+      "summary": "Deploy a toolkit of proven persuasion techniques, including loss aversion framing, sequential requests, and the power of social proof to ethically guide the negotiation.",
+      "tactics": [
+        {
+          "name": "Door-in-the-Face",
+          "description": "Start with an extreme request likely to be rejected, then make a more reasonable request.",
+          "application": "Salary negotiation: Ask for 20% raise, then retreat to 10% + vacation."
+        },
+        {
+          "name": "Loss Aversion Framing",
+          "description": "Frame proposals in terms of what the other party stands to lose.",
+          "application": "Car sales: 'You risk losing $3,500 in repair costs without the warranty.'"
+        }
+      ],
+      "key_quotes": [
+        {
+          "quote": "People are typically more motivated to avoid losses than to accrue equivalent gains.",
+          "source": "Negotiation Genius, p.94"
+        }
+      ],
+      "appIntegration": {
+        "feature": "Influence Simulator",
+        "description": "A chat-based simulator to practice influence tactics and receive feedback."
+      },
+      "emotionalTags": [
+        "persuasiveness",
+        "strategic-communication"
+      ],
+      "glossary_tags": [
+        "framing",
+        "loss_aversion",
+        "social_proof",
+        "power_dynamics",
+        "anchoring"
+      ],
+      "persona_fit": [
+        "sales_person",
+        "job_seeker",
+        "fundraiser"
+      ],
+      "phases": [
+        "execution"
+      ],
+      "relations": [
+        {
+          "type": "is_assessed_by",
+          "target_id": "LEARN-001"
+        },
+        {
+          "type": "relates_to",
+          "target_id": "META-PWR-001"
+        }
+      ],
+      "source": {
+        "deepseek": false,
+        "sofi5": true
+      },
+      "case_studies": []
+    },
+    {
+      "id": "STRAT-001",
+      "title": "Advanced Value Creation Techniques",
+      "category": "Strategy & Frameworks",
+      "tags": [
+        "logrolling",
+        "contingency_contracts",
+        "multi-issue_negotiation"
+      ],
+      "difficulty": 2,
+      "difficultyLabel": "Intermediate",
+      "summary": "Move beyond simple compromises by using logrolling, contingency contracts, and issue-bundling to expand the 'pie' for all parties.",
+      "key_quotes": [
+        {
+          "quote": "The more issues that are on the table, the more likely it is that each party can obtain what it values most.",
+          "source": "Negotiation Genius, p.83"
+        },
+        {
+          "quote": "Negotiation geniuses continue to seek Pareto improvements even after the ink is dry.",
+          "source": "Negotiation Genius, p.83"
+        }
+      ],
+      "appIntegration": {
+        "feature": "Value Creation Calculator",
+        "description": "Helps users score multiple issues to find potential trade-offs."
+      },
+      "glossary_tags": [
+        "logrolling",
+        "contingency_contract",
+        "pareto_improvement",
+        "value_creation",
+        "integrative_negotiation"
+      ],
+      "persona_fit": [
+        "legal_counsel",
+        "procurement_manager",
+        "startup_founder"
+      ],
+      "phases": [
+        "preparation",
+        "execution"
+      ],
+      "relations": [
+        {
+          "type": "relates_to",
+          "target_id": "META-VAL-001"
+        }
+      ],
+      "source": {
+        "deepseek": false,
+        "sofi5": true
+      },
+      "case_studies": [
+        {
+          "title": "Moms.com Licensing Deal",
+          "summary": "A case of value creation where parties traded airing rights against licensing fees."
+        },
+        {
+          "title": "Holbrooke's UN Negotiation",
+          "summary": "Resolved a $1B arrears problem by decoupling the size of payments from the timing."
+        }
+      ]
+    },
+    {
+      "id": "STRAT-002",
+      "title": "Negotiating from a Position of Weakness",
+      "category": "Strategy & Frameworks",
+      "tags": [
+        "power_imbalance",
+        "weak_batna",
+        "coalition_building"
+      ],
+      "difficulty": 3,
+      "difficultyLabel": "Advanced",
+      "summary": "Turn disadvantage into an asset. Learn effective strategies for negotiating when you lack power or strong alternatives by leveraging information and building coalitions.",
+      "strategies": [
+        "Don't reveal your BATNA is weak.",
+        "Analyze and leverage their weaknesses.",
+        "Identify your Distinct Value Proposition.",
+        "Build coalitions with other weak parties."
+      ],
+      "key_quotes": [
+        {
+          "quote": "Don't reveal that your BATNA is weak, but also don't lie about it.",
+          "source": "Negotiation Genius, p.99"
+        },
+        {
+          "quote": "Extreme weakness can sometimes become a source of strength.",
+          "source": "Negotiation Genius, p.100"
+        }
+      ],
+      "glossary_tags": [
+        "batna",
+        "power_dynamics",
+        "coalition"
+      ],
+      "persona_fit": [
+        "job_seeker",
+        "small_business_owner",
+        "anxious_negotiator"
+      ],
+      "phases": [
+        "preparation"
+      ],
+      "relations": [
+        {
+          "type": "builds_on",
+          "target_id": "FUND-001"
+        },
+        {
+          "type": "relates_to",
+          "target_id": "META-PWR-001"
+        }
+      ],
+      "source": {
+        "deepseek": false,
+        "sofi5": true
+      },
+      "case_studies": [
+        {
+          "title": "The Single-Offer Job Negotiation",
+          "summary": "A practical example of securing a job offer first and then negotiating non-salary items like start date or a 6-month performance review, leveraging the company's investment in the hiring process."
+        }
+      ]
+    },
+    {
+      "id": "ETHICS-001",
+      "title": "Ethical Frameworks in Negotiation",
+      "category": "Core Concepts",
+      "tags": [
+        "ethics",
+        "trust",
+        "transparency",
+        "bounded_ethicality"
+      ],
+      "difficulty": 2,
+      "difficultyLabel": "Intermediate",
+      "summary": "Navigate ethical dilemmas with a clear framework. This topic covers bounded ethicality, conflicts of interest, and how to build trust without being exploited.",
+      "contentExample": {
+        "scenario": "A counterpart seems to be misrepresenting their alternatives. What do you do?",
+        "response": "Instead of accusing them, ask probing questions based on objective criteria. 'Can you help me understand how that offer is structured, as the market rate is typically X?'"
+      },
+      "concepts": [
+        "Bounded Ethicality",
+        "Parasitic Value Creation",
+        "Overclaiming Credit"
+      ],
+      "contentReflection": "What is your personal 'red line' in a negotiation that you would not cross, even if it meant losing the deal?",
+      "externalResources": [
+        {
+          "type": "Article",
+          "title": "Ethical Negotiation: Strategies for Building Trust",
+          "source": "Harvard PON",
+          "url": "https://www.pon.harvard.edu/daily/negotiation-skills-daily/ethical-negotiation-strategies-for-building-trust/"
+        }
+      ],
+      "appIntegration": {
+        "feature": "Ethical Dilemma Simulator",
+        "description": "Presents users with difficult ethical scenarios and asks them to choose a response.",
+        "codeExample": "ethicsTrainer.presentDilemma('deception-response')"
+      },
+      "emotionalTags": [
+        "ethical-dilemma",
+        "integrity-pressure",
+        "trust-building"
+      ],
+      "glossary_tags": [
+        "ethics",
+        "trust",
+        "transparency",
+        "bounded_ethicality",
+        "objective_criteria"
+      ],
+      "persona_fit": [
+        "manager",
+        "legal_counsel",
+        "hr_professional"
+      ],
+      "phases": [
+        "preparation",
+        "execution",
+        "post_negotiation_analysis"
+      ],
+      "relations": [],
+      "source": {
+        "deepseek": true,
+        "sofi5": true
+      },
+      "case_studies": []
+    },
+    {
+      "id": "CONFLICT-001",
+      "title": "Crisis Negotiation & Deadlock Resolution",
+      "category": "Conflict Resolution",
+      "tags": [
+        "crisis_management",
+        "de-escalation",
+        "face-saving",
+        "deadlock",
+        "impasse"
+      ],
+      "difficulty": 3,
+      "difficultyLabel": "Advanced",
+      "summary": "Acquire advanced tactics for high-stakes situations. Learn to manage irrationality, de-escalate conflict, break deadlocks, and allow counterparts to save face.",
+      "de_escalation_techniques": [
+        "Distinguish uninformed vs. irrational behavior.",
+        "Respond to anger with calm acknowledgment.",
+        "Allow a graceful way to back down (face-saving).",
+        "Rebuild trust through small, verifiable steps."
+      ],
+      "key_quotes": [
+        {
+          "quote": "Avoiding the humiliation of your counterpart is a critical principle in high-stakes negotiations.",
+          "source": "Negotiation Genius, p.101"
+        },
+        {
+          "quote": "The greatest danger in crises is not irrationality, but miscalculation.",
+          "source": "Negotiation Genius, p.101"
+        }
+      ],
+      "appIntegration": {
+        "feature": "Crisis Simulator",
+        "description": "A high-pressure simulation where users must de-escalate an angry counterpart in real-time."
+      },
+      "emotionalTags": [
+        "frustration",
+        "anger-management",
+        "high-stakes",
+        "creative-pressure"
+      ],
+      "glossary_tags": [
+        "de_escalation",
+        "face_saving",
+        "deadlock",
+        "power_dynamics"
+      ],
+      "persona_fit": [
+        "startup_founder",
+        "manager",
+        "diplomat"
+      ],
+      "phases": [
+        "execution"
+      ],
+      "relations": [
+        {
+          "type": "relates_to",
+          "target_id": "META-PWR-001"
+        }
+      ],
+      "source": {
+        "deepseek": true,
+        "sofi5": true
+      },
+      "case_studies": [
+        {
+          "title": "Cuban Missile Crisis",
+          "summary": "A masterclass in crisis management, using private channels and face-saving solutions to avert nuclear war."
+        }
+      ]
+    },
+    {
+      "id": "TECH-001",
+      "title": "Technology & AI in Negotiation",
+      "category": "Technology",
+      "tags": [
+        "ai",
+        "knowledge_representation",
+        "predictive_analytics",
+        "explainable_ai"
+      ],
+      "difficulty": 3,
+      "difficultyLabel": "Advanced",
+      "summary": "Explore how modern technology, particularly Explainable AI (XAI), is being used to support negotiators through data analysis and predictive modeling.",
+      "contentExample": {
+        "userQuery": "Why does the AI recommend a 15% concession?",
+        "aiExplanation": [
+          "Language analysis indicates high time pressure.",
+          "Historical data shows 87% probability of closing at 12-18% concession."
+        ]
+      },
+      "book_insights": [
+        "Hybrid Knowledge Architecture design (AI-ARCH-001)",
+        "Using predictive models for BATNA probability estimation."
+      ],
+      "key_quotes": [
+        {
+          "quote": "For a negotiation advisory system to be trusted, its recommendations must be explainable. 'Black box' AI is insufficient.",
+          "source": "Original Research"
+        }
+      ],
+      "appIntegration": {
+        "feature": "AI Negotiation Assistant",
+        "description": "A real-time assistant that provides data-driven suggestions.",
+        "codeExample": "aiAssistant.getRecommendation({ context: '...' }); // Returns: { recommendation: 'Offer 12% concession', confidence: 0.87, reason: 'Counterpart language shows time pressure.' }"
+      },
+      "emotionalTags": [
+        "trust-in-ai",
+        "transparency-concerns",
+        "data-driven-decision",
+        "empowerment_through_data",
+        "fear_of_the_unknown"
+      ],
+      "glossary_tags": [
+        "explainable_ai",
+        "predictive_analytics",
+        "batna"
+      ],
+      "persona_fit": [
+        "procurement_manager",
+        "investor"
+      ],
+      "phases": [
+        "preparation",
+        "execution"
+      ],
+      "relations": [
+        {
+          "type": "relates_to",
+          "target_id": "META-VAL-001"
+        }
+      ],
+      "source": {
+        "deepseek": true,
+        "sofi5": true
+      },
+      "case_studies": []
+    },
+    {
+      "id": "LEARN-001",
+      "title": "Negotiation Learning & Assessment",
+      "category": "Learning Tools",
+      "tags": [
+        "assessment",
+        "knowledge_check",
+        "deliberate_practice"
+      ],
+      "difficulty": 0,
+      "difficultyLabel": "All Levels",
+      "summary": "Move from theory to practice. Assess your knowledge and apply concepts through case analysis and tactic application, based on the principle that expertise requires deliberate practice.",
+      "question_types": [
+        {
+          "format": "Case Analysis",
+          "example": "Based on the NHL Lockout case, identify the key biases and suggest two strategies to break the deadlock."
+        },
+        {
+          "format": "Tactic Application",
+          "example": "When would you use 'Door-in-the-Face' vs. 'Foot-in-the-Door'? Explain your reasoning."
+        }
+      ],
+      "key_quotes": [
+        {
+          "quote": "Experience alone does not create expertise. Acknowledging mistakes and engaging in deliberate practice enables growth.",
+          "source": "Negotiation Genius, p.180"
+        }
+      ],
+      "appIntegration": {
+        "feature": "Adaptive Quiz Engine",
+        "description": "An engine that adapts question difficulty and topic based on user performance."
+      },
+      "emotionalTags": [
+        "growth-mindset",
+        "self-assessment"
+      ],
+      "glossary_tags": [
+        "deliberate_practice",
+        "cognitive_bias"
+      ],
+      "persona_fit": [
+        "job_seeker",
+        "manager",
+        "sales_person",
+        "anxious_negotiator"
+      ],
+      "phases": [
+        "post_negotiation_analysis"
+      ],
+      "relations": [
+        {
+          "type": "assesses",
+          "target_id": "PSYCH-001"
+        },
+        {
+          "type": "assesses",
+          "target_id": "PSYCH-002"
+        }
+      ],
+      "source": {
+        "deepseek": false,
+        "sofi5": true
+      },
+      "case_studies": []
+    },
+    {
+      "id": "CULTURE-001",
+      "title": "Cross-Cultural Negotiation",
+      "category": "Strategy & Frameworks",
+      "tags": [
+        "cultural_intelligence",
+        "hofstede",
+        "direct_vs_indirect_communication"
+      ],
+      "difficulty": 3,
+      "difficultyLabel": "Advanced",
+      "summary": "Develop your cultural intelligence (CQ) by learning to adapt your negotiation approach across different cultural dimensions like communication styles, hierarchy, and time perception.",
+      "contentExample": {
+        "scenario": "A U.S. manager negotiating with a Japanese supplier.",
+        "adaptations": [
+          "The U.S. manager should avoid overly direct refusals.",
+          "The Japanese supplier may require more time for internal consensus-building (Nemawashi)."
+        ]
+      },
+      "contentReflection": "Reflect on a time you experienced a cultural misunderstanding. How could a better understanding of cultural dimensions have prevented it?",
+      "externalResources": [
+        {
+          "type": "Article",
+          "title": "Cultural Dimensions in Negotiation",
+          "source": "Harvard PON",
+          "url": "https://www.pon.harvard.edu/daily/international-negotiation-daily/cultural-dimensions-in-negotiation/"
+        }
+      ],
+      "appIntegration": {
+        "feature": "Cultural Adaptation Tool",
+        "description": "Provides quick tips based on the cultural profiles of the parties.",
+        "codeExample": "cultureAdvisor.getTips('USA', 'Japan'); // Returns: { tip: 'Avoid direct \"no\". Use phrases like \"That will be very difficult.\"', dimension: 'Direct vs. Indirect Communication' }"
+      },
+      "emotionalTags": [
+        "cultural-anxiety",
+        "adaptability",
+        "empathy",
+        "curiosity",
+        "fear_of_offense"
+      ],
+      "glossary_tags": [
+        "cultural_intelligence",
+        "high_context_culture",
+        "low_context_culture",
+        "face_saving"
+      ],
+      "persona_fit": [
+        "diplomat",
+        "procurement_manager",
+        "global_manager"
+      ],
+      "phases": [
+        "preparation"
+      ],
+      "relations": [],
+      "source": {
+        "deepseek": true,
+        "sofi5": false
+      },
+      "case_studies": []
+    },
+    {
+      "id": "META-VAL-001",
+      "title": "Meta-Topic: The Art of Value Creation",
+      "category": "Meta",
+      "tags": [
+        "value_creation",
+        "integrative_negotiation",
+        "mutual_gain"
+      ],
+      "difficulty": 0,
+      "difficultyLabel": "All Levels",
+      "summary": "This hub connects all concepts related to 'baking a bigger pie'. Value creation is the process of moving beyond a win-lose mindset to find solutions that benefit all parties, often by introducing new issues or trading on different priorities.",
+      "contentReflection": "What is one question you could ask in your next negotiation to start exploring possibilities for value creation?",
+      "glossary_tags": [
+        "value_creation",
+        "integrative_negotiation",
+        "logrolling",
+        "contingency_contract",
+        "pareto_improvement"
+      ],
+      "persona_fit": [
+        "experienced_negotiator",
+        "startup_founder",
+        "manager"
+      ],
+      "phases": [
+        "preparation",
+        "execution"
+      ],
+      "relations": [
+        {
+          "type": "relates_to",
+          "target_id": "STRAT-001"
+        },
+        {
+          "type": "relates_to",
+          "target_id": "MODEL-001"
+        },
+        {
+          "type": "relates_to",
+          "target_id": "FRAMEWORK-001"
+        },
+        {
+          "type": "relates_to",
+          "target_id": "TECH-001"
+        }
+      ],
+      "source": {
+        "deepseek": true,
+        "sofi5": true
+      },
+      "case_studies": [
+        {
+          "title": "The Joint Venture",
+          "summary": "Two companies wanting to partner discover their core interests differ: one wants market access, the other wants technology. By creating a new entity that leverages both strengths, they create far more value than a simple licensing deal would have."
+        }
+      ]
+    },
+    {
+      "id": "META-PWR-001",
+      "title": "Meta-Topic: Understanding Power Dynamics",
+      "category": "Meta",
+      "tags": [
+        "power",
+        "influence",
+        "leverage",
+        "batna"
+      ],
+      "difficulty": 0,
+      "difficultyLabel": "All Levels",
+      "summary": "This hub connects all concepts related to managing power in negotiation. Power isn't just about authority; it's about leverage, alternatives (BATNA), information, and psychological influence. Understanding these dynamics is key to both claiming and creating value effectively.",
+      "contentReflection": "Besides having a strong BATNA, what is another source of power you can bring to a negotiation?",
+      "glossary_tags": [
+        "power_dynamics",
+        "batna",
+        "anchoring",
+        "social_proof",
+        "coalition",
+        "loss_aversion"
+      ],
+      "persona_fit": [
+        "experienced_negotiator",
+        "manager",
+        "anxious_negotiator"
+      ],
+      "phases": [
+        "preparation",
+        "execution"
+      ],
+      "relations": [
+        {
+          "type": "relates_to",
+          "target_id": "STRAT-002"
+        },
+        {
+          "type": "relates_to",
+          "target_id": "PSYCH-002"
+        },
+        {
+          "type": "relates_to",
+          "target_id": "FUND-001"
+        },
+        {
+          "type": "relates_to",
+          "target_id": "CONFLICT-001"
+        }
+      ],
+      "source": {
+        "deepseek": true,
+        "sofi5": true
+      },
+      "case_studies": []
+    }
+  ],
+  "_metadata": {
+    "version": "1.0.1"
+  }
+}

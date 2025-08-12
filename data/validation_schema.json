@@ -1,0 +1,17 @@
+{
+  "description": "Validation schema for user input",
+  "questions": [
+    {
+      "id": "salary_expectation",
+      "type": "number",
+      "required": true,
+      "label": "Expected salary"
+    },
+    {
+      "id": "region",
+      "type": "string",
+      "required": true,
+      "options": ["US", "UK", "DE", "IL"]
+    }
+  ]
+}

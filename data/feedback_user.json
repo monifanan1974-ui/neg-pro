@@ -1,0 +1,31 @@
+{
+  "entries": [
+    {
+      "ts": 1754796553,
+      "scenario_id": "lowball",
+      "outcome": "partial",
+      "usefulness": 7,
+      "notes": "Helped me keep it professional.",
+      "persona": "Friend",
+      "country": "UK"
+    },
+    {
+      "ts": 1754796797,
+      "scenario_id": "lowball",
+      "outcome": "partial",
+      "usefulness": 7,
+      "notes": "Helped me keep it professional.",
+      "persona": "Friend",
+      "country": "UK"
+    },
+    {
+      "ts": 1754797279,
+      "scenario_id": "lowball",
+      "outcome": "partial",
+      "usefulness": 7,
+      "notes": "Helped me keep it professional.",
+      "persona": "Friend",
+      "country": "UK"
+    }
+  ]
+}

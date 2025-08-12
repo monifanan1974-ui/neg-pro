@@ -1,0 +1,141 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Your Negotiation Battle Card</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<style>
+  :root{
+    --bg:#0b1220; --card:#121a2b; --ink:#f0f4ff; --muted:#9fb3d4; --accent:#58a6ff; --good:#22c55e; --warn:#f59e0b;
+    --chip:#0f172a; --chip-border:#1e293b;
+  }
+  html,body{margin:0;padding:0;background:var(--bg);color:var(--ink);font-family:Inter,system-ui,Segoe UI,Roboto,Arial,sans-serif}
+  .wrap{max-width:1100px;margin:24px auto;padding:0 16px}
+  header{display:flex;align-items:center;justify-content:space-between;margin-bottom:16px}
+  header h1{font-size:24px;margin:0}
+  .badge{font-size:12px;border:1px solid var(--accent);color:var(--accent);padding:4px 8px;border-radius:999px}
+  .grid{display:grid;grid-template-columns:repeat(12,1fr);gap:16px}
+  .card{background:var(--card);border:1px solid #1f2a44;border-radius:16px;padding:16px}
+  .span6{grid-column:span 6}
+  .span4{grid-column:span 4}
+  .span8{grid-column:span 8}
+  .span12{grid-column:span 12}
+  .kpis{display:flex;gap:12px;flex-wrap:wrap}
+  .kpi{background:#0b1730;border:1px solid #1f2a44;border-radius:12px;padding:10px 12px}
+  .kpi small{display:block;color:var(--muted)}
+  .chips{display:flex;gap:8px;flex-wrap:wrap}
+  .chip{border:1px solid var(--chip-border);background:var(--chip);color:var(--muted);padding:6px 10px;border-radius:999px;font-size:12px}
+  h2{font-size:18px;margin:0 0 10px}
+  ul{margin:0;padding-left:18px}
+  .good{color:var(--good)}
+  .warn{color:var(--warn)}
+  footer{color:var(--muted);font-size:12px;margin:18px 0 0}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header>
+    <h1>Your Negotiation Toolkit</h1>
+    <span class="badge">Auto-generated</span>
+  </header>
+
+  <div class="grid">
+    <section class="card span8">
+      <h2>Understanding Your Counterpart</h2>
+      <div id="profile"></div>
+      <div class="kpis" id="kpis"></div>
+    </section>
+
+    <section class="card span4">
+      <h2>Top Priorities</h2>
+      <div class="chips" id="priorities"></div>
+      <h2 style="margin-top:14px">Readiness</h2>
+      <div id="readiness"></div>
+    </section>
+
+    <section class="card span6">
+      <h2>Key Concepts</h2>
+      <ul id="concepts"></ul>
+    </section>
+
+    <section class="card span6">
+      <h2>Suggested Tactics</h2>
+      <ul id="tactics"></ul>
+    </section>
+
+    <section class="card span12">
+      <h2>Executive Summary</h2>
+      <div id="summary"></div>
+    </section>
+  </div>
+
+  <footer>© NegotiationPro</footer>
+</div>
+
+<script>
+/* The backend injects: const reportData = {...}; */
+const reportData = {
+  "profile": {"persona":"The Collaborator","country":"UK","context_level":"low","power":"peer","user_style":"Analytical"},
+  "kpis": [
+    {"label":"Decision window","value":"5 days","sub":"deadline shown below"},
+    {"label":"Currency","value":"GBP (£)","sub":"keep consistent"},
+    {"label":"Persona","value":"The Collaborator","sub":"aligned"}
+  ],
+  "priorities": ["Salary","Title","Flexibility"],
+  "readiness": 70,
+  "evidence": [{"concept":"Prospect Theory"},{"concept":"Logrolling"}],
+  "trades": [{"text":"Trade scope for salary move"}],
+  "sources": [{"title":"HBR","url":"https://hbr.org"}],
+  "highlights": ["Anchor high within reason","Invite alignment on a shared goal"],
+  "summary": "A concise, persuasive overview of your path to agreement."
+};
+
+function el(tag, props={}, ...children){
+  const e = document.createElement(tag);
+  Object.assign(e, props);
+  children.flat().forEach(c => {
+    if (c == null) return;
+    if (typeof c === 'string') e.appendChild(document.createTextNode(c));
+    else e.appendChild(c);
+  });
+  return e;
+}
+
+(function render(){
+  const p = reportData.profile || {};
+  const prof = document.getElementById('profile');
+  prof.appendChild(el('div', {}, 
+    el('div', {}, 'Persona: ', el('strong', {}, p.persona || '—')),
+    el('div', {}, 'Influence: ', el('strong', {}, (p.power || 'peer'))),
+    el('div', {}, 'Culture: ', el('strong', {}, (p.country || '—'), ' / ', (p.context_level || 'low'))),
+    el('div', {}, 'Decision Style: ', el('strong', {}, p.user_style || '—'))
+  ));
+
+  const kEl = document.getElementById('kpis');
+  (reportData.kpis || []).forEach(k => {
+    kEl.appendChild(el('div', {className:'kpi'}, 
+      el('strong', {}, k.value || '—'),
+      el('small', {}, k.label || ''),
+      el('small', {}, k.sub || '')
+    ));
+  });
+
+  const pr = document.getElementById('priorities');
+  (reportData.priorities || []).forEach(x => pr.appendChild(el('span', {className:'chip'}, x)));
+
+  const r = document.getElementById('readiness');
+  const ready = Number(reportData.readiness || 0);
+  r.appendChild(el('div', {}, el('strong', {className: ready>=70?'good':(ready<50?'warn':'')}, String(ready)+' / 100')));
+
+  const concepts = document.getElementById('concepts');
+  (reportData.evidence || []).forEach(it => concepts.appendChild(el('li', {}, it.concept || it.title || JSON.stringify(it))));
+
+  const tactics = document.getElementById('tactics');
+  (reportData.trades || []).forEach(t => tactics.appendChild(el('li', {}, t.text || JSON.stringify(t))));
+
+  const sum = document.getElementById('summary');
+  sum.textContent = reportData.summary || '';
+})();
+</script>
+</body>
+</html>

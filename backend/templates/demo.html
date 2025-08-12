@@ -1,0 +1,105 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<title>NegotiationPro – Questionnaire Demo</title>
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<style>
+  body{margin:0;font-family:Inter,system-ui,Segoe UI,Roboto,Arial,sans-serif;background:#0b1220;color:#f0f4ff}
+  .wrap{max-width:1000px;margin:24px auto;padding:0 16px}
+  h1{font-size:22px;margin:0 0 8px}
+  p{color:#9fb3d4;margin:0 0 16px}
+  .row{display:flex;gap:12px;align-items:center;margin:12px 0}
+  button{background:#58a6ff;border:0;color:#0b1220;padding:10px 14px;border-radius:10px;font-weight:600;cursor:pointer}
+  button:disabled{opacity:.6;cursor:not-allowed}
+  textarea,pre{width:100%;background:#121a2b;color:#f0f4ff;border:1px solid #1f2a44;border-radius:10px;padding:10px}
+  iframe{width:100%;height:520px;border:1px solid #1f2a44;border-radius:14px;background:#121a2b}
+  .grid{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+  .card{background:#121a2b;border:1px solid #1f2a44;border-radius:14px;padding:14px}
+  small{color:#9fb3d4}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <h1>Questionnaire → Report (Smoke Test)</h1>
+  <p>לחץ על הכפתור. אני שולח תשובות דמו ל־/questionnaire/report, ומציג את ה־HTML שחוזר.</p>
+
+  <div class="grid">
+    <div class="card">
+      <div class="row">
+        <button id="run">Run Test</button>
+        <small id="status"></small>
+      </div>
+      <textarea id="payload" rows="14"></textarea>
+      <div class="row"><small>אפשר לערוך את ה־JSON לפני הרצה.</small></div>
+    </div>
+
+    <div class="card">
+      <iframe id="viewer" title="Report Preview"></iframe>
+    </div>
+  </div>
+
+  <div class="card" style="margin-top:16px">
+    <h3 style="margin:0 0 8px">Raw Response (debug)</h3>
+    <pre id="debug" style="height:180px;overflow:auto"></pre>
+  </div>
+</div>
+
+<script>
+const sample = {
+  "questionnaire": {
+    "q_persona_desc": "The Collaborator",
+    "q_power": "peer",
+    "q_user_style": "Analytical",
+    "q_salary_target": "78000",
+    "q_benefits": ["remote_work","learning_budget"],
+    "q_country": "UK",
+    "q_risk": 3,
+    "q_prior_offers": "none",
+    "q_deadline": "firm",
+    "q_market_sources": ["Glassdoor","Levels.fyi"],
+    "q_failed": ["budget_limitations"]
+  }
+};
+
+const $payload = document.getElementById('payload');
+const $run = document.getElementById('run');
+const $status = document.getElementById('status');
+const $viewer = document.getElementById('viewer');
+const $debug = document.getElementById('debug');
+
+$payload.value = JSON.stringify(sample, null, 2);
+
+$run.onclick = async () => {
+  try {
+    $run.disabled = true;
+    $status.textContent = 'Working...';
+    const body = JSON.parse($payload.value);
+
+    const res = await fetch('/questionnaire/report', {
+      method: 'POST',
+      headers: { 'Content-Type':'application/json' },
+      body: JSON.stringify(body)
+    });
+
+    const data = await res.json();
+    $debug.textContent = JSON.stringify(data, null, 2);
+
+    if (data && data.html) {
+      const blob = new Blob([String(data.html)], {type:'text/html'});
+      const url = URL.createObjectURL(blob);
+      $viewer.src = url;
+      $status.textContent = 'Done ✓';
+    } else {
+      $status.textContent = 'No HTML returned';
+    }
+  } catch (e) {
+    console.error(e);
+    $status.textContent = 'Error – see console';
+  } finally {
+    $run.disabled = false;
+  }
+};
+</script>
+</body>
+</html>
