@@ -1,117 +1,115 @@
-// frontend/report_embed.js
-// Robust embed: finds or creates form/button/report-root so demo always works.
+// Simple helper: read/write
+const $ = (id) => document.getElementById(id);
+const LS_KEY = "negpro_answers_v1";
 
-(function () {
-  function onReady(fn){ if(document.readyState!=="loading") fn(); else document.addEventListener("DOMContentLoaded", fn); }
+function readForm() {
+  return {
+    answers: {
+      role: $("role").value.trim(),
+      target_title: $("role").value.trim(),
+      seniority: $("seniority").value,
+      country: $("country").value.trim() || "UK",
+      industry: $("industry").value.trim(),
+      communication_style: $("communication_style").value.trim(),
+      counterpart_persona: $("counterpart_persona").value.trim(),
+      range_low: $("range_low").value.trim(),
+      range_high: $("range_high").value.trim(),
+      target_salary: $("target_salary").value.trim(),
+      market_sources: $("market_sources").value.split(",").map(s => s.trim()).filter(Boolean)
+    },
+    style: "html"
+  };
+}
 
-  onReady(function(){
-    // 1) Find a form (prefer #personaForm)
-    let form = document.getElementById("personaForm") || document.querySelector("form[data-role='persona']") || document.querySelector("main form, form");
-    // 2) Find or create report root
-    let reportRoot = document.getElementById("report-root");
-    if (!reportRoot) {
-      reportRoot = document.createElement("div");
-      reportRoot.id = "report-root";
-      (form && form.parentNode ? form.parentNode : document.body).appendChild(reportRoot);
-    }
-    // 3) Find or create Build button
-    let buildBtn = document.getElementById("buildBtn");
-    if (!buildBtn) {
-      buildBtn = document.createElement("button");
-      buildBtn.type = "button";
-      buildBtn.id = "buildBtn";
-      buildBtn.textContent = "Build Presentation Report";
-      buildBtn.style.cssText = "margin-top:12px;padding:.6rem 1rem;border-radius:10px;background:#0f172a;color:#fff;";
-      if (form) form.appendChild(buildBtn); else document.body.insertBefore(buildBtn, reportRoot);
-    }
+function writePreview(payload) {
+  $("preview").textContent = JSON.stringify(payload, null, 2);
+  try { localStorage.setItem(LS_KEY, JSON.stringify(payload)); } catch {}
+}
 
-    // If even a form is missing, bail gracefully
-    if (!form) {
-      console.warn("[report_embed] No form found. The script created a 'Build' button but has no fields to read.");
-    }
+function loadFromStorage() {
+  try {
+    const raw = localStorage.getItem(LS_KEY);
+    if (!raw) return;
+    const saved = JSON.parse(raw) || {};
+    const a = saved.answers || {};
+    $("role").value = a.role || a.target_title || "";
+    $("seniority").value = a.seniority || "mid";
+    $("country").value = a.country || "UK";
+    $("industry").value = a.industry || "";
+    $("communication_style").value = a.communication_style || "";
+    $("counterpart_persona").value = a.counterpart_persona || "";
+    $("range_low").value = a.range_low || "";
+    $("range_high").value = a.range_high || "";
+    $("target_salary").value = a.target_salary || "";
+    $("market_sources").value = (a.market_sources || []).join(", ");
+  } catch {}
+}
 
-    function val(name) {
-      if (!form) return "";
-      const el = form.elements[name];
-      return el ? String(el.value || "").trim() : "";
-    }
+async function buildReport() {
+  const payload = readForm();
+  writePreview(payload);
 
-    function toList(csv) {
-      if (!csv) return [];
-      return csv.split(",").map(s => s.trim()).filter(Boolean);
-    }
+  $("status").textContent = "Building…";
+  $("status").className = "hint";
 
-    function collectPayload() {
-      const prioritiesCsv = val("priorities_ranked") || val("priorities");
-      const answers = {
-        industry: val("industry"),
-        target_title: val("target_title"),
-        role: val("target_title"),
-        seniority: val("seniority"),
-        country: val("country"),
-        communication_style: val("communication_style"),
-        counterpart_persona: val("counterpart_persona"),
-        impacts: toList(val("achievements")),
-        range_low: val("range_low") || val("salary_low") || "",
-        range_high: val("range_high") || val("salary_high") || "",
-        target_salary: val("target_salary") || val("anchor") || "",
-        priorities_ranked: toList(prioritiesCsv),
-        priorities: toList(prioritiesCsv),
-        desired_tone: val("desired_tone")
-      };
-      return { answers, style: "html" };
-    }
+  try {
+    // IMPORTANT: our backend expects POST /report with { answers:{...}, style:"html" }
+    const res = await fetch("/report", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(payload)
+    });
 
-    function showLoading() {
-      reportRoot.innerHTML = `
-        <div class="rounded-xl" style="border:1px solid #e5e7eb;background:#fff;padding:12px;box-shadow:0 6px 18px rgba(2,6,23,.06)">
-          <div style="font:14px/1.4 system-ui, -apple-system, Segoe UI, Roboto, Arial;">Building report… 1–3 seconds.</div>
-        </div>`;
+    if (!res.ok) {
+      const txt = await res.text();
+      $("status").innerHTML = `❌ <span class="err">Error ${res.status}</span>`;
+      console.error("Report error:", txt);
+      return;
     }
 
-    function injectIframe(html) {
-      reportRoot.innerHTML = "";
-      const iframe = document.createElement("iframe");
-      iframe.id = "report-frame";
-      iframe.title = "Presentation Report";
-      iframe.style.width = "100%";
-      iframe.style.border = "0";
-      iframe.style.minHeight = "1200px";
-      reportRoot.appendChild(iframe);
+    const data = await res.json();
+    const html = data && data.html ? data.html : "<h1>Empty report</h1>";
 
-      if ("srcdoc" in iframe) iframe.srcdoc = html;
-      else {
-        const doc = iframe.contentWindow.document;
-        doc.open(); doc.write(html); doc.close();
-      }
-      setTimeout(() => {
-        try {
-          const h = iframe.contentWindow.document.documentElement.scrollHeight;
-          if (h && h > 0) iframe.style.minHeight = Math.max(1000, h) + "px";
-        } catch(_) {}
-      }, 150);
-    }
+    // write into iframe
+    const iframe = $("report");
+    const doc = iframe.contentDocument || iframe.contentWindow.document;
+    doc.open();
+    doc.write(html);
+    doc.close();
 
-    async function buildReport() {
-      try {
-        showLoading();
-        const payload = collectPayload();
-        const res = await fetch("/report", {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify(payload)
-        });
-        if (!res.ok) throw new Error(`Server ${res.status}: ${await res.text()}`);
-        const data = await res.json();
-        if (!data || !data.html) throw new Error("Empty response from /report");
-        injectIframe(data.html);
-      } catch (err) {
-        console.error("[report_embed] build failed:", err);
-        alert("Failed to build report: " + (err && err.message ? err.message : "No engine endpoint responded."));
-        reportRoot.innerHTML = "";
-      }
-    }
+    $("status").innerHTML = `✅ <span class="ok">OK</span>`;
+  } catch (e) {
+    $("status").innerHTML = `❌ <span class="err">${e.message}</span>`;
+    console.error(e);
+  }
+}
 
-    buildBtn.addEventListener("click", buildReport);
+function bind() {
+  loadFromStorage();
+  writePreview(readForm());
+
+  // live preview
+  document.querySelectorAll("input,select,textarea").forEach(el => {
+    el.addEventListener("input", () => writePreview(readForm()));
+    el.addEventListener("change", () => writePreview(readForm()));
   });
-})();
+
+  $("btn-build").addEventListener("click", (e) => {
+    e.preventDefault();
+    buildReport();
+  });
+
+  $("btn-reset").addEventListener("click", (e) => {
+    e.preventDefault();
+    localStorage.removeItem(LS_KEY);
+    document.querySelectorAll("input").forEach(i => i.value = "");
+    $("seniority").value = "mid";
+    $("country").value = "UK";
+    $("market_sources").value = "Glassdoor, Levels.fyi";
+    writePreview(readForm());
+    $("report").src = "about:blank";
+    $("status").textContent = "";
+  });
+}
+
+window.addEventListener("DOMContentLoaded", bind);
