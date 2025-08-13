@@ -1,4 +1,4 @@
-# NegotiationPro - AI-Powered Negotiation Training Platform
+<img width="1278" height="535" alt="image" src="https://github.com/user-attachments/assets/42357e87-828a-4c8a-a8f5-0a81531ec941" /># NegotiationPro - AI-Powered Negotiation Training Platform
 
 ## 🎯 Overview
 Advanced AI-powered negotiation simulation engine for practicing complex scenarios, receiving real-time feedback, and improving negotiation skills through personalized training.
