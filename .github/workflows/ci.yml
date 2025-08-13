@@ -1,46 +1,66 @@
-name: CI - NegotiationPro
+name: build-and-check
 
 on:
   push:
-    branches: ["**"]
   pull_request:
-    branches: ["**"]
 
 jobs:
-  build-and-check:
+  ci:
     runs-on: ubuntu-latest
-
     steps:
-      - name: Checkout
-        uses: actions/checkout@v4
+      - uses: actions/checkout@v4
 
       - name: Setup Python
         uses: actions/setup-python@v5
         with:
           python-version: "3.11"
-          cache: "pip"
 
-      - name: Install dependencies (project or minimal)
-        run: |
-          python -m pip install -U pip
-          if [ -f requirements.txt ]; then
-            pip install -r requirements.txt
-          else
-            # Minimal deps so שהסקריפט ירוץ גם בלי requirements.txt
-            pip install "flask>=2.3" "flask-cors>=3.0" ruff
-          fi
+      - name: Cache pip
+        uses: actions/cache@v4
+        with:
+          path: ~/.cache/pip
+          key: ${{ runner.os }}-pip-${{ hashFiles('**/requirements*.txt') }}
 
-      - name: Lint (ruff) — non-blocking
+      - name: Install deps
         run: |
-          ruff --version || pip install ruff
-          # טיפ: תוריד את --exit-zero כדי להפוך ל"חובה"
-          ruff check . --exit-zero --output-format=github
+          python -m pip install --upgrade pip
+          pip install -r requirements.txt
+          pip install -r dev-requirements.txt || true
 
-      - name: Syntax check (compileall)
+      - name: Lint
         run: |
-          # בודק שאין שגיאות פייתון בקבצי backend/
-          python -m compileall -q backend || (echo "Python syntax errors detected." && exit 1)
+          pip install ruff black
+          ruff check .
+          black --check .
 
-      - name: Basic repo health check
+      - name: Syntax check
+        run: python -m compileall .
+
+      - name: Run tests
+        run: pytest -q -W error::DeprecationWarning
+
+      - name: Smoke test /health
         run: |
-          python scripts/health_check.py
+          python - << 'PY'
+          import threading, time, requests
+          from api import app
+          from werkzeug.serving import make_server
+
+          class ServerThread(threading.Thread):
+              def __init__(self, app):
+                  threading.Thread.__init__(self)
+                  self.srv = make_server('127.0.0.1', 5001, app)
+                  self.ctx = app.app_context()
+                  self.ctx.push()
+
+              def run(self):
+                  self.srv.serve_forever()
+
+              def shutdown(self):
+                  self.srv.shutdown()
+
+          t = ServerThread(app); t.start(); time.sleep(0.5)
+          r = requests.get("http://127.0.0.1:5001/health")
+          assert r.status_code == 200, r.text
+          t.shutdown(); t.join()
+          PY
