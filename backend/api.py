@@ -10,7 +10,6 @@ BASE_DIR = os.path.abspath(os.path.join(os.path.dirname(__file__), ".."))
 FRONTEND_DIR = os.path.join(BASE_DIR, "frontend")
 PUBLIC_DIR = os.path.join(BASE_DIR, "public")
 
-
 # === Routes ===
 
 @app.route("/")
@@ -18,30 +17,25 @@ def root():
     """Redirect root to /app/"""
     return redirect("/app/")
 
-
 @app.route("/app/")
 def app_index():
     """Serve frontend index.html"""
     return send_from_directory(FRONTEND_DIR, "index.html")
-
 
 @app.route("/app/<path:fn>")
 def app_files(fn):
     """Serve other frontend files"""
     return send_from_directory(FRONTEND_DIR, fn)
 
-
 @app.route("/frontend/<path:fn>")
 def frontend_files(fn):
     """Serve frontend assets"""
     return send_from_directory(FRONTEND_DIR, fn)
 
-
 @app.route("/public/<path:fn>")
 def public_files(fn):
     """Serve public/ files"""
     return send_from_directory(PUBLIC_DIR, fn)
-
 
 @app.route("/health")
 def health():
@@ -59,7 +53,6 @@ def health():
         "active_static_root": FRONTEND_DIR
     })
 
-
 @app.route("/questionnaire/report", methods=["GET", "POST"])
 def questionnaire_report():
     """Main report endpoint"""
@@ -71,13 +64,11 @@ def questionnaire_report():
     # כאן הלוגיקה האמיתית שלך (כרגע placeholder)
     return jsonify({"status": "ok", "echo": data})
 
-
 # === NEW: Alias /report to /questionnaire/report ===
 @app.route("/report", methods=["GET", "POST"])
 def report_alias():
     """Alias for /questionnaire/report"""
     return redirect(url_for("questionnaire_report"), code=307)
-
 
 # === Run ===
 if __name__ == "__main__":
