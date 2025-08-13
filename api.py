@@ -1,20 +1,25 @@
-# backend/api.py
+# api.py
 from __future__ import annotations
 import os
 from flask import Flask, request, jsonify, redirect, url_for, send_from_directory
 from flask_cors import CORS
 
 HERE = os.path.dirname(__file__)
-ROOT = os.path.abspath(os.path.join(HERE, ".."))
+ROOT = os.path.abspath(HERE)
+DATA_DIR = os.path.join(ROOT, "data")
 
 TEMPLATES_DIR = os.path.join(HERE, "templates")
 FRONTEND_DIR  = os.path.join(ROOT, "frontend")
 PUBLIC_DIR    = os.path.join(ROOT, "public")
 
-from engine_entrypoint import QuestionnaireEngine
+from backend.engine_entrypoint import QuestionnaireEngine
+# from backend.battlecard_integration_plus import register_battlecard_routes
+from backend.feedback_store import FeedbackStore
 
 app = Flask(__name__, template_folder=TEMPLATES_DIR, static_url_path=None, static_folder=None)
 CORS(app)
+# register_battlecard_routes(app)
+feedback_store = FeedbackStore(data_dir=DATA_DIR)
 
 def _dir(p): return os.path.isdir(p)
 def _file(p): return os.path.isfile(p)
@@ -94,6 +99,16 @@ def questionnaire_report():
     result = engine.run(answers)
     http = 200 if (result.get("status") == "ok" and result.get("html")) else 500
     return jsonify(result), http
+
+@app.post("/feedback")
+def feedback():
+    payload = request.get_json(silent=True) or {}
+    feedback_store.add(payload)
+    return jsonify({"status": "ok", "aggregate": feedback_store.aggregate()}), 200
+
+@app.get("/feedback/stats")
+def feedback_stats():
+    return jsonify({"status": "ok", "aggregate": feedback_store.aggregate()}), 200
 
 if __name__ == "__main__":
     port = int(os.getenv("PORT", "5000"))

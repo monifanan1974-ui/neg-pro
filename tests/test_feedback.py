@@ -2,8 +2,8 @@ import os, sys, json
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[1]
-sys.path.insert(0, str(ROOT / "backend"))
-from api import app  # noqa
+sys.path.insert(0, str(ROOT))
+from api import app
 
 def test_feedback_roundtrip():
     client = app.test_client()

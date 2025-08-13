@@ -5,9 +5,9 @@ from __future__ import annotations
 import os, json, traceback, re
 from typing import Dict, Any, Optional
 
-from questionnaire_mapper import map_questionnaire_to_inputs
-from rule_engine_expansion import RuleEngineExpansion
-from report_builder import build_report_html
+from .questionnaire_mapper import map_questionnaire_to_inputs
+from .rule_engine_expansion import RuleEngineExpansion
+from .report_builder import build_report_html
 
 HERE = os.path.dirname(__file__)
 ROOT = os.path.abspath(os.path.join(HERE, ".."))
