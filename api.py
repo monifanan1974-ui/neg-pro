@@ -1,3 +1,4 @@
+--- START OF FILE api.py ---
 # api.py
 from __future__ import annotations
 import os
@@ -8,10 +9,11 @@ HERE = os.path.dirname(__file__)
 ROOT = os.path.abspath(HERE)
 DATA_DIR = os.path.join(ROOT, "data")
 
-TEMPLATES_DIR = os.path.join(HERE, "templates")
+TEMPLATES_DIR = os.path.join(HERE, "backend", "templates") # Corrected path
 FRONTEND_DIR  = os.path.join(ROOT, "frontend")
 PUBLIC_DIR    = os.path.join(ROOT, "public")
 
+# Corrected imports to include the 'backend' package prefix
 from backend.engine_entrypoint import QuestionnaireEngine
 # from backend.battlecard_integration_plus import register_battlecard_routes
 from backend.feedback_store import FeedbackStore
