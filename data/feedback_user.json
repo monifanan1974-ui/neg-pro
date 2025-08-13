@@ -26,42 +26,6 @@
       "notes": "Helped me keep it professional.",
       "persona": "Friend",
       "country": "UK"
-    },
-    {
-      "ts": 1755098528,
-      "scenario_id": "lowball",
-      "outcome": "partial",
-      "usefulness": 7,
-      "notes": "Helped me keep it professional.",
-      "persona": "Friend",
-      "country": "UK"
-    },
-    {
-      "ts": 1755098650,
-      "scenario_id": "lowball",
-      "outcome": "partial",
-      "usefulness": 7,
-      "notes": "Helped me keep it professional.",
-      "persona": "Friend",
-      "country": "UK"
-    },
-    {
-      "ts": 1755100151,
-      "scenario_id": "lowball",
-      "outcome": "partial",
-      "usefulness": 7,
-      "notes": "Helped me keep it professional.",
-      "persona": "Friend",
-      "country": "UK"
-    },
-    {
-      "ts": 1755100203,
-      "scenario_id": "lowball",
-      "outcome": "partial",
-      "usefulness": 7,
-      "notes": "Helped me keep it professional.",
-      "persona": "Friend",
-      "country": "UK"
     }
   ]
 }
