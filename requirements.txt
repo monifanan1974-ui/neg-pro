@@ -1,6 +1,8 @@
+--- START OF FILE requirements.txt ---
 Flask==3.0.0
 Flask-Cors==4.0.1
 requests>=2.31
 python-dotenv
 openai==0.28
 gunicorn==22.0.0
+google-cloud-translate==2.0.1
