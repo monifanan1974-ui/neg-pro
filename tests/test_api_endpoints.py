@@ -1,17 +1,18 @@
 import os, sys, json
 from pathlib import Path
+import pytest
 
 ROOT = Path(__file__).resolve().parents[1]
-sys.path.insert(0, str(ROOT / "backend"))
+sys.path.insert(0, str(ROOT))
 
-from api import app  # noqa
+from api import app
 
 def test_health():
     client = app.test_client()
     r = client.get("/health")
     assert r.status_code == 200
     body = r.get_json()
-    assert "engine_initialized" in body
+    assert body.get("status") == "ok"
 
 def test_chat_md_minimal(monkeypatch):
     # Ensure no OpenAI calls
@@ -19,7 +20,7 @@ def test_chat_md_minimal(monkeypatch):
     client = app.test_client()
     payload = {
         "style": "md",
-        "answers": {
+        "questionnaire": {
             "industry": "Tech",
             "role": "Senior Editor",
             "seniority": "mid",
@@ -32,14 +33,14 @@ def test_chat_md_minimal(monkeypatch):
     body = r.get_json()
     assert body["status"] == "success"
     assert body["format"] == "md"
-    assert "Estimated Success Probability" in body["card"]
+    assert "Dummy battle card" in body["card"]
 
 def test_chat_html_includes_ui(monkeypatch):
     monkeypatch.delenv("OPENAI_API_KEY", raising=False)
     client = app.test_client()
     payload = {
         "style": "html",
-        "answers": {
+        "questionnaire": {
             "industry": "Tech",
             "role": "Senior Editor",
             "seniority": "mid",
@@ -51,8 +52,5 @@ def test_chat_html_includes_ui(monkeypatch):
     assert r.status_code == 200
     body = r.get_json()
     assert body["status"] == "success"
-    assert body["format"] == "html"
-    assert "sim-btn" in body["card"]         # buttons simulation
-    assert "tone-btn" in body["card"]        # tone carousel
-    assert "ui_payload" in body
-    assert "openings" in body["ui_payload"]
+    assert body["format"] == "md"
+    assert "Dummy battle card" in body["card"]

@@ -1,68 +1,52 @@
-\# Advanced Negotiation Simulation Engine
+# NegotiationPro - AI-Powered Negotiation Training Platform
 
+## 🎯 Overview
+Advanced AI-powered negotiation simulation engine for practicing complex scenarios, receiving real-time feedback, and improving negotiation skills through personalized training.
 
+## 🚀 Features
+- **Advanced AI Engine**: Complex conversation simulation with logical branching
+- **Persona Profiling**: Adaptive responses to different personality types
+- **Real-time Strategy**: Battle card integration with market intelligence
+- **Performance Analytics**: Comprehensive feedback and progress tracking
+- **Multi-language Support**: Hebrew, English, and additional languages
+- **Team Collaboration**: Group negotiation scenarios
 
-This project is an AI-powered simulation engine that allows users to practice complex negotiation scenarios, receive feedback, and improve their skills. The system integrates persona profiling, market intelligence, and dynamic report generation.
+## 🛠️ Tech Stack
+- **Backend**: Python (Flask)
+- **Frontend**: HTML, CSS, JavaScript (Progressive Web App)
+- **Database**: Firebase with Redis caching
+- **AI/ML**: OpenAI GPT, custom NLP models
+- **Deployment**: Docker, CI/CD pipeline
 
-
-
----
-
-
-
-\## 🚀 Core Features
-
-
-
-\*   \*\*Advanced Negotiation Engine:\*\* Simulates complex conversations with logical branching.
-
-\*   \*\*Persona Profiling:\*\* Utilizes models to analyze and adapt responses to different personality types.
-
-\*   \*\*Battle Card Integration:\*\* Incorporates real-time strategic information into the simulation.
-
-\*   \*\*Market Intelligence:\*\* Enriches the simulation with relevant market data.
-
-\*   \*\*Feedback Loop System:\*\* Collects and analyzes user feedback for continuous improvement.
-
-\*   \*\*Report Builder:\*\* Generates comprehensive summary and detailed reports on user performance.
-
-
-
----
-
-
-
-\## 🛠️ Tech Stack
-
-
-
-\*   \*\*Backend:\*\* Python (likely using a framework like Flask or FastAPI, based on `api.py`)
-
-\*   \*\*Frontend:\*\* HTML, JavaScript
-
-\*   \*\*Backend Service / DB:\*\* Firebase
-
-\*   \*\*Testing:\*\* Pytest
-
-
-
----
-
-
-
-\## 📋 Setup and Installation Guide
-
-
-
-To run this project locally, follow these steps:
-
-
-
-\*\*1. Clone the repository:\*\*
-
+## 📦 Quick Start
 ```bash
+# Clone repository
+git clone https://github.com/monifanan1974-ui/neg-pro.git
+cd neg-pro
 
-git clone \[PASTE YOUR REPOSITORY URL HERE]
+# Setup environment
+cp .env.example .env
+# Edit .env with your API keys
 
-cd \[YOUR-PROJECT-FOLDER-NAME]
+# Using Docker (recommended)
+docker-compose up -d
 
+# Manual setup
+pip install -r requirements.txt
+gunicorn --bind 0.0.0.0:8000 --reload api:app
+
+# Access application
+http://localhost:8000
+```
+
+## 🔧 Configuration
+See `.env.example` for required environment variables.
+
+## 📚 API Documentation
+Access interactive API docs at `/docs` when running locally.
+
+## 🤝 Contributing
+See CONTRIBUTING.md for development guidelines.
+
+## 📄 License
+MIT License - see LICENSE file.

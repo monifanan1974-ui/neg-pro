@@ -1,12 +1,6 @@
-# Flask
 Flask==3.0.0
 Flask-Cors==4.0.1
-
-# For making HTTP requests (if needed by other parts, good to keep)
 requests>=2.31
-
-# For loading environment variables from .env file
 python-dotenv
-
-# For OpenAI API access
-openai==0.28 # Keeping the version specified in the original file
+openai==0.28
+gunicorn==22.0.0
