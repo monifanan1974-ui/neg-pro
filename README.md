@@ -37,16 +37,3 @@ uvicorn api:app --reload
 
 # Access application
 http://localhost:8000
-```
-
-## 🔧 Configuration
-See `.env.example` for required environment variables.
-
-## 📚 API Documentation
-Access interactive API docs at `/docs` when running locally.
-
-## 🤝 Contributing
-See CONTRIBUTING.md for development guidelines.
-
-## 📄 License
-MIT License - see LICENSE file.
