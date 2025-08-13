@@ -1,3 +1,4 @@
+--- START OF FILE backend/engine_entrypoint.py ---
 # backend/engine_entrypoint.py
 # Questionnaire → Engine glue.
 # Maps answers using questionnaire_mapper, evaluates rules, and builds the HTML report.
@@ -5,6 +6,7 @@ from __future__ import annotations
 import os, json, traceback, re
 from typing import Dict, Any, Optional
 
+# Use relative imports with '.' for modules within the same package
 from .questionnaire_mapper import map_questionnaire_to_inputs
 from .rule_engine_expansion import RuleEngineExpansion
 from .report_builder import build_report_html
