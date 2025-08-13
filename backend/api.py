@@ -1,5 +1,5 @@
 import os
-from flask import Flask, send_from_directory, jsonify, request, redirect, url_for
+from flask import Flask, send_from_directory, jsonify, request, redirect, url_for, Response
 from flask_cors import CORS
 
 # === Setup ===
@@ -61,14 +61,41 @@ def questionnaire_report():
     except Exception:
         return jsonify({"status": "error", "message": "Invalid JSON"}), 400
 
-    # כאן הלוגיקה האמיתית שלך (כרגע placeholder)
-    return jsonify({"status": "ok", "echo": data})
+    # כאן תוסיף את הלוגיקה האמיתית שלך להפקת הדוח
+    # כרגע דוגמה בלבד
+    html_report = f"""
+    <html>
+    <head><title>Negotiation Report</title></head>
+    <body>
+        <h1>NegotiationPro Report</h1>
+        <pre>{data}</pre>
+    </body>
+    </html>
+    """
+    return Response(html_report, mimetype="text/html")
 
-# === NEW: Alias /report to /questionnaire/report ===
+# === NEW: Alias /report to /questionnaire/report (returns HTML directly) ===
 @app.route("/report", methods=["GET", "POST"])
 def report_alias():
-    """Alias for /questionnaire/report"""
-    return redirect(url_for("questionnaire_report"), code=307)
+    """Direct HTML report"""
+    try:
+        if request.method == "POST":
+            data = request.get_json(force=True)
+        else:
+            data = {"status": "no POST data received"}
+    except Exception:
+        data = {"status": "error", "message": "Invalid JSON"}
+
+    html_report = f"""
+    <html>
+    <head><title>Negotiation Report</title></head>
+    <body>
+        <h1>NegotiationPro Report</h1>
+        <pre>{data}</pre>
+    </body>
+    </html>
+    """
+    return Response(html_report, mimetype="text/html")
 
 # === Run ===
 if __name__ == "__main__":
