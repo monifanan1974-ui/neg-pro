@@ -9,90 +9,35 @@ HERE = os.path.dirname(__file__)
 ROOT = os.path.abspath(HERE)
 DATA_DIR = os.path.join(ROOT, "data")
 
-# Corrected path to point inside the 'backend' directory
+# Pointing to the correct template and asset directories
 TEMPLATES_DIR = os.path.join(HERE, "backend", "templates")
 FRONTEND_DIR  = os.path.join(ROOT, "frontend")
-PUBLIC_DIR    = os.path.join(ROOT, "public")
+# There is no 'public' directory based on the screenshot, so we will not reference it.
 
 # Corrected imports to include the 'backend' package prefix
 from backend.engine_entrypoint import QuestionnaireEngine
-# from backend.battlecard_integration_plus import register_battlecard_routes
 from backend.feedback_store import FeedbackStore
 
-app = Flask(__name__, template_folder=TEMPLATES_DIR, static_url_path=None, static_folder=None)
+app = Flask(__name__, template_folder=TEMPLATES_DIR, static_folder=FRONTEND_DIR)
 CORS(app)
-# register_battlecard_routes(app)
 feedback_store = FeedbackStore(data_dir=DATA_DIR)
 
-def _dir(p): return os.path.isdir(p)
-def _file(p): return os.path.isfile(p)
-def _ls(p):
-    try:
-        return sorted(os.listdir(p)) if _dir(p) else []
-    except Exception:
-        return []
-
+# Health check endpoint
 @app.get("/health")
 def health():
-    return jsonify({
-        "status": "ok",
-        "service": "NegotiationPro API",
-        "version": "2025-08-12",
-        "frontend_dir": FRONTEND_DIR, "frontend_exists": _dir(FRONTEND_DIR), "frontend_files": _ls(FRONTEND_DIR),
-        "public_dir": PUBLIC_DIR,     "public_exists": _dir(PUBLIC_DIR),     "public_files": _ls(PUBLIC_DIR),
-        "active_static_root": FRONTEND_DIR if _dir(FRONTEND_DIR) else PUBLIC_DIR
-    }), 200
+    return jsonify({"status": "ok", "service": "NegotiationPro API"}), 200
 
-@app.get("/")
-def root():
-    # Always redirect to /app/ (with a trailing slash) so relative paths resolve correctly.
-    return redirect(url_for("app_index_slash"))
+# Serve the main application index.html from /
+@app.route('/')
+def serve_root():
+    return send_from_directory(app.static_folder, 'index.html')
 
-# If someone hits /app (no slash), redirect to /app/
-@app.get("/app")
-def app_index_redirect():
-    return redirect(url_for("app_index_slash"))
+# Serve other static files from the frontend directory
+@app.route('/<path:path>')
+def serve_static_files(path):
+    return send_from_directory(app.static_folder, path)
 
-# Serve the SPA index from frontend/ (or public/ as a fallback)
-@app.get("/app/")
-def app_index_slash():
-    # Try frontend/index.html first
-    idx = os.path.join(FRONTEND_DIR, "index.html")
-    if _file(idx):
-        return send_from_directory(FRONTEND_DIR, "index.html")
-    # Fallback to the other index.html (the one with the two columns)
-    idx = os.path.join(PUBLIC_DIR, "index.html")
-    if _file(idx):
-        return send_from_directory(PUBLIC_DIR, "index.html")
-    return ("index.html not found. Put it under 'frontend/' (preferred) or 'public/'.", 404)
-
-# Serve assets relative to /app/ → /app/report_embed.js, /app/questionnaire.json, etc.
-@app.get("/app/<path:fn>")
-def app_assets(fn):
-    p = os.path.join(FRONTEND_DIR, fn)
-    if _file(p):
-        return send_from_directory(FRONTEND_DIR, fn)
-    p = os.path.join(PUBLIC_DIR, fn)
-    if _file(p):
-        return send_from_directory(PUBLIC_DIR, fn)
-    return (f"File not found under frontend/ or public/: {fn}", 404)
-
-# Optional direct static routes
-@app.get("/frontend/<path:fn>")
-def serve_frontend(fn):
-    p = os.path.join(FRONTEND_DIR, fn)
-    if _file(p):
-        return send_from_directory(FRONTEND_DIR, fn)
-    return (f"File not found: {p}", 404)
-
-@app.get("/public/<path:fn>")
-def serve_public(fn):
-    p = os.path.join(PUBLIC_DIR, fn)
-    if _file(p):
-        return send_from_directory(PUBLIC_DIR, fn)
-    return (f"File not found: {p}", 404)
-
-# ---------- API ----------
+# ---------- API Endpoints ----------
 @app.post("/questionnaire/report")
 def questionnaire_report():
     payload = request.get_json(silent=True) or {}
@@ -102,8 +47,8 @@ def questionnaire_report():
 
     engine = QuestionnaireEngine(debug=os.getenv("DEBUG", "true").lower() in ("1", "true", "yes"))
     result = engine.run(answers)
-    http = 200 if (result.get("status") == "ok" and result.get("html")) else 500
-    return jsonify(result), http
+    http_status = 200 if (result.get("status") == "ok" and result.get("html")) else 500
+    return jsonify(result), http_status
 
 @app.post("/feedback")
 def feedback():
@@ -120,6 +65,5 @@ if __name__ == "__main__":
     debug = os.getenv("DEBUG", "true").lower() in ("1", "true", "yes", "y")
     print("==== NegotiationPro API ====")
     print(f"Listening on http://localhost:{port} (Debug={debug})")
-    print(f"[static root] frontend = {FRONTEND_DIR}")
-    print(f"[public root] public = {PUBLIC_DIR}")
+    print(f"Serving static files from: {FRONTEND_DIR}")
     app.run(host="0.0.0.0", port=port, debug=debug)
