@@ -9,7 +9,8 @@ HERE = os.path.dirname(__file__)
 ROOT = os.path.abspath(HERE)
 DATA_DIR = os.path.join(ROOT, "data")
 
-TEMPLATES_DIR = os.path.join(HERE, "backend", "templates") # Corrected path
+# Corrected path to point inside the 'backend' directory
+TEMPLATES_DIR = os.path.join(HERE, "backend", "templates")
 FRONTEND_DIR  = os.path.join(ROOT, "frontend")
 PUBLIC_DIR    = os.path.join(ROOT, "public")
 
@@ -55,9 +56,11 @@ def app_index_redirect():
 # Serve the SPA index from frontend/ (or public/ as a fallback)
 @app.get("/app/")
 def app_index_slash():
+    # Try frontend/index.html first
     idx = os.path.join(FRONTEND_DIR, "index.html")
     if _file(idx):
         return send_from_directory(FRONTEND_DIR, "index.html")
+    # Fallback to the other index.html (the one with the two columns)
     idx = os.path.join(PUBLIC_DIR, "index.html")
     if _file(idx):
         return send_from_directory(PUBLIC_DIR, "index.html")
@@ -118,4 +121,5 @@ if __name__ == "__main__":
     print("==== NegotiationPro API ====")
     print(f"Listening on http://localhost:{port} (Debug={debug})")
     print(f"[static root] frontend = {FRONTEND_DIR}")
+    print(f"[public root] public = {PUBLIC_DIR}")
     app.run(host="0.0.0.0", port=port, debug=debug)
