@@ -1,395 +1,127 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>NegotiationPro - AI Negotiation Strategies</title>
-    <meta name="description" content="Gain a premium edge in negotiations with an advanced AI tool that delivers personalized, high-class strategies.">
-    
-    <!-- =================================================================== -->
-    <!-- הוספתי את השורה הבאה כדי לחבר את ה-Favicon שלך לפרויקט         -->
-    <!-- =================================================================== -->
-    <link rel="icon" type="image/x-icon" href="favicon.ico">
-
-    <!-- Fonts & Icons -->
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@700;800&family=Satoshi:wght@400;500;700&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-
-    <!-- AOS Animation Library -->
-    <link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet">
-
-    <script src="https://cdn.tailwindcss.com"></script>
-    <script>
-        tailwind.config = {
-            theme: {
-                extend: {
-                    colors: {
-                        primary: '#2563eb', 'primary-dark': '#1d4ed8', secondary: '#0e7490',
-                        accent: '#F59E0B', 'accent-light': '#fdba74', light: '#f8fafc',
-                        dark: '#1f2937', 'text-dark': '#1f2937', 'text-medium': '#6B7280',
-                        'text-light': '#a0aec0', success: '#10b981', error: '#ef4444',
-                        'bg-light': '#f8fafc', border: '#e2e8f0'
-                    },
-                    fontFamily: {
-                        'manrope': ['Manrope', 'sans-serif'],
-                        'satoshi': ['Satoshi', 'sans-serif'],
-                    },
-                    animation: {
-                        'gradient': 'gradient 8s ease infinite',
-                        'float': 'float 6s ease-in-out infinite',
-                        'pulse-slow': 'pulse 4s cubic-bezier(0.4, 0, 0.6, 1) infinite',
-                        'logo-pulse': 'logoPulse 2.5s 1 ease-in-out',
-                        'fade-in-down': 'fadeInDown 1s ease-out forwards',
-                        'button-pulse': 'buttonPulse 2s infinite'
-                    },
-                    keyframes: {
-                        gradient: { '0%, 100%': { 'background-position': '0% 50%' }, '50%': { 'background-position': '100% 50%' } },
-                        float: { '0%, 100%': { transform: 'translateY(0)' }, '50%': { transform: 'translateY(-20px)' } },
-                        logoPulse: { '0%': { transform: 'scale(1)' }, '50%': { transform: 'scale(1.08)' }, '100%': { transform: 'scale(1)' } },
-                        fadeInDown: { '0%': { opacity: '0', transform: 'translateY(-20px)' }, '100%': { opacity: '1', transform: 'translateY(0)' } },
-                        buttonPulse: { '0%, 100%': { transform: 'scale(1)', boxShadow: '0 0 0 0 rgba(245, 158, 11, 0.4)' }, '70%': { transform: 'scale(1.02)', boxShadow: '0 0 0 10px rgba(245, 158, 11, 0)' } }
-                    }
-                }
-            }
-        }
-    </script>
-    <style>
-        :root {
-            --primary: #2563eb; --primary-dark: #1d4ed8; --secondary: #0e7490;
-            --accent: #F59E0B; --light: #f8fafc; --dark: #1f2937;
-            --text-dark: #1f2937; --text-medium: #6B7280; --text-light: '#a0aec0';
-            --success: #10b981; --error: #ef4444; --bg-light: #f8fafc; --border: #e2e8f0;
-        }
-        html { scroll-behavior: smooth; }
-        body { font-family: 'satoshi', 'Segoe UI', sans-serif; background-color: var(--light); color: var(--text-dark); line-height: 1.7; overflow-x: hidden; }
-        h1, h2, h3, h4 { font-family: 'manrope', sans-serif; letter-spacing: -0.02em; }
-        .gradient-bg { background: linear-gradient(135deg, var(--primary), var(--secondary)); background-size: 200% 200%; animation: gradient 8s ease infinite; }
-        .footer-gradient-bg { background: linear-gradient(45deg, #1f2937, var(--primary), var(--secondary)); }
-        .btn { transition: all 0.3s ease-in-out; }
-        .btn:hover { transform: translateY(-3px) scale(1.05); box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1); }
-        .btn-premium { background-color: var(--accent); color: white; box-shadow: 0 4px 14px 0 rgba(245, 158, 11, 0.39); }
-        .btn-premium:hover { background-color: #f9b23b; box-shadow: 0 6px 20px 0 rgba(245, 158, 11, 0.45); }
-        .btn-premium.pulse-on-hover:hover { animation: buttonPulse 2s infinite; }
-        .card { background-color: rgba(255,255,255,0.7); backdrop-filter: blur(10px); border: 1px solid rgba(226, 232, 240, 0.5); border-radius: 1.25rem; box-shadow: 0 20px 25px -5px rgba(0,0,0,0.1), 0 10px 10px -5px rgba(0,0,0,0.04); transition: all 0.3s ease; }
-        .card:hover { transform: translateY(-10px); box-shadow: 0 25px 50px -12px rgba(0,0,0,0.15); }
-        .wizard-step { animation: fadeIn 0.5s ease-in-out; }
-        @keyframes fadeIn { from { opacity: 0; transform: translateY(15px); } to { opacity: 1; transform: translateY(0); } }
-        .faq-item .faq-answer { max-height: 0; overflow: hidden; transition: max-height 0.5s cubic-bezier(0.4, 0, 0.2, 1); }
-        .faq-item.is-open .faq-answer { padding-top: 1rem; padding-bottom: 1.25rem; max-height: 500px; } /* Updated */
-        .modal-overlay { position: fixed; inset: 0; background: rgba(17, 24, 39, 0.6); backdrop-filter: blur(5px); z-index: 1000; display: none; align-items: center; justify-content: center; }
-        .modal-overlay.active { display: flex; }
-        .modal-content { background-color: white; padding: 2rem; border-radius: 1rem; box-shadow: 0 20px 25px -5px rgba(0,0,0,0.1); width: 90%; max-width: 500px; }
-    </style>
+  <meta charset="utf-8" />
+  <title>NegotiationPro — Smart Questionnaire</title>
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <style>
+    :root{--bg:#0b1220;--panel:#0f172a;--text:#e5e7eb;--muted:#94a3b8;--accent:#60a5fa;--ok:#22c55e;--err:#ef4444}
+    *{box-sizing:border-box} body{margin:0;background:var(--bg);color:var(--text);font-family:Inter,system-ui,Segoe UI,Arial}
+    header{padding:14px 18px;border-bottom:1px solid #1f2937;background:#0c1426}
+    .wrap{display:grid;grid-template-columns:1.4fr 1fr;gap:16px;padding:18px}
+    .card{background:var(--panel);border:1px solid #1f2937;border-radius:12px;overflow:hidden}
+    .card h3{margin:0;padding:12px 14px;border-bottom:1px solid #1f2937;background:#0e1931;font-size:15px}
+    .body{padding:14px}
+    label{display:block;font-size:12px;color:var(--muted);margin:10px 0 6px}
+    input,select,textarea{width:100%;padding:10px;border-radius:10px;border:1px solid #22314d;background:#0c1426;color:var(--text)}
+    .row{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+    .btns{display:flex;gap:8px;margin-top:12px}
+    button{padding:10px 14px;border-radius:10px;border:1px solid #22314d;background:#12203a;color:#fff;cursor:pointer}
+    button.primary{background:var(--accent);border-color:#3b82f6}
+    button:disabled{opacity:.5;cursor:not-allowed}
+    .json{font-family:ui-monospace,Menlo,Consolas,monospace;background:#0b1326;color:#e5e7eb;border:1px solid #1f2937;border-radius:10px;padding:10px;height:260px;overflow:auto;white-space:pre-wrap}
+    #report{min-height:360px;padding:0;margin:0;border:0}
+    .hint{font-size:12px;color:var(--muted);margin-top:6px}
+    .ok{color:var(--ok)} .err{color:var(--err)}
+  </style>
 </head>
-<body class="bg-light">
+<body>
+  <header>
+    <strong>NegotiationPro</strong> <span style="color:#94a3b8">/ Smart Questionnaire</span>
+  </header>
 
-<!-- Header and Navigation -->
-<header class="fixed top-0 left-0 right-0 z-50 bg-white/80 backdrop-blur-md border-b border-gray-200/80" id="header" role="banner">
-    <nav class="container mx-auto px-6 py-3 flex justify-between items-center">
-        <a class="flex items-center gap-3 animate-logo-pulse" href="/">
-            <div class="w-10 h-10 rounded-lg flex items-center justify-center" style="background: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%);">
-                <svg class="w-6 h-6 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6"></path></svg>
-            </div>
-            <span class="text-xl font-bold text-dark font-manrope">Negotiation<span class="text-accent">Pro</span></span>
-        </a>
-        <div class="hidden md:flex items-center space-x-2">
-            <a class="px-4 py-2 text-text-medium hover:text-primary font-semibold transition-colors" href="#features">Features</a>
-            <a class="px-4 py-2 text-text-medium hover:text-primary font-semibold transition-colors" href="#pricing">Pricing</a>
-            <a class="px-4 py-2 text-text-medium hover:text-primary font-semibold transition-colors" href="#faq">FAQ</a>
-            <button id="login-btn" class="btn bg-primary text-white hover:bg-primary-dark px-5 py-2 rounded-lg ml-2 font-semibold">Login</button>
+  <div class="wrap">
+    <!-- Left: Form -->
+    <section class="card">
+      <h3>Answer the steps</h3>
+      <div class="body">
+        <div class="row">
+          <div>
+            <label for="role">Role / Target Title</label>
+            <input id="role" placeholder="Senior Editor" />
+          </div>
+          <div>
+            <label for="seniority">Seniority</label>
+            <select id="seniority">
+              <option value="junior">junior</option>
+              <option value="mid" selected>mid</option>
+              <option value="senior">senior</option>
+              <option value="lead">lead</option>
+            </select>
+          </div>
         </div>
-        <div class="md:hidden"><button id="mobile-menu-button" aria-label="Open menu" class="p-2"><i class="fas fa-bars text-xl"></i></button></div>
-    </nav>
-    <div class="hidden md:hidden bg-white/90 backdrop-blur-md" id="mobile-menu">
-        <a class="block py-3 px-6 text-text-medium hover:bg-gray-100 transition-colors" href="#features">Features</a>
-        <a class="block py-3 px-6 text-text-medium hover:bg-gray-100 transition-colors" href="#pricing">Pricing</a>
-        <a class="block py-3 px-6 text-text-medium hover:bg-gray-100 transition-colors" href="#faq">FAQ</a>
-    </div>
-</header>
 
-<main class="pt-20">
-    <!-- Hero Section -->
-    <section class="gradient-bg relative overflow-hidden">
-        <div class="absolute inset-0 bg-dark/20"></div>
-        <div class="container mx-auto px-6 text-center relative z-10 py-24 sm:py-32">
-            <h1 class="text-4xl sm:text-5xl md:text-6xl font-extrabold text-white mb-6 font-manrope animate-fade-in-down">Master Every Negotiation</h1>
-            <p class="text-xl max-w-3xl mx-auto text-white/90 mb-10 animate-fade-in-down" style="animation-delay: 0.2s;">AI-powered strategies to give you the tools and confidence to win any deal.</p>
-            <div class="animate-fade-in-down" style="animation-delay: 0.4s;">
-                <a class="btn btn-premium inline-flex items-center text-lg font-bold px-8 py-4 rounded-lg shadow-xl pulse-on-hover" href="#wizard">
-                    <span>Build Your Strategy Now</span> <i class="fas fa-arrow-right ml-3"></i>
-                </a>
-            </div>
+        <div class="row">
+          <div>
+            <label for="country">Country</label>
+            <input id="country" placeholder="UK" />
+          </div>
+          <div>
+            <label for="industry">Industry</label>
+            <input id="industry" placeholder="Tech" />
+          </div>
         </div>
+
+        <div class="row">
+          <div>
+            <label for="communication_style">Communication Style</label>
+            <input id="communication_style" placeholder="Analytical / Diplomatic / Direct" />
+          </div>
+          <div>
+            <label for="counterpart_persona">Counterpart Persona (optional)</label>
+            <input id="counterpart_persona" placeholder="The Friend / The Analyst / The Dominator" />
+          </div>
+        </div>
+
+        <div class="row">
+          <div>
+            <label for="range_low">Range Low</label>
+            <input id="range_low" placeholder="£65k" />
+          </div>
+          <div>
+            <label for="range_high">Range High</label>
+            <input id="range_high" placeholder="£85k" />
+          </div>
+        </div>
+
+        <div class="row">
+          <div>
+            <label for="target_salary">Target / Anchor (optional)</label>
+            <input id="target_salary" placeholder="£82k" />
+          </div>
+          <div>
+            <label for="market_sources">Market Sources</label>
+            <input id="market_sources" placeholder="Glassdoor, Levels.fyi" />
+          </div>
+        </div>
+
+        <div class="btns">
+          <button id="btn-build" class="primary">Build Presentation Report</button>
+          <button id="btn-reset" type="button">Reset</button>
+          <span id="status" class="hint"></span>
+        </div>
+      </div>
     </section>
 
-    <!-- Wizard Section -->
-    <section aria-labelledby="wizard-heading" class="py-20 sm:py-24 relative" id="wizard">
-        <div class="container mx-auto px-6 max-w-4xl" data-aos="fade-up">
-            <div class="text-center mb-12">
-                <h2 id="wizard-heading" class="text-3xl sm:text-4xl font-bold text-text-dark mb-4">Build Your Strategy</h2>
-                <p class="text-lg text-text-medium max-w-2xl mx-auto">Answer a few questions to get your personalized negotiation plan.</p>
-            </div>
-            <div class="card p-4 sm:p-8 relative overflow-hidden">
-                <div class="absolute top-0 left-0 right-0 h-2 bg-gradient-to-r from-accent to-primary"></div>
-                <!-- Wizard content will be injected here by JavaScript -->
-                <div id="wizard-container-inner"></div>
-            </div>
-        </div>
+    <!-- Right: Payload preview -->
+    <section class="card">
+      <h3>Payload Preview</h3>
+      <div class="body">
+        <div id="preview" class="json">{}</div>
+        <div class="hint">ה‑JSON נשמר אוטומטית ב‑localStorage ומעודכן בזמן אמת.</div>
+      </div>
     </section>
-    
-    <!-- Other sections can be added here -->
+  </div>
 
-</main>
-
-<footer class="footer-gradient-bg text-text-light pt-16 pb-8" role="contentinfo">
-    <div class="container mx-auto px-6 text-center">
-        <p class="text-sm opacity-80" id="copyright"></p>
+  <!-- Report -->
+  <section class="card" style="margin:0 18px 18px">
+    <h3>Report</h3>
+    <div class="body">
+      <iframe id="report" title="Report" style="width:100%;height:560px;background:#0b1326;border-radius:12px"></iframe>
+      <div class="hint">הדוח מוזרק לתוך ה‑iframe מקובץ ה‑HTML שה‑API מחזיר.</div>
     </div>
-</footer>
+  </section>
 
-<!-- Authentication Modal -->
-<div id="auth-modal" class="modal-overlay">
-    <div class="modal-content relative">
-        <button id="close-modal-btn" aria-label="Close modal" class="absolute top-4 right-4 text-gray-500 hover:text-gray-800 transition">
-            <i class="fas fa-times text-xl"></i>
-        </button>
-        <h2 class="text-3xl font-bold text-center text-text-dark mb-8 font-manrope">Login or Register</h2>
-        <div class="space-y-4">
-            <div><input id="login-email" placeholder="Email Address" type="email" class="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-primary"></div>
-            <div><input id="login-password" placeholder="Password" type="password" class="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-primary"></div>
-            <div class="flex flex-col sm:flex-row gap-3 pt-4">
-                <button onclick="handleLogin()" class="btn w-full bg-primary text-white py-3 rounded-lg font-semibold">Login</button>
-                <button onclick="handleRegister()" class="btn w-full bg-gray-700 hover:bg-gray-800 text-white py-3 rounded-lg font-semibold">Register</button>
-            </div>
-        </div>
-    </div>
-</div>
-
-<script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
-<script>
-class NegotiationProApp {
-    constructor() {
-        this.state = { wizard: { currentPhaseIndex: 0, data: {} } };
-        this.questionnaireData = null;
-        document.addEventListener('DOMContentLoaded', () => this.init());
-    }
-
-    async init() {
-        try {
-            await this.loadQuestionnaire();
-            this.bindGlobalEventListeners();
-            this.initializeWizard();
-            AOS.init({ duration: 800, once: true, offset: 100 });
-            this.renderCopyright();
-        } catch (error) {
-            console.error("Fatal: Could not initialize app.", error);
-            const container = document.getElementById('wizard-container-inner');
-            if(container) container.innerHTML = `<p class="text-red-500 text-center p-8">Error: Could not load the questionnaire. Please check the file path and ensure it's a valid JSON.</p>`;
-        }
-    }
-    
-    async loadQuestionnaire() {
-        try {
-            // ===================================================================
-            // שיניתי את שם הקובץ כך שיתאים לשם הקובץ בפרויקט שלך          
-            // ===================================================================
-            const response = await fetch('negotiation-questionnaire.json'); 
-            if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`);
-            this.questionnaireData = await response.json();
-        } catch (error) {
-            console.error("Could not load questionnaire:", error);
-            throw error; // Re-throw to be caught by init()
-        }
-    }
-    
-    bindGlobalEventListeners() {
-        const authModal = document.getElementById('auth-modal');
-        document.getElementById('login-btn')?.addEventListener('click', () => authModal.classList.add('active'));
-        document.getElementById('close-modal-btn')?.addEventListener('click', () => authModal.classList.remove('active'));
-        authModal?.addEventListener('click', (e) => { if (e.target === authModal) authModal.classList.remove('active'); });
-        document.addEventListener('keydown', (e) => { if (e.key === "Escape" && authModal.classList.contains('active')) authModal.classList.remove('active'); });
-
-        const mobileMenuButton = document.getElementById('mobile-menu-button');
-        const mobileMenu = document.getElementById('mobile-menu');
-        mobileMenuButton?.addEventListener('click', (e) => {
-            e.stopPropagation();
-            mobileMenu.classList.toggle('hidden');
-        });
-
-        // Smooth scrolling for anchor links
-        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
-            anchor.addEventListener('click', function (e) {
-                e.preventDefault();
-                document.querySelector(this.getAttribute('href')).scrollIntoView({ behavior: 'smooth' });
-                if(!mobileMenu.classList.contains('hidden')) mobileMenu.classList.add('hidden');
-            });
-        });
-    }
-
-    initializeWizard() {
-        this.state.wizard = { currentPhaseIndex: 0, data: {} };
-        this.loadWizardPhase(0);
-    }
-
-    loadWizardPhase(phaseIndex) {
-        const container = document.getElementById('wizard-container-inner');
-        if (!container || !this.questionnaireData) return;
-
-        this.state.wizard.currentPhaseIndex = phaseIndex;
-        
-        if (phaseIndex >= this.questionnaireData.phases.length) {
-            container.innerHTML = `<div class="wizard-step">${this._buildWizardResultHTML()}</div>`;
-        } else {
-            container.innerHTML = `<div class="wizard-step">${this._buildWizardStepHTML(this.questionnaireData.phases[phaseIndex])}</div>`;
-        }
-        this.bindWizardEventListeners();
-    }
-
-    bindWizardEventListeners() {
-        document.getElementById('wizard-next-btn')?.addEventListener('click', () => this.nextWizardStep());
-        document.getElementById('wizard-back-btn')?.addEventListener('click', () => this.prevWizardStep());
-        document.getElementById('wizard-restart-btn')?.addEventListener('click', () => this.initializeWizard());
-    }
-
-    nextWizardStep() {
-        const phase = this.questionnaireData.phases[this.state.wizard.currentPhaseIndex];
-        let isValid = true;
-        
-        phase.questions.forEach(q => {
-            let value;
-            if (q.answerType === 'multi-select') {
-                value = Array.from(document.querySelectorAll(`input[name="${q.id}"]:checked`)).map(el => el.value);
-            } else if (q.answerType === 'multiple-choice') {
-                const radio = document.querySelector(`input[name="${q.id}"]:checked`);
-                value = radio ? radio.value : null;
-            } else {
-                value = document.getElementById(q.id)?.value;
-            }
-            if (q.mandatory && (!value || value.length === 0)) {
-                isValid = false;
-            }
-            this.state.wizard.data[q.id] = value;
-        });
-
-        if (!isValid) {
-            alert("Please fill all required fields."); // Simple validation
-            return;
-        }
-
-        const nextPhaseIndex = this.state.wizard.currentPhaseIndex + 1;
-        this.loadWizardPhase(nextPhaseIndex);
-    }
-    
-    prevWizardStep() {
-        this.loadWizardPhase(this.state.wizard.currentPhaseIndex - 1);
-    }
-
-    _buildWizardStepHTML(phase) {
-        const questionsHTML = phase.questions.map(q => this._renderQuestion(q)).join('');
-        const stepIndicators = this.questionnaireData.phases.map((_, i) => `<div class="w-3 h-3 rounded-full transition-all ${i === this.state.wizard.currentPhaseIndex ? 'bg-primary scale-125' : 'bg-gray-300'}"></div>`).join('');
-        
-        return `
-            <div class="flex justify-center gap-2 mb-6">${stepIndicators}</div>
-            <h2 class="text-2xl font-bold text-center mb-2 text-text-dark">${this.sanitizeInput(phase.title)}</h2>
-            <p class="text-center text-text-medium mb-8">${this.sanitizeInput(phase.description || '')}</p>
-            <div class="space-y-6">${questionsHTML}</div>
-            <div class="flex ${this.state.wizard.currentPhaseIndex > 0 ? 'justify-between' : 'justify-end'} pt-8 mt-8 border-t">
-                <button id="wizard-back-btn" class="btn bg-gray-200 text-text-dark hover:bg-gray-300 px-6 py-3 rounded-lg font-semibold ${this.state.wizard.currentPhaseIndex > 0 ? '' : 'hidden'}">Back</button>
-                <button id="wizard-next-btn" class="btn bg-primary text-white hover:bg-primary-dark px-8 py-3 rounded-lg font-semibold">${this.state.wizard.currentPhaseIndex === this.questionnaireData.phases.length - 1 ? "Generate Strategy" : "Next Step"}</button>
-            </div>
-        `;
-    }
-    
-    _buildWizardResultHTML() {
-        // Here you would typically send `this.state.wizard.data` to your backend API
-        // For now, we'll just display a summary.
-        const summaryItems = Object.entries(this.state.wizard.data).map(([key, value]) => `<li><span class="font-semibold text-text-dark">${key.replace(/_/g, ' ')}:</span> ${this.sanitizeInput(Array.isArray(value) ? value.join(', ') : value)}</li>`).join('');
-        return `
-            <div class="text-center p-8">
-                <h2 class="text-3xl font-bold text-primary mb-4">Strategy Generated!</h2>
-                <p class="text-text-medium mb-6">Your inputs have been collected. The next step is to process this data on the backend.</p>
-                <div class="card text-left p-6 bg-gray-50">
-                    <h3 class="font-bold mb-3">Your Input Summary:</h3>
-                    <ul class="list-disc list-inside space-y-1">${summaryItems}</ul>
-                </div>
-                <div class="mt-8">
-                    <button id="wizard-restart-btn" class="btn bg-gray-200 text-text-dark hover:bg-gray-300 px-6 py-3 rounded-lg font-semibold">Start Over</button>
-                </div>
-            </div>`;
-    }
-
-    _renderQuestion(qData) {
-        const { id, question, answerType, options, mandatory, scale } = qData;
-        let inputHTML = '';
-        const label = `<label class="block font-semibold text-text-dark mb-4 text-lg" for="${id}">${this.sanitizeInput(question)}${mandatory ? ' <span class="text-red-500">*</span>' : ''}</label>`;
-        
-        switch (answerType) {
-            case 'text': inputHTML = `<textarea id="${id}" rows="4" class="w-full p-4 border border-gray-300 rounded-xl focus:ring-2 focus:ring-primary focus:border-transparent transition-all"></textarea>`; break;
-            case 'scale': const defaultValue = scale ? Math.round((scale.min + scale.max) / 2) : 5; inputHTML = `<div class="flex flex-col items-center gap-4 pt-2"><div class="w-full"><input type="range" id="${id}" min="${scale?.min || 1}" max="${scale?.max || 10}" value="${defaultValue}" class="w-full h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer"></div><div class="flex justify-between w-full text-sm text-text-medium px-1"><span>${scale?.minLabel || 'Low'}</span><span>${scale?.maxLabel || 'High'}</span></div></div>`; break;
-            case 'multiple-choice': case 'multi-select': const type = answerType === 'multiple-choice' ? 'radio' : 'checkbox'; inputHTML = `<div class="grid grid-cols-1 sm:grid-cols-2 gap-3">${(options || []).map((opt, i) => `<div><input type="${type}" id="${id}-${i}" name="${id}" value="${this.sanitizeInput(opt)}" class="hidden peer"><label for="${id}-${i}" class="block p-4 border border-gray-300 rounded-lg cursor-pointer transition-all hover:border-primary peer-checked:border-primary peer-checked:bg-blue-50 peer-checked:text-primary peer-checked:font-semibold">${this.sanitizeInput(opt)}</label></div>`).join('')}</div>`; break;
-            default: inputHTML = `<input type="text" id="${id}" class="w-full p-4 border border-gray-300 rounded-xl focus:ring-2 focus:ring-primary focus:border-transparent transition-all">`;
-        }
-        return `<div class="bg-gray-50/70 p-6 rounded-xl border">${label}${inputHTML}</div>`;
-    }
-
-    renderCopyright() {
-        const c = document.getElementById('copyright');
-        if (c) c.innerHTML = `© ${new Date().getFullYear()} NegotiationPro Inc. All rights reserved.`;
-    }
-
-    sanitizeInput(str) {
-        if (str === null || str === undefined) return "";
-        const temp = document.createElement('div');
-        temp.textContent = String(str);
-        return temp.innerHTML;
-    }
-}
-
-const app = new NegotiationProApp();
-
-// Firebase Authentication Handlers
-function handleLogin() {
-    // You will need to add your Firebase login logic here
-    const email = document.getElementById('login-email').value;
-    const password = document.getElementById('login-password').value;
-    console.log("Attempting to login with:", email);
-    alert("Login functionality not yet implemented.");
-}
-
-function handleRegister() {
-    // You will need to add your Firebase registration logic here
-    const email = document.getElementById('login-email').value;
-    const password = document.getElementById('login-password').value;
-    console.log("Attempting to register with:", email);
-    alert("Registration functionality not yet implemented.");
-}
-
-</script>
-
-<!-- 
-    ===================================================================
-    הערה חשובה: אני משאיר את החיבור ל-Firebase כאן, אבל הוא ישתמש
-    במפתחות מזויפים. תצטרך להחליף אותם במפתחות האמיתיים שלך.
-    ===================================================================
--->
-<script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app-compat.js"></script>
-<script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-auth-compat.js"></script>
-<script>
-  const firebaseConfig = {
-    apiKey: "YOUR_API_KEY", // <-- החלף במפתח שלך
-    authDomain: "YOUR_AUTH_DOMAIN", // <-- החלף בדומיין שלך
-    projectId: "YOUR_PROJECT_ID", // <-- החלף במזהה הפרויקט שלך
-  };
-
-  try {
-      if(firebase.apps.length === 0) {
-        firebase.initializeApp(firebaseConfig);
-      }
-  } catch(e) {
-      console.error("Firebase init failed. Make sure to replace placeholders with your actual config.", e);
-  }
-</script>
+  <script src="/app/report_embed.js"></script>
 </body>
 </html>
