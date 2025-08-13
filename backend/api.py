@@ -1,8 +1,7 @@
 import os
-from flask import Flask, send_from_directory, jsonify, request, redirect, url_for, Response
+from flask import Flask, send_from_directory, jsonify, request
 from flask_cors import CORS
 
-# === Setup ===
 app = Flask(__name__)
 CORS(app)
 
@@ -10,36 +9,23 @@ BASE_DIR = os.path.abspath(os.path.join(os.path.dirname(__file__), ".."))
 FRONTEND_DIR = os.path.join(BASE_DIR, "frontend")
 PUBLIC_DIR = os.path.join(BASE_DIR, "public")
 
-# === Routes ===
-
+# === Serve frontend directly from root ===
 @app.route("/")
-def root():
-    """Redirect root to /app/"""
-    return redirect("/app/")
-
-@app.route("/app/")
-def app_index():
-    """Serve frontend index.html"""
+def serve_root():
     return send_from_directory(FRONTEND_DIR, "index.html")
 
-@app.route("/app/<path:fn>")
-def app_files(fn):
-    """Serve other frontend files"""
-    return send_from_directory(FRONTEND_DIR, fn)
-
-@app.route("/frontend/<path:fn>")
-def frontend_files(fn):
-    """Serve frontend assets"""
-    return send_from_directory(FRONTEND_DIR, fn)
+@app.route("/<path:fn>")
+def serve_frontend_files(fn):
+    if os.path.exists(os.path.join(FRONTEND_DIR, fn)):
+        return send_from_directory(FRONTEND_DIR, fn)
+    return jsonify({"error": "File not found"}), 404
 
 @app.route("/public/<path:fn>")
-def public_files(fn):
-    """Serve public/ files"""
+def serve_public_files(fn):
     return send_from_directory(PUBLIC_DIR, fn)
 
 @app.route("/health")
 def health():
-    """Health check"""
     return jsonify({
         "status": "ok",
         "service": "NegotiationPro API",
@@ -55,49 +41,17 @@ def health():
 
 @app.route("/questionnaire/report", methods=["GET", "POST"])
 def questionnaire_report():
-    """Main report endpoint"""
     try:
         data = request.get_json(force=True)
     except Exception:
         return jsonify({"status": "error", "message": "Invalid JSON"}), 400
+    return jsonify({"status": "ok", "echo": data})
 
-    # כאן תוסיף את הלוגיקה האמיתית שלך להפקת הדוח
-    # כרגע דוגמה בלבד
-    html_report = f"""
-    <html>
-    <head><title>Negotiation Report</title></head>
-    <body>
-        <h1>NegotiationPro Report</h1>
-        <pre>{data}</pre>
-    </body>
-    </html>
-    """
-    return Response(html_report, mimetype="text/html")
-
-# === NEW: Alias /report to /questionnaire/report (returns HTML directly) ===
+# Alias /report to /questionnaire/report
 @app.route("/report", methods=["GET", "POST"])
 def report_alias():
-    """Direct HTML report"""
-    try:
-        if request.method == "POST":
-            data = request.get_json(force=True)
-        else:
-            data = {"status": "no POST data received"}
-    except Exception:
-        data = {"status": "error", "message": "Invalid JSON"}
+    return questionnaire_report()
 
-    html_report = f"""
-    <html>
-    <head><title>Negotiation Report</title></head>
-    <body>
-        <h1>NegotiationPro Report</h1>
-        <pre>{data}</pre>
-    </body>
-    </html>
-    """
-    return Response(html_report, mimetype="text/html")
-
-# === Run ===
 if __name__ == "__main__":
     print("==== NegotiationPro API ====")
     print("Listening on http://localhost:5000 (Debug=True)")
