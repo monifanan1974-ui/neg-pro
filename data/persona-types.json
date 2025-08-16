@@ -1,7 +1,39 @@
 {
+  "_metadata": {
+    "version": "1.1.0",
+    "description": "Defines basic persona categories with linguistic patterns and behavioral signals.",
+    "lastUpdated": "2025-08-17"
+  },
+  "personas": {
     "aggressive": {
-        "name": "Aggressive",
-        "keywords": ["demand", "must", "now", "ultimatum"],
-        "speechPatterns": [".*!$", "have to.*", "must.*"]
+      "name": "Aggressive",
+      "keywords": ["demand", "must", "now", "ultimatum"],
+      "speechPatterns": [".*!$", "have to.*", "must.*"],
+      "context_phase": ["opening", "bargaining"],
+      "risk_level": "high",
+      "effect_level": "medium",
+      "use_when": "Counterpart dominates or pressures for quick concessions.",
+      "how": "Respond with calm boundaries, avoid escalation, redirect focus to mutual goals."
+    },
+    "collaborative": {
+      "name": "Collaborative",
+      "keywords": ["together", "joint", "mutual", "solution"],
+      "speechPatterns": ["let’s.*", "work together.*", "shared.*"],
+      "context_phase": ["exploration", "closing"],
+      "risk_level": "low",
+      "effect_level": "high",
+      "use_when": "Negotiation involves long-term relationships or shared outcomes.",
+      "how": "Encourage brainstorming, emphasize fairness, highlight joint wins."
+    },
+    "analytical": {
+      "name": "Analytical",
+      "keywords": ["data", "report", "statistics", "numbers"],
+      "speechPatterns": ["according to.*", "the data shows.*"],
+      "context_phase": ["exploration", "bargaining"],
+      "risk_level": "medium",
+      "effect_level": "medium",
+      "use_when": "Counterpart prefers logic and facts over emotions.",
+      "how": "Provide clear evidence, avoid vague statements, highlight ROI."
     }
+  }
 }

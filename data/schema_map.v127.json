@@ -10,8 +10,13 @@
   "q_deadline": "deadline_type",
   "q_market_sources": "market_data_sources",
   "q_failed": "current_challenges",
-
   "q_title": "target_title",
   "q_achievements": "main_leverage",
-  "q_salary_range": "salary_range"
+  "q_salary_range": "salary_range",
+  "_metadata": {
+    "version": "1.0.1",
+    "lang": "en",
+    "description": "Maps questionnaire signals to unified schema fields for NegotiationPro engine.",
+    "lastUpdated": "2025-08-17"
+  }
 }

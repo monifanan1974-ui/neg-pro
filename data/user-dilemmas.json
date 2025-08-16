@@ -5,6 +5,7 @@
     {
       "id": "DL001",
       "title": "Salary expectation too low",
+      "text": "Candidate anchored too low early; needs to revise expectation without losing credibility.",
       "situation": "User stated lower salary than desired during initial screening",
       "emotional_state": [
         "regret",
@@ -13,6 +14,15 @@
       "common_triggers": [
         "Asked prematurely",
         "Lack of market data"
+      ],
+      "recommended_actions": [
+        "Re-anchor using updated market range supported by 2–3 sources",
+        "Tie request to recent measurable impact (two concrete achievements)",
+        "Offer a decision window (5–7 business days) to reduce uncertainty"
+      ],
+      "mitigation": [
+        "Address anchoring bias explicitly: explain new information and why range changed",
+        "Avoid apologetic tone; use neutral, value-first phrasing"
       ],
       "phased_solution": {
         "immediate": "Frame as new information: 'After deeper research, the market range is...'",
@@ -25,11 +35,18 @@
       "cultural_variations": {
         "US": "Be direct with revised numbers",
         "UK": "Use softening language: 'I wonder if we might revisit...'"
-      }
+      },
+      "persona_fit": [
+        "analytical",
+        "collaborator"
+      ],
+      "tone_hint": "neutral",
+      "example_reply": "After taking a closer look at recent market data and aligning it with my recent impact, the standard range for this role is £74k–£82k. Given my contributions, I’m targeting £78k."
     },
     {
       "id": "DL002",
       "title": "Counterparty dismisses data",
+      "text": "Counterparty challenges or mocks the data source; shift to multiple sources and value framing.",
       "situation": "Hiring manager laughs when citing Glassdoor data",
       "emotional_state": [
         "embarrassment",
@@ -39,7 +56,22 @@
         "Cite multiple sources: 'Glassdoor, Levels.fyi, and industry reports show...'",
         "Pivot to value: 'My requested salary reflects the unique value I bring in...'"
       ],
-      "data_validation_required": true
+      "recommended_actions": [
+        "Triangulate with at least three sources before restating the range",
+        "Calmly ask which sources they consider credible and use those as reference",
+        "Translate market range into ROI/impact terms specific to the role"
+      ],
+      "mitigation": [
+        "Avoid defending a single source; focus on convergence across sources",
+        "Keep tone steady; do not mirror dismissiveness"
+      ],
+      "data_validation_required": true,
+      "persona_fit": [
+        "direct",
+        "analytical"
+      ],
+      "tone_hint": "firm",
+      "example_reply": "Totally fair—one source can vary. When I combine Levels.fyi, Glassdoor’s role-specific cuts, and the latest industry report, they converge around £76k–£82k. Given my recent outcomes, targeting £78k is consistent with that."
     }
   ],
   "stats": {

@@ -1,17 +1,32 @@
 {
   "description": "Validation schema for user input",
+  "_metadata": {
+    "version": "1.0.0",
+    "updated_at": "2025-08-17T00:00:00Z"
+  },
   "questions": [
     {
       "id": "salary_expectation",
       "type": "number",
       "required": true,
-      "label": "Expected salary"
+      "label": "Expected salary",
+      "validate": {
+        "min": 1000,
+        "max": 1000000,
+        "step": 1
+      },
+      "example": 78000
     },
     {
       "id": "region",
       "type": "string",
       "required": true,
-      "options": ["US", "UK", "DE", "IL"]
+      "label": "Region",
+      "options": ["US", "UK", "DE", "IL"],
+      "validate": {
+        "allowed": ["US", "UK", "DE", "IL"]
+      },
+      "example": "UK"
     }
   ]
 }

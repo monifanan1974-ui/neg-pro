@@ -4,33 +4,23 @@
     {
       "id": "R003-Default-Persona-Strategy",
       "strategy": "Collaborative Information Gathering",
-      "tags": [
-        "opening",
-        "collaborative"
-      ],
+      "tags": ["opening", "collaborative"],
       "base_confidence": 0.85,
       "conditions": {
-        "persona": {
-          "types": [
-            "default"
-          ]
-        },
-        "emotions": [
-          "neutral",
-          "anxiety"
-        ]
+        "persona": { "types": ["default"] },
+        "emotions": ["neutral", "anxiety"]
       },
       "recommendations": [
         {
-          "text": "1. **Build Rapport First:** Start with a collaborative tone. Ask open-ended questions like 'What would a successful outcome look like for you?' to understand their core interests.",
+          "text": "1. **Build Rapport First:** Start with a collaborative tone. Ask open-ended questions like 'What would a successful outcome look like for you?'",
           "tone": "collaborative"
         },
         {
-          "text": "2. **Present Objective Criteria:** Instead of saying 'I want more,' say 'Based on my research of market rates for this role (citing sources like Glassdoor and Levels.fyi), a salary in the range of X to Y is standard.' This anchors the conversation in facts, not feelings.",
+          "text": "2. **Present Objective Criteria:** Use market data sources (e.g., Glassdoor, Levels.fyi) to anchor salary ranges in facts, not feelings.",
           "tone": "analytical"
         },
         {
-          "text": "3. **State Your Goal Clearly but Flexibly:** Frame your primary goal as a starting point for discussion. For example: 'I'm targeting a base salary of Z, and I'm also interested in discussing the overall package, including performance bonuses.'",
+          "text": "3. **State Your Goal Clearly but Flexibly:** Example: 'I'm targeting a base salary of Z, and I’d also like to discuss bonuses or benefits.'",
           "tone": "assertive"
         }
       ]
@@ -38,21 +28,14 @@
     {
       "id": "R004-Aggressive-Persona-Strategy",
       "strategy": "De-escalation and Control",
-      "tags": [
-        "difficult",
-        "anchoring"
-      ],
+      "tags": ["difficult", "anchoring"],
       "base_confidence": 0.9,
       "conditions": {
-        "persona": {
-          "types": [
-            "aggressive"
-          ]
-        }
+        "persona": { "types": ["aggressive"] }
       },
       "recommendations": [
         {
-          "text": "Maintain a calm and neutral tone. Do not mirror their aggression. Use fact-based language to de-escalate and steer the conversation back to objective points.",
+          "text": "Maintain a calm and neutral tone. Do not mirror their aggression. Use fact-based language to de-escalate and redirect.",
           "tone": "calm"
         }
       ]
@@ -60,27 +43,36 @@
     {
       "id": "R005-Anxiety-Emotion-Strategy",
       "strategy": "Confidence Building and Reassurance",
-      "tags": [
-        "emotional",
-        "reassurance"
-      ],
+      "tags": ["emotional", "reassurance"],
       "base_confidence": 0.9,
       "conditions": {
-        "emotions": [
-          "anxiety"
-        ]
+        "emotions": ["anxiety"]
       },
       "recommendations": [
         {
-          "text": "Acknowledge the pressure of the situation. Saying 'I understand these can be tough conversations' can build trust and lower tension.",
+          "text": "Acknowledge the stress: 'I know these talks can be tough.' This builds trust and reduces pressure.",
           "tone": "empathetic"
+        }
+      ]
+    },
+    {
+      "id": "R999-Fallback-Strategy",
+      "strategy": "Default Neutral Anchoring",
+      "tags": ["fallback", "neutral"],
+      "base_confidence": 0.6,
+      "conditions": {},
+      "recommendations": [
+        {
+          "text": "When no clear persona or emotion is detected, use neutral anchoring: 'Based on my understanding of the role and market, here's what I propose…'",
+          "tone": "neutral"
         }
       ]
     }
   ],
   "_metadata": {
-    "version": "1.0.1",
+    "version": "1.0.2",
     "lang": "en",
-    "lastUpdated": "2025-08-08"
+    "lastUpdated": "2025-08-17",
+    "engine": "NegotiationPro-Core"
   }
 }

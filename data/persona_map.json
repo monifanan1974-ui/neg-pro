@@ -1,8 +1,8 @@
 {
   "_metadata": {
-    "version": "1.0.0",
-    "description": "Defines how to derive profiles from questionnaire answers and adapt output style.",
-    "lastUpdated": "2025-08-08"
+    "version": "1.1.0",
+    "description": "Maps questionnaire answers into persona profiles and adapts response style.",
+    "lastUpdated": "2025-08-17"
   },
   "derived_fields": {
     "self_profile": ["your_communication_style", "your_leverage"],
@@ -10,9 +10,29 @@
     "leverage_equation": ["your_leverage", "negotiation_context", "primary_objective"]
   },
   "style_adapters": {
-    "Direct and to-the-point": { "tone": "assertive", "sentence_length": "short" },
-    "Diplomatic and collaborative": { "tone": "warm", "sentence_length": "medium" },
-    "Analytical and data-driven": { "tone": "analytical", "sentence_length": "medium" },
-    "Quiet and observant": { "tone": "calm", "sentence_length": "short" }
+    "Direct and to-the-point": {
+      "tone": "assertive",
+      "sentence_length": "short",
+      "persona_link": "aggressive"
+    },
+    "Diplomatic and collaborative": {
+      "tone": "warm",
+      "sentence_length": "medium",
+      "persona_link": "collaborative"
+    },
+    "Analytical and data-driven": {
+      "tone": "analytical",
+      "sentence_length": "medium",
+      "persona_link": "analytical"
+    },
+    "Quiet and observant": {
+      "tone": "calm",
+      "sentence_length": "short",
+      "persona_link": "collaborative"
+    }
+  },
+  "fallback_rules": {
+    "missing_persona": "collaborative",
+    "missing_style": "Direct and to-the-point"
   }
 }

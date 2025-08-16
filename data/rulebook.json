@@ -1,7 +1,7 @@
 {
   "_metadata": {
-    "version": "1.0.0",
-    "description": "NegotiationPro rulebook using context_keywords_any for automatic tactic injection."
+    "version": "1.1.0",
+    "description": "NegotiationPro rulebook with risk/effectiveness scores, unified conditions and fallback rules."
   },
   "rule_categories": {
     "compensation_tactics": {
@@ -11,19 +11,21 @@
           "id": "CMP-001",
           "title": "Anchor Framing for Salary Priority",
           "priority": 9,
-          "condition": {
-            "context_keywords_any": ["prio:salary", "src:glassdoor", "src:levels.fyi"]
-          },
-          "action": "Open with market-aligned range, then present a specific anchor with one quantified proof before mentioning perks."
+          "condition": { "context_keywords_any": ["prio:salary", "src:glassdoor", "src:levels.fyi"] },
+          "action": "Open with market-aligned range, then present a specific anchor with one quantified proof before mentioning perks.",
+          "risk_level": "medium",
+          "effectiveness_score": 9,
+          "explanation": "Anchoring works best early, when counterpart is seeking reference points."
         },
         {
           "id": "CMP-002",
           "title": "Title-as-Value Trade",
           "priority": 7,
-          "condition": {
-            "context_keywords_any": ["prio:title"]
-          },
-          "action": "If base salary stalls, propose upgraded title or scope expansion in return for mid-range compensation."
+          "condition": { "context_keywords_any": ["prio:title"] },
+          "action": "If base salary stalls, propose upgraded title or scope expansion in return for mid-range compensation.",
+          "risk_level": "low",
+          "effectiveness_score": 7,
+          "explanation": "Helps counterparts save money while granting you symbolic value."
         }
       ]
     },
@@ -34,19 +36,21 @@
           "id": "TMP-001",
           "title": "Decision Window Ask",
           "priority": 8,
-          "condition": {
-            "context_keywords_any": ["deadline"]
-          },
-          "action": "Request a realistic decision window and schedule a follow-up date to reduce open loops."
+          "condition": { "context_keywords_any": ["deadline"] },
+          "action": "Request a realistic decision window and schedule a follow-up date to reduce open loops.",
+          "risk_level": "low",
+          "effectiveness_score": 8,
+          "explanation": "Sets boundaries and prevents endless delays."
         },
         {
           "id": "TMP-002",
           "title": "Limited-Time Concession",
           "priority": 6,
-          "condition": {
-            "context_keywords_any": ["deadline", "prio:speed (close fast)"]
-          },
-          "action": "Offer a small, reversible concession that expires by your stated deadline to focus momentum."
+          "condition": { "context_keywords_any": ["deadline", "prio:speed (close fast)"] },
+          "action": "Offer a small, reversible concession that expires by your stated deadline to focus momentum.",
+          "risk_level": "medium",
+          "effectiveness_score": 6,
+          "explanation": "Creates urgency without overcommitting."
         }
       ]
     },
@@ -57,47 +61,36 @@
           "id": "POW-001",
           "title": "High-Power Counterpart",
           "priority": 9,
-          "condition": {
-            "context_keywords_any": ["power:high"]
-          },
-          "action": "Lead with objective criteria and third-party data. Keep asks crisp and timeboxed to avoid endless evaluation."
+          "condition": { "context_keywords_any": ["power:high"] },
+          "action": "Lead with objective criteria and third-party data. Keep asks crisp and timeboxed to avoid endless evaluation.",
+          "risk_level": "high",
+          "effectiveness_score": 9,
+          "explanation": "Objective anchors protect against overpowering negotiation tactics."
         },
         {
           "id": "POW-002",
           "title": "Peer-Power Reciprocity",
           "priority": 5,
-          "condition": {
-            "context_keywords_any": ["power:peer"]
-          },
-          "action": "Use reciprocity: trade a low-cost give for a high-value get (e.g., flexible start date ↔ clear title)."
+          "condition": { "context_keywords_any": ["power:peer"] },
+          "action": "Use reciprocity: trade a low-cost give for a high-value get (e.g., flexible start date ↔ clear title).",
+          "risk_level": "low",
+          "effectiveness_score": 7,
+          "explanation": "Peers respond well to balanced trades."
         }
       ]
     },
-    "market_sources": {
-      "title": "Market Source Nuance",
+    "fallback": {
+      "title": "Fallback Rules",
       "rules": [
         {
-          "id": "SRC-001",
-          "title": "Blend Sources",
-          "priority": 4,
-          "condition": {
-            "context_keywords_any": ["src:glassdoor", "src:levels.fyi", "src:recruiter quotes", "src:bls/industry report"]
-          },
-          "action": "Cite two independent sources to reduce pushback on single-source bias."
-        }
-      ]
-    },
-    "relationship_play": {
-      "title": "Relationship-Oriented Counterpart",
-      "rules": [
-        {
-          "id": "REL-001",
-          "title": "Warm Opener for 'Friend' Persona",
-          "priority": 6,
-          "condition": {
-            "persona": { "types": ["the friend", "collaborative"] }
-          },
-          "action": "Acknowledge the ongoing relationship first, then align on a shared long-term outcome before numbers."
+          "id": "FLB-001",
+          "title": "No Match Found",
+          "priority": 1,
+          "condition": { "always": true },
+          "action": "Default to empathy: acknowledge the concern, ask one clarifying question, then pivot to priorities.",
+          "risk_level": "low",
+          "effectiveness_score": 5,
+          "explanation": "Ensures system never leaves the user without guidance."
         }
       ]
     }

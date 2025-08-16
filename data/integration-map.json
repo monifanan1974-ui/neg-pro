@@ -1,7 +1,21 @@
 {
+  "version": "1.0.0",
+  "updated_at": "2025-08-17T00:00:00Z",
   "description": "Defines data flow to and from external APIs",
   "map": {
-    "send_to_api": ["user_state", "BATNA_value", "region"],
-    "retain_internal": ["rules_applied", "persona_match"]
+    "send_to_api": [
+      "user_state",
+      "BATNA_value",
+      "region"
+    ],
+    "retain_internal": [
+      "rules_applied",
+      "persona_match"
+    ]
+  },
+  "_metadata": {
+    "source": "integration-map.json",
+    "maintainer": "NegotiationPro System",
+    "notes": "Ensures clarity of which fields are exposed externally vs. retained internally."
   }
 }

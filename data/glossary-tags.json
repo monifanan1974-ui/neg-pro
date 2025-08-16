@@ -1,8 +1,30 @@
 {
+  "version": "1.0.0",
+  "updated_at": "2025-08-17T00:00:00Z",
   "description": "Glossary and semantic tags for NLP categorization",
   "tags": [
-    {"id": "NEG001", "label": "BATNA", "definition": "Best Alternative to Negotiated Agreement"},
-    {"id": "NEG002", "label": "Integrative", "definition": "Negotiation aiming at mutual gain"},
-    {"id": "NEG003", "label": "Anchoring", "definition": "Setting a reference point in negotiation"}
-  ]
+    {
+      "id": "NEG001",
+      "label": "BATNA",
+      "definition": "Best Alternative to Negotiated Agreement",
+      "category": "core_concept"
+    },
+    {
+      "id": "NEG002",
+      "label": "Integrative",
+      "definition": "Negotiation aiming at mutual gain",
+      "category": "approach"
+    },
+    {
+      "id": "NEG003",
+      "label": "Anchoring",
+      "definition": "Setting a reference point in negotiation",
+      "category": "tactic"
+    }
+  ],
+  "_metadata": {
+    "source": "glossary-tags.json",
+    "maintainer": "NegotiationPro System",
+    "notes": "Expanded with categories for better classification and cross-referencing."
+  }
 }
