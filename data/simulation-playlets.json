@@ -1,126 +1,286 @@
 {
   "metadata": {
-    "version": "1.2",
-    "description": "Simulation-based negotiation scenarios for training and analysis.",
-    "language": "en",
-    "lang": "en",
-    "lastUpdated": "2025-08-08"
+    "title": "Negotiation simulation playlets",
+    "version": "2.0.0",
+    "updated_at": "2025-08-17T00:00:00Z",
+    "compat_note": "All playlets rebuilt with explicit scenes/choices. IDs preserved for main scenarios."
+  },
+  "_metadata": {
+    "author": "Negotiation Pro",
+    "language": "en"
   },
   "playlets": [
     {
       "id": "raise_request",
-      "title": "The Raise",
-      "persona_fit": [
-        "anxious_negotiator",
-        "junior_employee"
-      ],
-      "learning_outcomes": [
-        "anchoring",
-        "confidence_building",
-        "objective_criteria"
-      ],
+      "title": "Ask for a Raise",
+      "persona_fit": ["employee_mid", "analytical", "collaborator"],
+      "learning_outcomes": ["anchoring", "range_setting", "evidence_linking"],
+      "linked_metrics": ["M001", "M002", "S103"],
+      "expected_duration_min": 6,
+      "difficulty": 2,
       "scenes": [
         {
-          "scene_id": "scene1",
+          "id": "s1",
           "role": "manager",
-          "text": "Why do you think now is the right time for a raise?",
-          "options": [
-            "Because my responsibilities increased.",
-            "Because others make more."
-          ],
-          "feedback": {
-            "Because my responsibilities increased.": "Good framing. Focus on value.",
-            "Because others make more.": "Avoid comparisons. Focus on your contribution."
-          },
-          "impact_score": {
-            "anchoring": 2,
-            "confidence_building": 1
-          }
+          "text": "Thanks for meeting. Before we discuss specifics, can you share your expectations?",
+          "choices": [
+            {
+              "id": "c1",
+              "text": "Anchor high with data: 'Based on recent benchmarks and scope, I’m targeting £78k.'",
+              "go_to": "s2",
+              "feedback": "Strong: value-first + benchmarked anchor.",
+              "impact_score": 2
+            },
+            {
+              "id": "c2",
+              "text": "Give a low number to be safe.",
+              "go_to": "s1a",
+              "feedback": "Weak: self-anchoring low reduces leverage.",
+              "impact_score": -2
+            },
+            {
+              "id": "c3",
+              "text": "Ask for their definition of success before numbers.",
+              "go_to": "s1b",
+              "feedback": "Good collaboration frame (mutual_goal).",
+              "impact_score": 1
+            }
+          ]
         },
         {
-          "scene_id": "scene2",
-          "role": "employee",
-          "text": "I’d like to revisit my compensation based on recent achievements.",
-          "options": [
-            "List specific achievements",
-            "Say you feel undervalued"
-          ],
-          "feedback": {
-            "List specific achievements": "Excellent. Objective justification increases credibility.",
-            "Say you feel undervalued": "Be careful with emotion-based claims. Stay factual."
-          },
-          "impact_score": {
-            "objective_criteria": 2
-          }
+          "id": "s1a",
+          "role": "system",
+          "text": "Manager accepts the low number quickly.",
+          "choices": [
+            {
+              "id": "c1",
+              "text": "Re-anchor using new information and impacts.",
+              "go_to": "s2",
+              "feedback": "Recovery path: explain updated range + proof points.",
+              "impact_score": 1
+            }
+          ]
+        },
+        {
+          "id": "s1b",
+          "role": "manager",
+          "text": "Success would be a stable roadmap delivery and on-call coverage.",
+          "choices": [
+            {
+              "id": "c1",
+              "text": "Reflect success criteria, then present range £74k–£82k with target £78k.",
+              "go_to": "s2",
+              "feedback": "Excellent: aligns interests then anchors.",
+              "impact_score": 2
+            }
+          ]
+        },
+        {
+          "id": "s2",
+          "role": "manager",
+          "text": "That seems above our budget. We were thinking £70k.",
+          "choices": [
+            {
+              "id": "c1",
+              "text": "Reframe to value (CTR-LOWBALL-01).",
+              "go_to": "s3",
+              "feedback": "Right move: shift from price to ROI/proof.",
+              "impact_score": 2
+            },
+            {
+              "id": "c2",
+              "text": "Concede immediately to £72k.",
+              "go_to": "s3",
+              "feedback": "Premature concession; hurts Value Capture.",
+              "impact_score": -2
+            }
+          ]
+        },
+        {
+          "id": "s3",
+          "role": "manager",
+          "text": "Ok, share your proof points.",
+          "choices": [
+            {
+              "id": "c1",
+              "text": "List 2 measurable outcomes from last 2 quarters.",
+              "go_to": "end_good",
+              "feedback": "Strong close: evidence-backed.",
+              "impact_score": 3
+            },
+            {
+              "id": "c2",
+              "text": "Stay vague about impact.",
+              "go_to": "end_ok",
+              "feedback": "Missed chance to quantify.",
+              "impact_score": 0
+            }
+          ]
+        },
+        {
+          "id": "end_good",
+          "role": "system",
+          "text": "Outcome: Agreement near target. Manager requests 5 business days to finalize.",
+          "terminal": true
+        },
+        {
+          "id": "end_ok",
+          "role": "system",
+          "text": "Outcome: Partial improvement but below target band.",
+          "terminal": true
         }
       ]
     },
     {
       "id": "client_conflict",
-      "title": "The Client Clash",
-      "persona_fit": [
-        "freelancer",
-        "project_manager"
-      ],
-      "learning_outcomes": [
-        "de_escalation",
-        "framing",
-        "interest_based_negotiation"
-      ],
+      "title": "Handle Client Pushback",
+      "persona_fit": ["freelancer", "account_manager", "friend"],
+      "learning_outcomes": ["de_escalation", "pivoting", "criteria_reset"],
+      "linked_metrics": ["M003", "S101", "S104"],
+      "expected_duration_min": 7,
+      "difficulty": 3,
       "scenes": [
         {
-          "scene_id": "scene1",
+          "id": "s1",
           "role": "client",
-          "text": "I’m not happy with the direction of this project.",
-          "options": [
-            "What specifically isn’t working?",
-            "We followed your guidelines."
-          ],
-          "feedback": {
-            "What specifically isn’t working?": "Opens space for collaborative repair.",
-            "We followed your guidelines.": "Feels defensive. May escalate."
-          },
-          "impact_score": {
-            "de_escalation": 2,
-            "framing": 1
-          }
+          "text": "This scope creep is unacceptable. Your price is way off.",
+          "choices": [
+            {
+              "id": "c1",
+              "text": "Set a calm boundary (DEESC-BOUNDARY-01).",
+              "go_to": "s2",
+              "feedback": "Good: keep it professional and fact-based.",
+              "impact_score": 2
+            },
+            {
+              "id": "c2",
+              "text": "Apologize and cut price by 20%.",
+              "go_to": "s2",
+              "feedback": "High concession without reset; risky.",
+              "impact_score": -2
+            }
+          ]
+        },
+        {
+          "id": "s2",
+          "role": "client",
+          "text": "Fine. Then justify the number.",
+          "choices": [
+            {
+              "id": "c1",
+              "text": "Pivot: 'Let’s align base with scope first, then revisit perks.'",
+              "go_to": "s3",
+              "feedback": "Right: refocus to criteria/logrolling.",
+              "impact_score": 2
+            },
+            {
+              "id": "c2",
+              "text": "Defend every detail emotionally.",
+              "go_to": "s3",
+              "feedback": "Escalates tone; reduces trust.",
+              "impact_score": -1
+            }
+          ]
+        },
+        {
+          "id": "s3",
+          "role": "client",
+          "text": "What’s the minimum you can do?",
+          "choices": [
+            {
+              "id": "c1",
+              "text": "Split value: separate core scope vs. optional add-ons.",
+              "go_to": "end_good",
+              "feedback": "Creates options; protects base value.",
+              "impact_score": 3
+            },
+            {
+              "id": "c2",
+              "text": "Offer discount without scope change.",
+              "go_to": "end_ok",
+              "feedback": "Unbalanced concession.",
+              "impact_score": -1
+            }
+          ]
+        },
+        {
+          "id": "end_good",
+          "role": "system",
+          "text": "Outcome: Agreement on core scope; add-ons deferred.",
+          "terminal": true
+        },
+        {
+          "id": "end_ok",
+          "role": "system",
+          "text": "Outcome: Agreement but margin erosion.",
+          "terminal": true
         }
       ]
     },
     {
       "id": "remote_tension",
-      "title": "The Remote Dilemma",
-      "persona_fit": [
-        "team_leader",
-        "remote_worker"
-      ],
-      "learning_outcomes": [
-        "power_dynamics",
-        "transparency",
-        "value_creation"
-      ],
+      "title": "Defuse Tension in Remote Call",
+      "persona_fit": ["manager", "friend", "fox"],
+      "learning_outcomes": ["tone_control", "strategic_silence", "question_ladders"],
+      "linked_metrics": ["M003", "S104", "S105"],
+      "expected_duration_min": 5,
+      "difficulty": 2,
       "scenes": [
         {
-          "scene_id": "scene1",
-          "role": "manager",
-          "text": "We’re reconsidering remote work. It’s affecting productivity.",
-          "options": [
-            "Can we review performance data?",
-            "I think that’s unfair."
-          ],
-          "feedback": {
-            "Can we review performance data?": "Great – you're shifting to objective ground.",
-            "I think that’s unfair.": "Avoid loaded language. Stay data-driven."
-          },
-          "impact_score": {
-            "transparency": 2,
-            "power_dynamics": 1
-          }
+          "id": "s1",
+          "role": "counterpart",
+          "text": "This isn’t going anywhere. Maybe we should pause this project.",
+          "choices": [
+            {
+              "id": "c1",
+              "text": "Use strategic silence (3–5s), then ladder question.",
+              "go_to": "s2",
+              "feedback": "Good: diffuses, invites detail.",
+              "impact_score": 2
+            },
+            {
+              "id": "c2",
+              "text": "Respond defensively and talk over them.",
+              "go_to": "s2",
+              "feedback": "Escalation risk.",
+              "impact_score": -2
+            }
+          ]
+        },
+        {
+          "id": "s2",
+          "role": "counterpart",
+          "text": "The risk feels too high for Q3.",
+          "choices": [
+            {
+              "id": "c1",
+              "text": "Reframe to risk-reduction options; propose two choices.",
+              "go_to": "end_good",
+              "feedback": "Supports autonomy; reduces perceived risk.",
+              "impact_score": 3
+            },
+            {
+              "id": "c2",
+              "text": "Push for immediate commitment.",
+              "go_to": "end_ok",
+              "feedback": "May backfire given tension.",
+              "impact_score": -1
+            }
+          ]
+        },
+        {
+          "id": "end_good",
+          "role": "system",
+          "text": "Outcome: Agreement to continue with reduced scope and checkpoint.",
+          "terminal": true
+        },
+        {
+          "id": "end_ok",
+          "role": "system",
+          "text": "Outcome: Pause with plan to revisit later.",
+          "terminal": true
         }
       ]
     }
-  ],
-  "_metadata": {
-    "version": "1.0.1"
-  }
+  ]
 }

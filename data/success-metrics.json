@@ -1,51 +1,153 @@
 {
-  "description": "Quantitative metrics for negotiation success tracking",
+  "description": "Quantitative success metrics for Negotiation Pro. Primary and secondary KPIs with formulas, weights, data sources, and reporting defaults.",
+  "_metadata": {
+    "version": "1.1.0",
+    "updated_at": "2025-08-17T00:00:00Z",
+    "compat_note": "Original concept preserved; all fields are additive and optional for consumers."
+  },
   "primary_metrics": [
     {
       "id": "M001",
       "name": "Agreement Rate",
-      "definition": "Percentage of negotiations reaching agreement",
-      "target": ">75%",
-      "measurement_frequency": "per_negotiation"
+      "definition": "Share of negotiations that end in an agreement.",
+      "formula": "agreements / total_negotiations",
+      "target": 0.75,
+      "weight": 0.35,
+      "time_window": "rolling_90d",
+      "data_source": "events.negotiations",
+      "dimensions": ["persona", "industry", "region"],
+      "notes": "Key top-line conversion metric."
     },
     {
       "id": "M002",
       "name": "Value Capture Index",
-      "definition": "Percentage of target value achieved",
-      "calculation": "(achieved_value / target_value) × 100",
-      "target": ">85%"
+      "definition": "How close the outcome is to the target anchor or agreed value bands.",
+      "formula": "(achieved_value - floor_value) / (target_value - floor_value)",
+      "target": 0.7,
+      "weight": 0.30,
+      "time_window": "rolling_90d",
+      "data_source": "events.offers",
+      "dimensions": ["deal_size_band", "persona"],
+      "notes": "Normalized 0–1. Uses configured floor/target per scenario."
     },
     {
       "id": "M003",
       "name": "Relationship Preservation",
-      "definition": "Counterparty satisfaction rating post-negotiation",
-      "measurement": "5-point Likert scale",
-      "target": "≥4.2"
+      "definition": "Post-interaction relationship score (self/peer rated) above threshold.",
+      "formula": "avg(post_meeting_rel_score)",
+      "target": 4.2,
+      "weight": 0.20,
+      "time_window": "rolling_60d",
+      "data_source": "surveys.post_meeting",
+      "dimensions": ["counterpart_persona", "culture"],
+      "notes": "Likert 1–5; measures long-term collaboration potential."
+    },
+    {
+      "id": "M004",
+      "name": "Cycle Time to Decision",
+      "definition": "Median days from first scoping to final decision.",
+      "formula": "median(days(decision_ts - first_scope_ts))",
+      "target": 7,
+      "weight": 0.15,
+      "time_window": "rolling_90d",
+      "data_source": "events.timeline",
+      "dimensions": ["deal_type", "region"],
+      "direction": "lower_is_better",
+      "notes": "Proxy for momentum; complements Agreement Rate."
     }
   ],
   "secondary_metrics": [
     {
-      "id": "M101",
-      "name": "Time Efficiency",
-      "definition": "Hours from initiation to agreement",
-      "target": "<8 hours for standard negotiations"
+      "id": "S101",
+      "name": "Concession Balance",
+      "definition": "Balance between concessions given vs. received, normalized by value.",
+      "formula": "(value_received - value_given) / (value_received + value_given)",
+      "target": 0.15,
+      "weight": 0.25,
+      "time_window": "rolling_60d",
+      "data_source": "events.concessions",
+      "dimensions": ["phase", "persona"],
+      "notes": "Positive values indicate healthier trades."
     },
     {
-      "id": "M102",
-      "name": "Concession Balance",
-      "definition": "Ratio of user to counterparty concessions",
-      "target": "1:1 to 1:1.5"
+      "id": "S102",
+      "name": "Data Credibility Acknowledgement",
+      "definition": "Rate of counterpart acknowledging or accepting cited benchmarks.",
+      "formula": "acknowledged_benchmark_events / benchmark_presentations",
+      "target": 0.6,
+      "weight": 0.20,
+      "time_window": "rolling_60d",
+      "data_source": "events.benchmark_mentions",
+      "dimensions": ["source_brand", "persona"],
+      "notes": "Improves when using multi-source triangulation."
+    },
+    {
+      "id": "S103",
+      "name": "Opener Fit Score",
+      "definition": "Average rubric score for chosen opening vs. persona+culture.",
+      "formula": "avg(opener_fit_rubric)",
+      "target": 4.0,
+      "weight": 0.20,
+      "time_window": "rolling_30d",
+      "data_source": "ai.recommendations + user_ratings",
+      "dimensions": ["persona", "culture"],
+      "notes": "1–5; fed by UI ratings and AI audit."
+    },
+    {
+      "id": "S104",
+      "name": "Escalation Defused",
+      "definition": "Share of heated interactions de-escalated within two turns.",
+      "formula": "defused_cases / heated_cases",
+      "target": 0.7,
+      "weight": 0.15,
+      "time_window": "rolling_90d",
+      "data_source": "nlp.turn_level_labels",
+      "dimensions": ["phase"],
+      "notes": "Tied to de-escalation micro-tactics."
+    },
+    {
+      "id": "S105",
+      "name": "Discovery Depth",
+      "definition": "Average count of deeper ‘why/ladder’ insights captured per negotiation.",
+      "formula": "avg(unique_discovery_insights)",
+      "target": 3.0,
+      "weight": 0.20,
+      "time_window": "rolling_60d",
+      "data_source": "notes.extraction",
+      "dimensions": ["industry", "deal_size_band"],
+      "notes": "Correlates with Value Capture."
     }
   ],
   "reporting": {
-    "dashboard_components": [
-      "real-time_success_heatmap",
-      "persona_performance_comparison",
-      "regional_variance_analysis"
+    "dashboard": {
+      "default_kpis": ["M001", "M002", "M003", "M004", "S101", "S104"],
+      "breakdowns": ["persona", "industry", "region", "phase"],
+      "sparklines_window": "90d"
+    },
+    "threshold_alerts": [
+      {
+        "id": "ALERT_LOW_AGREEMENT",
+        "metric_id": "M001",
+        "operator": "<",
+        "value": 0.6,
+        "window": "30d",
+        "severity": "high",
+        "action_suggestion": "Push opener coaching; emphasize mutual_goal + anchor_high."
+      },
+      {
+        "id": "ALERT_SLOW_CYCLE",
+        "metric_id": "M004",
+        "operator": ">",
+        "value": 10,
+        "window": "30d",
+        "severity": "medium",
+        "action_suggestion": "Recommend door_close and explicit decision window."
+      }
     ],
-    "alert_thresholds": {
-      "agreement_rate": "<60%",
-      "value_capture": "<70%"
+    "export": {
+      "formats": ["csv", "json"],
+      "schedule": "weekly_mon_08_00",
+      "retention_days": 365
     }
   }
 }
