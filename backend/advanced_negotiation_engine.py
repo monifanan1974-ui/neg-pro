@@ -1,3 +1,4 @@
+--- START OF FILE backend/advanced_negotiation_engine.py ---
 # backend/advanced_negotiation_engine.py
 # V3 – Super KB + Advanced Rule Engine integration
 
@@ -5,11 +6,20 @@ import json
 import os
 from typing import Any, Dict, List, Tuple
 
+<<<<<<< HEAD
 from persona_profiler import PersonaProfiler
 from market_intel import MarketIntel
 from simulation_manager import SimulationManager
 from tactic_composer import TacticComposer
 from rule_engine_expansion import RuleEngineExpansion
+=======
+# Use relative imports for modules within the same package
+from .persona_profiler import PersonaProfiler
+from .market_intel import MarketIntel
+from .simulation_manager import SimulationManager
+from .tactic_composer import TacticComposer
+from .rule_engine_expansion import RuleEngineExpansion
+>>>>>>> 761b083 (Your commit message here)
 
 try:
     import openai  # noqa: F401

@@ -14,7 +14,7 @@ import os
 import json
 from flask import request, jsonify
 from battle_card_engine import BattleCardEngine
-from questionnaire_mapper import map_questionnaire_to_inputs
+from backend.questionnaire_mapper import map_questionnaire_to_inputs
 
 def _resolve_default_template() -> str:
     env_path = os.environ.get("BATTLECARD_TEMPLATE")

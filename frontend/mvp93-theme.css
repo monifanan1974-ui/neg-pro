@@ -1,0 +1,188 @@
+/* mvp93-theme.css — visual layer only (keeps all logic/routes intact)
+   Exact palette + motion language taken from MVP-93 (your uploaded file).
+   Loads AFTER frontend/style.css to override dark theme to a premium light theme.
+*/
+
+/* ---------- Core palette from MVP-93 ---------- */
+:root {
+  --primary: #2563eb;           /* Indigo-600 */
+  --primary-dark: #1d4ed8;      /* Indigo-700 */
+  --secondary: #0e7490;         /* Teal-700   */
+  --accent: #F59E0B;            /* Amber-500  */
+  --accent-light: #fdba74;      /* Amber-300  */
+
+  --light: #f8fafc;             /* Page background (light) */
+  --dark: #1f2937;              /* Headings on light */
+  --text-dark: #1f2937;
+  --text-medium: #6B7280;
+  --text-light: #a0aec0;
+  --success: #10b981;
+  --error: #ef4444;
+  --border: #e2e8f0;
+
+  /* map to existing app vars so old CSS “just works” */
+  --bg-color: var(--light);
+  --bg-gradient: none;
+  --panel-bg: rgba(255,255,255,0.72);
+  --panel-border: rgba(226,232,240,0.6);
+  --panel-blur: 14px;
+  --text-primary: var(--text-dark);
+  --text-secondary: var(--text-medium);
+  --text-muted: var(--text-light);
+}
+
+/* ---------- Page background (MVP-93: light + soft gradients + subtle noise) ---------- */
+html { scroll-behavior: smooth; }
+body {
+  color: var(--text-dark);
+  background-color: var(--light);
+  background-image:
+    radial-gradient(1000px 700px at 10% -10%, rgba(37,99,235,.08), transparent 60%),
+    radial-gradient(800px 600px at 110% 0%, rgba(14,116,144,.08), transparent 60%),
+    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence baseFrequency='0.75' numOctaves='4' stitchTiles='stitch'/%3E%3CfeColorMatrix type='saturate' values='0'/%3E%3CfeComponentTransfer%3E%3CfeFuncA type='table' tableValues='0 0 .03'/%3E%3C/feComponentTransfer%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+  background-attachment: fixed;
+  line-height: 1.7;
+}
+
+/* ---------- Typography (MVP-93) ---------- */
+body { font-family: 'Satoshi', system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, sans-serif; }
+h1,h2,h3,.page-title { font-family: 'Manrope', 'Satoshi', sans-serif; letter-spacing: -0.02em; color: var(--dark); }
+
+/* ---------- Header / Nav ---------- */
+.app-header {
+  background: rgba(255,255,255,0.65);
+  border-bottom: 1px solid var(--panel-border);
+  backdrop-filter: blur(10px);
+}
+.nav-link {
+  color: var(--text-medium);
+  font-weight: 800;
+  border-radius: 999px;
+  transition: all .2s ease;
+}
+.nav-link:hover { color: var(--text-dark); background: rgba(0,0,0,0.04); }
+.nav-link.active {
+  color: #fff;
+  background: linear-gradient(90deg, var(--secondary), var(--primary));
+  box-shadow: 0 10px 24px rgba(37,99,235,.22);
+}
+
+/* ---------- Cards (glass on light) ---------- */
+.card {
+  background: var(--panel-bg);
+  border: 1px solid var(--panel-border);
+  border-radius: 20px;
+  backdrop-filter: blur(var(--panel-blur));
+  -webkit-backdrop-filter: blur(var(--panel-blur));
+  box-shadow: 0 12px 30px rgba(17,24,39,.12);
+  transition: transform .2s ease, box-shadow .2s ease, border-color .2s ease;
+}
+.card.elevate:hover {
+  transform: translateY(-6px);
+  box-shadow: 0 18px 40px rgba(17,24,39,.16);
+  border-color: rgba(226,232,240,.9);
+}
+
+/* KPI emphasis */
+.kpi-card .kpi-value { color: var(--primary); text-shadow: 0 2px 18px rgba(37,99,235,.18); }
+
+/* ---------- Buttons ---------- */
+.btn {
+  font-weight: 800;
+  letter-spacing: .02em;
+  background: linear-gradient(90deg, var(--secondary), var(--primary));
+  color: #fff;
+  border-radius: 999px;
+  padding: .8rem 1.4rem;
+  box-shadow: 0 10px 24px rgba(37,99,235,.22);
+  transition: transform .15s ease, box-shadow .2s ease, opacity .15s ease;
+}
+.btn:hover { transform: translateY(-2px); box-shadow: 0 16px 36px rgba(37,99,235,.28); }
+.btn.secondary {
+  background: linear-gradient(90deg, var(--accent), var(--accent-light));
+  color: #1b1303;
+  box-shadow: 0 8px 20px rgba(245,158,11,.25);
+  border: none;
+}
+.btn.secondary:hover { filter: brightness(1.02); transform: translateY(-1px); }
+
+/* ---------- Badges / Chips ---------- */
+.badge {
+  font-weight: 800;
+  padding: .25rem .65rem;
+  border-radius: 999px;
+  font-size: .75rem;
+  box-shadow: 0 6px 14px rgba(0,0,0,.1);
+}
+.badge.easy   { background: linear-gradient(90deg, #22c55e, #16a34a); color: #062312; }
+.badge.medium { background: linear-gradient(90deg, #f59e0b, #d97706); color: #1f1405; }
+.badge.hard   { background: linear-gradient(90deg, #ef4444, #dc2626); color: #240b0b; }
+
+/* ---------- Bars / Progress ---------- */
+.progress-bar        { background: rgba(0,0,0,.06); border-radius: 999px; }
+.progress-bar-inner  {
+  background: linear-gradient(90deg, var(--accent), var(--primary));
+  border-radius: 999px;
+  box-shadow: 0 4px 14px rgba(245,158,11,.3);
+}
+
+/* Skill bars (dashboard) */
+.skill-bar { background: rgba(0,0,0,.06); }
+.skill-bar span {
+  background: linear-gradient(90deg, var(--secondary), var(--primary));
+  box-shadow: inset 0 0 0 1px rgba(255,255,255,.45);
+}
+
+/* ---------- Chat bubbles ---------- */
+.bubble.ai { background: rgba(0,0,0,.04); border: 1px solid var(--panel-border); color: var(--text-dark); }
+.bubble.me { background: linear-gradient(90deg, var(--secondary), var(--primary)); color: #fff; }
+
+/* ---------- Section titles ---------- */
+.page-title { font-size: 2.35rem; margin-bottom: .25rem; }
+.page-subtitle { color: var(--text-medium); }
+
+/* ---------- Micro-motions (MVP-93) ---------- */
+@keyframes gradientPulse {
+  0%,100% { background-position: 0% 50%; }
+  50%     { background-position: 100% 50%; }
+}
+@keyframes float {
+  0%,100% { transform: translateY(0); }
+  50%     { transform: translateY(-6px); }
+}
+@keyframes fadeInUp {
+  from { opacity: 0; transform: translateY(14px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+.gradient-animated { background-size: 200% 200%; animation: gradientPulse 8s ease infinite; }
+.floaty            { animation: float 6s ease-in-out infinite; }
+.fade-in-up        { animation: fadeInUp .5s ease both; }
+
+@media (prefers-reduced-motion: reduce) {
+  .gradient-animated, .floaty, .fade-in-up { animation: none !important; }
+}
+
+/* ---------- Small polish ---------- */
+.app-main { padding-top: 2rem; }
+.practice-card .card-footer { color: var(--text-light); }
+.kpi-list-item, .suggestion-item {
+  background: rgba(255,255,255,.6);
+  border: 1px solid var(--panel-border);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+}
+
+/* Inputs (strategy) */
+.form-input, .choice-btn {
+  background: rgba(0,0,0,.035);
+  border: 1px solid var(--panel-border);
+  color: var(--text-dark);
+}
+.choice-btn:hover, .choice-btn.selected {
+  background: rgba(0,0,0,.06);
+  border-color: rgba(0,0,0,.12);
+}
+
+/* Report frame */
+#report-iframe { background: #fff; border: 1px solid var(--panel-border); border-radius: 16px; }

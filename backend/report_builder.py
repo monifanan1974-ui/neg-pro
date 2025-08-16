@@ -189,6 +189,7 @@ def _build_report_data(engine_out: Dict[str,Any], extras: Optional[Dict[str,Any]
     return data
 
 def build_report_html(engine_out: Dict[str,Any], extras: Optional[Dict[str,Any]] = None) -> Dict[str,Any]:
+
     data = _build_report_data(engine_out, extras)
     tpl = _load_template_html()
     html = _inject_report_data(tpl, data)

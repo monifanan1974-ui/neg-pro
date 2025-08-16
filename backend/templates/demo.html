@@ -1,105 +1,126 @@
 <!doctype html>
 <html lang="en">
 <head>
-<meta charset="utf-8" />
-<title>NegotiationPro – Questionnaire Demo</title>
-<meta name="viewport" content="width=device-width, initial-scale=1" />
-<style>
-  body{margin:0;font-family:Inter,system-ui,Segoe UI,Roboto,Arial,sans-serif;background:#0b1220;color:#f0f4ff}
-  .wrap{max-width:1000px;margin:24px auto;padding:0 16px}
-  h1{font-size:22px;margin:0 0 8px}
-  p{color:#9fb3d4;margin:0 0 16px}
-  .row{display:flex;gap:12px;align-items:center;margin:12px 0}
-  button{background:#58a6ff;border:0;color:#0b1220;padding:10px 14px;border-radius:10px;font-weight:600;cursor:pointer}
-  button:disabled{opacity:.6;cursor:not-allowed}
-  textarea,pre{width:100%;background:#121a2b;color:#f0f4ff;border:1px solid #1f2a44;border-radius:10px;padding:10px}
-  iframe{width:100%;height:520px;border:1px solid #1f2a44;border-radius:14px;background:#121a2b}
-  .grid{display:grid;grid-template-columns:1fr 1fr;gap:16px}
-  .card{background:#121a2b;border:1px solid #1f2a44;border-radius:14px;padding:14px}
-  small{color:#9fb3d4}
-</style>
+  <meta charset="utf-8" />
+  <title>NegotiationPro — Demo</title>
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <style>
+    :root{--bg:#0b1220;--panel:#0f172a;--text:#e5e7eb;--muted:#94a3b8;--accent:#60a5fa;--ok:#22c55e;--err:#ef4444}
+    *{box-sizing:border-box} body{margin:0;background:var(--bg);color:var(--text);font-family:Inter,system-ui,Segoe UI,Arial}
+    header{padding:14px 18px;border-bottom:1px solid #1f2937;background:#0c1426}
+    .wrap{display:grid;grid-template-columns:1.4fr 1fr;gap:16px;padding:18px}
+    .card{background:var(--panel);border:1px solid #1f2937;border-radius:12px;overflow:hidden}
+    .card h3{margin:0;padding:12px 14px;border-bottom:1px solid #1f2937;background:#0e1931;font-size:15px}
+    .body{padding:14px}
+    label{display:block;font-size:12px;color:var(--muted);margin:10px 0 6px}
+    input,select,textarea{width:100%;padding:10px;border-radius:10px;border:1px solid #22314d;background:#0c1426;color:var(--text)}
+    .row{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+    .btns{display:flex;gap:8px;margin-top:12px}
+    button{padding:10px 14px;border-radius:10px;border:1px solid #22314d;background:#12203a;color:#fff;cursor:pointer}
+    button.primary{background:var(--accent);border-color:#3b82f6}
+    button:disabled{opacity:.5;cursor:not-allowed}
+    .json{font-family:ui-monospace,Menlo,Consolas,monospace;background:#0b1326;color:#e5e7eb;border:1px solid #1f2937;border-radius:10px;padding:10px;height:260px;overflow:auto;white-space:pre-wrap}
+    #report{min-height:360px;padding:0;margin:0;border:0}
+    .hint{font-size:12px;color:var(--muted);margin-top:6px}
+  </style>
 </head>
 <body>
-<div class="wrap">
-  <h1>Questionnaire → Report (Smoke Test)</h1>
-  <p>לחץ על הכפתור. אני שולח תשובות דמו ל־/questionnaire/report, ומציג את ה־HTML שחוזר.</p>
+  <header>
+    <strong>NegotiationPro</strong> <span style="color:#94a3b8">/ Demo</span>
+  </header>
 
-  <div class="grid">
-    <div class="card">
-      <div class="row">
-        <button id="run">Run Test</button>
-        <small id="status"></small>
+  <div class="wrap">
+    <!-- Left: Form -->
+    <section class="card">
+      <h3>Answer the steps</h3>
+      <div class="body">
+        <div class="row">
+          <div>
+            <label for="role">Role / Target Title</label>
+            <input id="role" placeholder="Senior Editor" />
+          </div>
+          <div>
+            <label for="seniority">Seniority</label>
+            <select id="seniority">
+              <option value="junior">junior</option>
+              <option value="mid" selected>mid</option>
+              <option value="senior">senior</option>
+              <option value="lead">lead</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="row">
+          <div>
+            <label for="country">Country</label>
+            <input id="country" placeholder="UK" />
+          </div>
+          <div>
+            <label for="industry">Industry</label>
+            <input id="industry" placeholder="Tech" />
+          </div>
+        </div>
+
+        <div class="row">
+          <div>
+            <label for="communication_style">Communication Style</label>
+            <input id="communication_style" placeholder="Analytical / Diplomatic / Direct" />
+          </div>
+          <div>
+            <label for="counterpart_persona">Counterpart Persona (optional)</label>
+            <input id="counterpart_persona" placeholder="The Friend / The Analyst / The Dominator" />
+          </div>
+        </div>
+
+        <div class="row">
+          <div>
+            <label for="range_low">Range Low</label>
+            <input id="range_low" placeholder="£65k" />
+          </div>
+          <div>
+            <label for="range_high">Range High</label>
+            <input id="range_high" placeholder="£85k" />
+          </div>
+        </div>
+
+        <div class="row">
+          <div>
+            <label for="target_salary">Target / Anchor (optional)</label>
+            <input id="target_salary" placeholder="£82k" />
+          </div>
+          <div>
+            <label for="market_sources">Market Sources</label>
+            <input id="market_sources" placeholder="Glassdoor, Levels.fyi" />
+          </div>
+        </div>
+
+        <div class="btns">
+          <button id="btn-build" class="primary">Build Presentation Report</button>
+          <button id="btn-reset" type="button">Reset</button>
+          <span id="status" class="hint"></span>
+        </div>
       </div>
-      <textarea id="payload" rows="14"></textarea>
-      <div class="row"><small>אפשר לערוך את ה־JSON לפני הרצה.</small></div>
-    </div>
+    </section>
 
-    <div class="card">
-      <iframe id="viewer" title="Report Preview"></iframe>
-    </div>
+    <!-- Right: Payload preview -->
+    <section class="card">
+      <h3>Payload Preview</h3>
+      <div class="body">
+        <div id="preview" class="json">{}</div>
+        <div class="hint">The JSON is auto-saved to localStorage and updated in real-time.</div>
+      </div>
+    </section>
   </div>
 
-  <div class="card" style="margin-top:16px">
-    <h3 style="margin:0 0 8px">Raw Response (debug)</h3>
-    <pre id="debug" style="height:180px;overflow:auto"></pre>
-  </div>
-</div>
+  <!-- Report -->
+  <section class="card" style="margin:0 18px 18px">
+    <h3>Report</h3>
+    <div class="body">
+      <iframe id="report" title="Report" style="width:100%;height:560px;background:#0b1326;border-radius:12px"></iframe>
+      <div class="hint">The report is injected into the iframe from the HTML returned by the API (POST /questionnaire/report).</div>
+    </div>
+  </section>
 
-<script>
-const sample = {
-  "questionnaire": {
-    "q_persona_desc": "The Collaborator",
-    "q_power": "peer",
-    "q_user_style": "Analytical",
-    "q_salary_target": "78000",
-    "q_benefits": ["remote_work","learning_budget"],
-    "q_country": "UK",
-    "q_risk": 3,
-    "q_prior_offers": "none",
-    "q_deadline": "firm",
-    "q_market_sources": ["Glassdoor","Levels.fyi"],
-    "q_failed": ["budget_limitations"]
-  }
-};
-
-const $payload = document.getElementById('payload');
-const $run = document.getElementById('run');
-const $status = document.getElementById('status');
-const $viewer = document.getElementById('viewer');
-const $debug = document.getElementById('debug');
-
-$payload.value = JSON.stringify(sample, null, 2);
-
-$run.onclick = async () => {
-  try {
-    $run.disabled = true;
-    $status.textContent = 'Working...';
-    const body = JSON.parse($payload.value);
-
-    const res = await fetch('/questionnaire/report', {
-      method: 'POST',
-      headers: { 'Content-Type':'application/json' },
-      body: JSON.stringify(body)
-    });
-
-    const data = await res.json();
-    $debug.textContent = JSON.stringify(data, null, 2);
-
-    if (data && data.html) {
-      const blob = new Blob([String(data.html)], {type:'text/html'});
-      const url = URL.createObjectURL(blob);
-      $viewer.src = url;
-      $status.textContent = 'Done ✓';
-    } else {
-      $status.textContent = 'No HTML returned';
-    }
-  } catch (e) {
-    console.error(e);
-    $status.textContent = 'Error – see console';
-  } finally {
-    $run.disabled = false;
-  }
-};
-</script>
+  <script src="/frontend/report_embed.js"></script>
 </body>
 </html>

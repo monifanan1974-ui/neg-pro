@@ -6,10 +6,10 @@ from __future__ import annotations
 import os, json, re, traceback
 from typing import Dict, Any, List
 
-from advanced_negotiation_engine import AdvancedNegotiationEngine
-from rule_engine_expansion import RuleEngineExpansion
-from questionnaire_mapper import map_questionnaire_to_inputs
-from report_builder import build_report_html
+from backend.advanced_negotiation_engine import AdvancedNegotiationEngine
+from backend.rule_engine_expansion import RuleEngineExpansion
+from backend.questionnaire_mapper import map_questionnaire_to_inputs
+from backend.report_builder import build_report_html
 
 def _clamp(v: float, lo: float = 0.0, hi: float = 100.0) -> float:
     return max(lo, min(hi, v))

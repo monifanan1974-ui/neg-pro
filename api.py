@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 --- START OF FILE api.py ---
 # api.py
 from __future__ import annotations
@@ -56,6 +57,18 @@ def questionnaire_report():
     result = engine.run(answers)
     http_status = 200 if (result.get("status") == "ok" and result.get("html")) else 500
     return jsonify(result), http_status
+=======
+# api.py — Thin runner for NegotiationPro
+# RUN from project root:  python api.py
+
+from backend.app import create_app
+
+# Do NOT import engine_entrypoint here.
+# backend/app.py already handles importing the engine via:
+#   from .engine_entrypoint import QuestionnaireEngine
+
+app = create_app()
+>>>>>>> 761b083 (Your commit message here)
 
 @app.post("/feedback")
 def feedback():
@@ -70,9 +83,14 @@ def feedback_stats():
 
 # --- Main Execution ---
 if __name__ == "__main__":
+<<<<<<< HEAD
     port = int(os.getenv("PORT", "5000"))
     debug = os.getenv("DEBUG", "true").lower() in ("1", "true", "yes", "y")
     print("==== NegotiationPro API ====")
     print(f"Listening on http://localhost:{port} (Debug={debug})")
     print(f"Serving static files from: {FRONTEND_DIR} and {ROOT}")
     app.run(host="0.0.0.0", port=port, debug=debug)
+=======
+    # Bind on all interfaces for containers/Codespaces; keep debug=True for dev
+    app.run(host="0.0.0.0", port=5000, debug=True)
+>>>>>>> 761b083 (Your commit message here)

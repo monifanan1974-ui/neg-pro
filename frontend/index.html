@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 --- START OF FILE index.html ---
 <!doctype html>
 <html lang="en">
@@ -100,10 +101,76 @@
           <button id="btn-build" class="primary">Build Presentation Report</button>
           <button id="btn-reset" type="button">Reset</button>
           <span id="status" class="hint"></span>
+=======
+<!DOCTYPE html>
+<html lang="en" dir="rtl">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Negotiation Pro</title>
+
+  <!-- Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Assistant:wght@400;600;700&family=Manrope:wght@600;700;800&display=swap" rel="stylesheet">
+
+  <!-- Icons -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css"/>
+
+  <!-- Styles -->
+  <link rel="stylesheet" href="/frontend/style.css" />
+  <link rel="stylesheet" href="/frontend/mvp93-theme.css" />
+
+  <!-- AOS -->
+  <link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet">
+  <script src="https://unpkg.com/aos@2.3.1/dist/aos.js" defer></script>
+
+  <!-- App (SPA) -->
+  <script src="/frontend/app.js" defer></script>
+</head>
+<body>
+  <div class="app-container">
+    <header class="app-header">
+      <div class="logo">Negotiation <strong>Pro</strong></div>
+
+      <nav class="app-nav">
+        <a href="#dashboard" class="nav-link active" data-target="dashboard"><i class="fa fa-chart-pie"></i> Dashboard</a>
+        <a href="#strategy" class="nav-link" data-target="strategy"><i class="fa fa-chess"></i> Strategy</a>
+        <a href="#practice" class="nav-link" data-target="practice"><i class="fa fa-dumbbell"></i> Practice</a>
+        <a href="#coach" class="nav-link" data-target="coach"><i class="fa fa-headset"></i> AI Coach</a>
+        <a href="#analytics" class="nav-link" data-target="analytics"><i class="fa fa-chart-line"></i> Analytics</a>
+        <a href="#settings" class="nav-link" data-target="settings"><i class="fa fa-cog"></i> Settings</a>
+      </nav>
+
+      <div class="user-profile">
+        <button class="btn btn-profile">Profile <i class="fa fa-user"></i></button>
+      </div>
+    </header>
+
+    <!-- SPA root -->
+    <main id="app-root" class="app-main"></main>
+
+    <!-- Report Modal (hidden by default). The SPA toggles it when report is ready. -->
+    <div id="report-modal" class="np-modal" style="display:none">
+      <div class="np-modal-backdrop"></div>
+      <div class="np-modal-dialog" role="dialog" aria-modal="true" aria-labelledby="reportModalTitle">
+        <div class="np-modal-header">
+          <h3 id="reportModalTitle" class="np-modal-title">Your Strategy Report</h3>
+          <button id="np-modal-close" class="np-modal-close" aria-label="Close"><i class="fa fa-times"></i></button>
+        </div>
+        <div class="np-modal-body">
+          <iframe id="report-iframe" title="Negotiation Report" style="width:100%;height:70vh;border:none;border-radius:12px;"></iframe>
+        </div>
+        <div class="np-modal-footer">
+          <button id="np-modal-download" class="btn">Download</button>
+          <button id="np-modal-save" class="btn">Save to Profile</button>
+>>>>>>> 761b083 (Your commit message here)
         </div>
       </div>
-    </section>
+    </div>
+  </div>
 
+<<<<<<< HEAD
     <!-- Right: Payload preview -->
     <section class="card">
       <h3>Payload Preview</h3>
@@ -124,5 +191,25 @@
   </section>
 
   <script src="/app/report_embed.js"></script>
+=======
+  <!-- Minimal modal styles (non-intrusive, blends with theme) -->
+  <style>
+    .np-modal{position:fixed;inset:0;z-index:60}
+    .np-modal-backdrop{position:absolute;inset:0;background:rgba(2,8,23,.55);backdrop-filter:blur(3px)}
+    .np-modal-dialog{position:relative;margin:4vh auto 0 auto;max-width:1100px;background:var(--card-bg,#0f1729);
+      border:1px solid rgba(255,255,255,.06);border-radius:18px;box-shadow:0 10px 28px rgba(0,0,0,.35);padding:16px}
+    .np-modal-header{display:flex;align-items:center;justify-content:space-between;padding:6px 6px 10px 6px}
+    .np-modal-title{margin:0}
+    .np-modal-close{background:transparent;border:none;color:var(--text,#e7ecf7);font-size:18px;cursor:pointer}
+    .np-modal-body{padding:8px}
+    .np-modal-footer{display:flex;gap:10px;justify-content:flex-end;padding:8px}
+  </style>
+
+  <script>
+    document.addEventListener('DOMContentLoaded', function(){
+      if (window.AOS && typeof AOS.init === 'function') { AOS.init(); }
+    });
+  </script>
+>>>>>>> 761b083 (Your commit message here)
 </body>
 </html>

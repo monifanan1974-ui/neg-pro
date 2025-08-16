@@ -1,6 +1,37 @@
 <!doctype html>
 <html lang="en">
 <head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Negotiation Report</title>
+<style>
+  :root {
+    --bg:#0b1220; --panel:#151b2d; --ink:#e8ecff; --muted:#9FB1D9;
+    --border:#28304a; --brand:#6EA8FF; --radius:16px;
+  }
+  html,body{height:100%} body{
+    margin:0; background: radial-gradient(1200px 700px at 80% -10%, rgba(110,168,255,0.10), transparent 60%),
+                         radial-gradient(900px 900px at -20% 10%, rgba(167,139,250,0.08), transparent 55%), var(--bg);
+    color:var(--ink); font-family: Inter, system-ui, Segoe UI, Arial; line-height:1.55; padding:24px;
+  }
+  .wrap{max-width:1100px;margin:0 auto}
+  .card{background:var(--panel);border:1px solid var(--border);border-radius:var(--radius);padding:18px}
+  h1{margin:0 0 18px 0;font-size:28px} h2,h3{margin:.25rem 0 .5rem 0}
+  .actions{display:flex;gap:10px;margin-top:18px}
+  .btn{appearance:none;border:1px solid var(--border);background:#0f1729;color:var(--ink);
+       border-radius:12px;padding:10px 14px;cursor:pointer;font-weight:700}
+  .btn:hover{filter:brightness(1.05)}
+  .meta{color:var(--muted);font-size:13px;margin-bottom:12px}
+  table{width:100%;border-collapse:collapse} td,th{border-bottom:1px solid var(--border);padding:8px;text-align:right}
+  .grid{display:grid;gap:16px;grid-template-columns: 1fr 1fr}
+  @media (max-width: 900px){.grid{grid-template-columns:1fr}}
+</style>
+</head>
+<body>
+  <div class="wrap">
+    <div class="card">
+      <!doctype html>
+<html lang="en">
+<head>
   <meta charset="utf-8"/>
   <meta name="viewport" content="width=device-width,initial-scale=1"/>
   <title>Negotiation Report</title>
@@ -57,7 +88,7 @@
 
   <script>
     // reportData is injected by report_builder.py into this template.
-    const reportData = {meta:{}, marketA:{}, highlights:[], summary:"", _debug:{}};
+    const reportData = {"meta": {"region": "eu_north", "currencySymbol": "£", "date": "Aug 15, 2025", "counterpartPersona": "cunning", "yourPosture": "Warm, data-led"}, "marketA": {"label": "Scenario A", "p25": "—", "median": "—", "p75": "—", "anchor": "—", "floor": "—", "fallback": ""}, "marketB": {"label": "Scenario B", "p25": "—", "median": "—", "p75": "—", "anchor": "—", "floor": "—", "fallback": "—"}, "useScenarioB": false, "summary": "Anchoring near the 75th percentile with two quantified proof points. Expect a decision within 5 business days.", "highlights": ["Anchor high within reason", "Invite alignment on a shared goal"], "kpis": [{"label": "Decision window", "value": "5 days", "sub": "deadline shown below"}, {"label": "Currency", "value": "GBP (£)", "sub": "keep consistent"}, {"label": "Persona", "value": "cunning", "sub": "aligned"}], "evidence": [], "pairs": [], "trades": [], "batna": {"scenarioA_floor": "—", "scenarioB_floor": "—", "days": 5, "deadline": "Aug 22, 2025", "plan": ""}, "sources": [], "priorities": ["Salary", "Title", "Flexibility"], "readiness": 52};
 
     function set(id, val){ const el=document.getElementById(id); if(el){ el.textContent = val; } }
     (function render(){
@@ -79,5 +110,14 @@
       document.getElementById('tag-region').textContent = m.region || '—';
     })();
   </script>
+</body>
+</html>
+
+      <div class="actions">
+        <button class="btn" onclick="window.parent?.NP_Report?.downloadPDF()">Download PDF</button>
+        <button class="btn" onclick="window.parent?.NP_Report?.saveToProfile()">Save to Profile</button>
+      </div>
+    </div>
+  </div>
 </body>
 </html>
