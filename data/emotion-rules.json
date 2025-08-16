@@ -1,12 +1,56 @@
 {
-    "anger-rule1": {
-        "emotion": "anger",
-        "triggers": ["angry", "frustrating", "unfair"],
-        "intensity": 1.2
+  "anger-rule1": {
+    "emotion": "anger",
+    "triggers": [
+      "angry",
+      "frustrating",
+      "unfair"
+    ],
+    "intensity": 1.2
+  },
+  "anxiety-rule1": {
+    "emotion": "anxiety",
+    "triggers": [
+      "worried",
+      "concerned",
+      "unsure"
+    ],
+    "intensity": 0.9
+  },
+  "rules": [
+    {
+      "id": "anger-rule1",
+      "emotion": "anger",
+      "triggers": [
+        "angry",
+        "frustrating",
+        "unfair"
+      ],
+      "intensity": 1.2,
+      "guidance": "Use de-escalation, set boundaries, slow pace, return to facts.",
+      "suggested_tactics": [
+        "DEESC-BOUNDARY-01"
+      ]
     },
-    "anxiety-rule1": {
-        "emotion": "anxiety",
-        "triggers": ["worried", "concerned", "unsure"],
-        "intensity": 0.9
+    {
+      "id": "anxiety-rule1",
+      "emotion": "anxiety",
+      "triggers": [
+        "worried",
+        "concerned",
+        "unsure"
+      ],
+      "intensity": 0.9,
+      "guidance": "Acknowledge concern, provide reassurance, offer two clear options.",
+      "suggested_tactics": [
+        "OPN-COLLAB-01"
+      ]
     }
+  ],
+  "_metadata": {
+    "version": "1.1.0",
+    "lang": "en",
+    "updated_at": "2025-08-16T23:24:54Z",
+    "compat_note": "Added normalized rules array and guidance; original keyed rules preserved."
+  }
 }

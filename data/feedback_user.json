@@ -45,5 +45,38 @@
       "persona": "Friend",
       "country": "UK"
     }
-  ]
+  ],
+  "stats": {
+    "count": 5,
+    "by_scenario": {
+      "lowball": 5
+    },
+    "by_persona": {
+      "Friend": 5
+    },
+    "by_country": {
+      "UK": 5
+    },
+    "outcomes": {
+      "partial": 5
+    }
+  },
+  "_schema": {
+    "entries": "list of user feedback events",
+    "entry_fields": [
+      "ts",
+      "scenario_id",
+      "outcome",
+      "usefulness",
+      "notes",
+      "persona",
+      "country"
+    ]
+  },
+  "_metadata": {
+    "version": "1.1.0",
+    "lang": "en",
+    "updated_at": "2025-08-16T23:24:54Z",
+    "compat_note": "Added non-destructive aggregated stats & _schema."
+  }
 }

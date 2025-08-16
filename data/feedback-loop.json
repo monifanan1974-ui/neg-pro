@@ -52,6 +52,28 @@
   "_metadata": {
     "version": "1.0.1",
     "lang": "en",
-    "lastUpdated": "2025-08-08"
+    "lastUpdated": "2025-08-08",
+    "updated_at": "2025-08-16T23:24:54Z",
+    "compat_note": "Additive routing/rate_limits/links; original triggers preserved."
+  },
+  "routing": {
+    "on_high_escalation": "escalate:coach_hand_off",
+    "on_low_signal": "suggest:clarifying_question"
+  },
+  "rate_limits": {
+    "per_user_per_hour": 30,
+    "per_session_max": 100
+  },
+  "links": {
+    "metrics": [
+      "M001",
+      "M003",
+      "S104"
+    ],
+    "tactics": [
+      "CTR-LOWBALL-01",
+      "DEESC-BOUNDARY-01",
+      "PVOT-FOCUS-01"
+    ]
   }
 }

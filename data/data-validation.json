@@ -26,7 +26,9 @@
       "id": "VR001",
       "condition": "user.cited_single_source == 'Glassdoor'",
       "action": "show_warning",
-      "message": "Glassdoor data alone may not reflect actual offers - add local cost-of-living data?"
+      "message": "Glassdoor data alone may not reflect actual offers - add local cost-of-living data?",
+      "severity": "medium",
+      "weight": 1.0
     },
     {
       "id": "VR002",
@@ -36,7 +38,9 @@
         "BLS.gov",
         "Levels.fyi",
         "Industry reports"
-      ]
+      ],
+      "severity": "medium",
+      "weight": 1.0
     }
   ],
   "dynamic_adjustments": {
@@ -47,6 +51,24 @@
     }
   },
   "_metadata": {
-    "version": "1.0.1"
-  }
+    "version": "1.0.1",
+    "lang": "en",
+    "updated_at": "2025-08-16T23:24:54Z",
+    "compat_note": "Added weights/severity where helpful; kept rules/sources intact."
+  },
+  "weights": {
+    "source_priority": {
+      "Levels.fyi": 0.9,
+      "BLS.gov": 0.95,
+      "Glassdoor": 0.7,
+      "Industry reports": 0.85
+    },
+    "region_confidence": {
+      "US": 0.95,
+      "UK": 0.9,
+      "EU": 0.9,
+      "IL": 0.88
+    }
+  },
+  "notes": "Use cost_of_living_multiplier when converting cross-region ranges; multiply by base to get adjusted value."
 }
