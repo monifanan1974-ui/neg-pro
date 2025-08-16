@@ -1,24 +1,24 @@
 {
-  "description": "Regional market data and cultural intelligence",
+  "description": "Regional market data and cultural intelligence for Negotiation Pro. Additive, backward-compatible structure.",
   "regions": {
     "UK": {
       "freelance_rates": {
-        "web_development": [
-          45,
-          85
-        ],
+        "web_development": [45, 85],
         "counteroffer_success_rate": 0.68,
-        "data_source": "IPSE Annual Report 2023"
+        "data_source": "IPSE Annual Report 2023",
+        "_normalized": {
+          "currency": "GBP",
+          "hourly_min": 45,
+          "hourly_max": 85
+        }
       },
       "tech_salaries": {
-        "software_engineer": [
-          48000,
-          82000
-        ],
-        "data_scientist": [
-          52000,
-          95000
-        ]
+        "software_engineer": [48000, 82000],
+        "data_scientist": [52000, 95000],
+        "_normalized": {
+          "currency": "GBP",
+          "salary_period": "annual_gross"
+        }
       },
       "cultural_templates": {
         "softening_phrases": [
@@ -26,42 +26,44 @@
           "Perhaps we might...",
           "I wonder if..."
         ],
-        "response_time_window": [
-          48,
-          72
-        ],
-        "directness_index": 3.2
+        "response_time_window": [48, 72],
+        "directness_index": 3.2,
+        "_normalized": {
+          "response_time_window_hours": { "min": 48, "max": 72 },
+          "scale_notes": "directness_index ~1 (very indirect) to ~10 (very direct)"
+        }
       }
     },
     "Germany": {
       "freelance_rates": {
-        "web_development": [
-          55,
-          95
-        ],
+        "web_development": [55, 95],
         "counteroffer_success_rate": 0.62,
-        "data_source": "Freelancermap Survey 2024"
+        "data_source": "Freelancermap Survey 2024",
+        "_normalized": {
+          "currency": "EUR",
+          "hourly_min": 55,
+          "hourly_max": 95
+        }
       },
       "tech_salaries": {
-        "software_engineer": [
-          52000,
-          78000
-        ],
-        "data_scientist": [
-          58000,
-          92000
-        ]
+        "software_engineer": [52000, 78000],
+        "data_scientist": [58000, 92000],
+        "_normalized": {
+          "currency": "EUR",
+          "salary_period": "annual_gross"
+        }
       },
       "cultural_templates": {
         "precision_phrases": [
           "Based on the data...",
           "The exact specifications require..."
         ],
-        "response_time_window": [
-          24,
-          48
-        ],
-        "directness_index": 7.8
+        "response_time_window": [24, 48],
+        "directness_index": 7.8,
+        "_normalized": {
+          "response_time_window_hours": { "min": 24, "max": 48 },
+          "scale_notes": "directness_index ~1 (very indirect) to ~10 (very direct)"
+        }
       }
     }
   },
@@ -69,11 +71,7 @@
     "salary_benchmarks": {
       "url": "https://api.ons.gov.uk/labour-market/salaries",
       "update_frequency": "monthly",
-      "coverage": [
-        "UK",
-        "US",
-        "DE"
-      ]
+      "coverage": ["UK", "US", "DE"]
     },
     "inflation_adjustments": {
       "url": "https://api.worldbank.org/v2/en/indicator/FP.CPI.TOTL.ZG",
@@ -82,8 +80,9 @@
   },
   "last_updated": "2025-08-15T14:30:00Z",
   "_metadata": {
-    "version": "1.0.1",
+    "version": "1.1.0",
     "lang": "en",
-    "lastUpdated": "2025-08-08"
+    "lastUpdated": "2025-08-17",
+    "compat_note": "Only additive fields added (_normalized, currency, period). Original arrays kept to avoid breaking existing consumers."
   }
 }

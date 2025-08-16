@@ -1021,6 +1021,9 @@
     }
   ],
   "_metadata": {
-    "version": "1.0.1"
+    "version": "1.0.1",
+    "lang": "en",
+    "updated_at": "2025-08-16T22:48:39Z",
+    "compat_note": "Additive only. Original 'metadata' and all 'entries' preserved exactly; this _metadata aligns with the concert-wide convention."
   }
 }
