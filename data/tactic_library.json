@@ -1,8 +1,9 @@
 {
   "_metadata": {
-    "version": "1.1.1",
-    "description": "A library of reusable tactical blocks for the Sofi Pro engine.",
-    "lastUpdated": "2025-08-08"
+    "version": "1.2.0",
+    "description": "A library of reusable tactical blocks for the Negotiation Pro engine.",
+    "lastUpdated": "2025-08-17T00:00:00Z",
+    "compat_note": "All original fields preserved. New fields are additive and optional."
   },
   "tactics": {
     "openers": [
@@ -10,21 +11,34 @@
         "id": "OPN-COLLAB-01",
         "name": "Collaborative Frame Opener",
         "text": "Before we dive into the details, I'd like to make sure we're aligned on the main goal: finding a solution that works well for both of us in the long run. What does a successful outcome look like from your perspective?",
-        "best_for_persona": [
-          "Analytical",
-          "Friendly"
-        ],
-        "tactic_type": "Framing"
+        "best_for_persona": ["Analytical", "Friendly"],
+        "tactic_type": "Framing",
+        "context_phase": "opening",
+        "effect_level": "medium",
+        "risk_level": "low",
+        "tags": ["framing", "collaboration", "opener"],
+        "use_when": "You want to set a collaborative tone and align on success criteria before numbers.",
+        "how": "Ask for their definition of success, reflect it, then move to scope/numbers.",
+        "example": "Before numbers, what would success look like for both sides?",
+        "links": ["super_kb.tactics_by_phase.opening.mutual_goal"]
       },
       {
         "id": "OPN-ASSERT-01",
         "name": "Confident Value Statement",
         "text": "Thanks for your time today. My goal is to establish a partnership where the value we both receive is clear and significant. Based on the unique contribution I can make here, I'm confident we can reach an agreement that reflects that.",
-        "best_for_persona": [
-          "Dominator",
-          "Fox"
-        ],
-        "tactic_type": "Anchoring"
+        "best_for_persona": ["Dominator", "Fox"],
+        "tactic_type": "Anchoring",
+        "context_phase": "opening",
+        "effect_level": "high",
+        "risk_level": "medium",
+        "tags": ["anchoring", "confidence", "opener"],
+        "use_when": "You need to convey value early and prepare for a strong anchor.",
+        "how": "State value first, then transition to a data-backed range.",
+        "example": "Based on role scope and benchmarks, I’m targeting {ANCHOR}.",
+        "links": [
+          "super_kb.tactics_by_phase.opening.anchor_high",
+          "super_kb.bias_management.anchoring_bias"
+        ]
       }
     ],
     "counters": [
@@ -33,38 +47,92 @@
         "name": "Reframe from Price to Value",
         "text": "I appreciate the offer. Perhaps it would be helpful if I clarified the unique value and the specific results I bring to the table, as it seems we might be valuing the role differently. For example...",
         "triggered_by": "Lowball Offer",
-        "tactic_type": "Reframing"
+        "tactic_type": "Reframing",
+        "context_phase": "bargaining",
+        "effect_level": "high",
+        "risk_level": "low",
+        "tags": ["reframing", "value", "counter"],
+        "use_when": "They anchor low or emphasize price only.",
+        "how": "Shift to outcomes and ROI; support with 2–3 proof points.",
+        "example": "Given the last two quarters’ outcomes, the range {LOW}–{HIGH} is standard.",
+        "links": [
+          "super_kb.tactics_by_phase.bargaining.split_value",
+          "super_kb.bias_management.anchoring_bias"
+        ]
       },
       {
         "id": "CTR-STALL-01",
         "name": "Leverage Time Pressure",
         "text": "I understand the need to consider things carefully. To be transparent, I do have other opportunities with timelines, so it would be helpful to know what a realistic timeframe for a decision looks like on your end.",
         "triggered_by": "Delay / Stall",
-        "tactic_type": "Creating Urgency"
+        "tactic_type": "Creating Urgency",
+        "context_phase": "closing",
+        "effect_level": "medium",
+        "risk_level": "low",
+        "tags": ["urgency", "timebox", "counter"],
+        "use_when": "Decisions keep slipping or there’s no clear window.",
+        "how": "Request a respectful decision window (e.g., 5 business days).",
+        "example": "Could we align this week? A 5-business-day window works on my side.",
+        "links": [
+          "super_kb.tactics_by_phase.closing.door_close",
+          "super_kb.psychology_models.theories.dual_process"
+        ]
       },
       {
         "id": "PVOT-FOCUS-01",
         "name": "Refocus Pivot",
         "text": "That’s a useful point. Let’s park it for a moment and come back to it right after we align on the core terms.",
-        "tactic_type": "Pivot"
+        "tactic_type": "Pivot",
+        "context_phase": "bargaining",
+        "effect_level": "medium",
+        "risk_level": "low",
+        "tags": ["pivot", "focus"],
+        "use_when": "Conversation derails into low-priority topics.",
+        "how": "Name the derail; propose sequence: align base/scope -> then perk.",
+        "example": "Let’s align base with scope first; perks right after.",
+        "links": ["super_kb.tactics_by_phase.bargaining.logrolling"]
       },
       {
         "id": "DEESC-BOUNDARY-01",
         "name": "Calm Boundary Setting",
         "text": "I want to keep this conversation productive and professional. Let’s stick to the facts of the deal so we can find a solution that works for both of us.",
-        "tactic_type": "De-escalation"
+        "tactic_type": "De-escalation",
+        "context_phase": "any",
+        "effect_level": "medium",
+        "risk_level": "low",
+        "tags": ["de-escalation", "boundaries"],
+        "use_when": "Tone gets heated or personal.",
+        "how": "Acknowledge value of discussion; steer back to facts/criteria.",
+        "example": "Let’s focus on scope, criteria, and timelines.",
+        "links": ["super_kb.bias_management.framing_effect"]
       }
     ],
     "micro_tactics": [
       {
         "id": "PSYCH-SILENCE-01",
         "name": "Strategic Silence",
-        "description": "After they make an offer, especially a poor one, pause for 3-5 seconds before responding. This creates pressure and often encourages them to elaborate or improve their offer without you saying a word."
+        "description": "After they make an offer, especially a poor one, pause for 3–5 seconds before responding. This creates pressure and often encourages them to elaborate or improve their offer without you saying a word.",
+        "context_phase": "discovery",
+        "effect_level": "medium",
+        "risk_level": "medium",
+        "tags": ["silence", "psychology", "pressure"],
+        "use_when": "After a weak offer or vague statement.",
+        "how": "Hold 3–5s; keep neutral face; then ask a clarifying question.",
+        "example": "…(4s pause)… Could you share how you arrived at that figure?",
+        "links": ["super_kb.tactics_by_phase.discovery.strategic_silence"]
       },
       {
         "id": "PSYCH-MIRROR-01",
         "name": "Language Mirroring",
-        "description": "Subtly repeat the last few words of their statement as a question (e.g., If they say 'Our budget is very tight', you respond '...very tight?'). This builds rapport and encourages them to explain further."
+        "description": "Subtly repeat the last few words of their statement as a question (e.g., If they say 'Our budget is very tight', you respond '...very tight?'). This builds rapport and encourages them to explain further.",
+        "context_phase": "discovery",
+        "effect_level": "medium",
+        "risk_level": "low",
+        "tags": ["mirroring", "questioning", "rapport"],
+        "use_when": "They make a short/ambiguous statement.",
+        "how": "Repeat last 2–5 words with an inviting tone.",
+        "example": "‘…very tight?’",
+        "links": ["super_kb.tactics_by_phase.discovery.ladder_questions"]
       }
     ]
   }

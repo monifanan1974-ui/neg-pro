@@ -1,8 +1,10 @@
 {
   "_metadata": {
     "version": "11.0.0",
-    "description": "Super Knowledge Base for NegotiationPro – psychology, tactics by phase, bias management, expanded personas, AI triggers with complex conditions",
-    "language": "en"
+    "description": "Super KB for Negotiation Pro – psychology, tactics by phase, bias management, expanded personas, AI triggers, fallbacks, and cross-links to tactic_library.",
+    "language": "en",
+    "updated_at": "2025-08-17T00:00:00Z",
+    "compat_note": "Original structures preserved; additive fields plus cross-file links."
   },
   "psychology_models": {
     "theories": [
@@ -12,8 +14,8 @@
         "summary": "People weigh losses more than equivalent gains.",
         "tags": ["loss_aversion", "framing"],
         "recommended_actions": [
-          "Frame offers as loss avoidance (what they might lose) rather than pure gain.",
-          "Show risk-reduction benefits explicitly."
+              "Frame offers as loss avoidance rather than pure gain.",
+              "Show risk-reduction benefits explicitly."
         ]
       },
       {
@@ -33,7 +35,7 @@
         "tags": ["autonomy", "competence", "relationship"],
         "recommended_actions": [
           "Offer two controlled choices to preserve autonomy.",
-          "Give small ‘wins’ that build competence.",
+          "Give small wins that build competence.",
           "Highlight shared goals for relatedness."
         ]
       }
@@ -85,9 +87,9 @@
     "closing": [
       {
         "id": "door_close",
-        "text": "Use a respectful ‘closing window’.",
+        "text": "Use a respectful decision window.",
         "why": "Adds gentle urgency without pressure.",
-        "examples": ["Could we align this week? A 5‑business‑day window works on my side."]
+        "examples": ["Could we align this week? A 5-business-day window works on my side."]
       },
       {
         "id": "minor_concession",
@@ -110,7 +112,7 @@
     {
       "id": "endowment_effect",
       "name": "Endowment Effect",
-      "description": "People overvalue what they already ‘own’.",
+      "description": "People overvalue what they already own.",
       "mitigation": [
         "Speak as if the solution is already theirs (future pacing).",
         "Show cost of losing the current path."
@@ -121,7 +123,7 @@
       "name": "Framing Effect",
       "description": "Different wording changes perceived value.",
       "mitigation": [
-        "Reframe to risk‑reduction and long‑term outcomes.",
+        "Reframe to risk-reduction and long-term outcomes.",
         "Contrast scenarios: with vs. without this agreement."
       ]
     }
@@ -149,7 +151,7 @@
       ],
       "counter_tactics": [
         "Show 2–3 sources; limit fluff.",
-        "Convert achievements to quantified ‘proof points’."
+        "Convert achievements to quantified proof points."
       ],
       "tones": { "default": "neutral", "backup": "firm" }
     },
@@ -247,6 +249,35 @@
         "tactics_by_phase.closing.door_close",
         "tactics_by_phase.discovery.ladder_questions"
       ]
+    }
+  ],
+  "tactic_links": [
+    { "id": "OPN-COLLAB-01", "refs": ["tactics_by_phase.opening.mutual_goal"] },
+    { "id": "OPN-ASSERT-01", "refs": ["tactics_by_phase.opening.anchor_high", "bias_management.anchoring_bias"] },
+    { "id": "CTR-LOWBALL-01", "refs": ["tactics_by_phase.bargaining.split_value", "bias_management.anchoring_bias"] },
+    { "id": "CTR-STALL-01", "refs": ["tactics_by_phase.closing.door_close", "psychology_models.theories.dual_process"] },
+    { "id": "PVOT-FOCUS-01", "refs": ["tactics_by_phase.bargaining.logrolling"] },
+    { "id": "DEESC-BOUNDARY-01", "refs": ["bias_management.framing_effect"] },
+    { "id": "PSYCH-SILENCE-01", "refs": ["tactics_by_phase.discovery.strategic_silence"] },
+    { "id": "PSYCH-MIRROR-01", "refs": ["tactics_by_phase.discovery.ladder_questions"] }
+  ],
+  "ai_fallbacks": [
+    {
+      "id": "FALLBACK_DEFAULT",
+      "priority": 10,
+      "condition": "no_trigger_matched",
+      "fetch": [
+        "tactics_by_phase.opening.mutual_goal",
+        "tactics_by_phase.discovery.ladder_questions"
+      ],
+      "tone_override": "neutral"
+    },
+    {
+      "id": "FALLBACK_TIMEBOX",
+      "priority": 12,
+      "condition": "no_trigger_matched AND decision_delay_days >= 5",
+      "fetch": ["tactics_by_phase.closing.door_close"],
+      "tone_override": "neutral"
     }
   ]
 }
