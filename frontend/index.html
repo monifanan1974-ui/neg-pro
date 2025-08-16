@@ -1,215 +1,41 @@
-<<<<<<< HEAD
---- START OF FILE index.html ---
-<!doctype html>
-<html lang="en">
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
 <head>
   <meta charset="utf-8" />
-  <title>NegotiationPro — Smart Questionnaire</title>
-  <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <style>
-    :root{--bg:#0b1220;--panel:#0f172a;--text:#e5e7eb;--muted:#94a3b8;--accent:#60a5fa;--ok:#22c55e;--err:#ef4444}
-    *{box-sizing:border-box} body{margin:0;background:var(--bg);color:var(--text);font-family:Inter,system-ui,Segoe UI,Arial}
-    header{padding:14px 18px;border-bottom:1px solid #1f2937;background:#0c1426}
-    .wrap{display:grid;grid-template-columns:1.4fr 1fr;gap:16px;padding:18px}
-    .card{background:var(--panel);border:1px solid #1f2937;border-radius:12px;overflow:hidden}
-    .card h3{margin:0;padding:12px 14px;border-bottom:1px solid #1f2937;background:#0e1931;font-size:15px}
-    .body{padding:14px}
-    label{display:block;font-size:12px;color:var(--muted);margin:10px 0 6px}
-    input,select,textarea{width:100%;padding:10px;border-radius:10px;border:1px solid #22314d;background:#0c1426;color:var(--text)}
-    .row{display:grid;grid-template-columns:1fr 1fr;gap:10px}
-    .btns{display:flex;gap:8px;margin-top:12px}
-    button{padding:10px 14px;border-radius:10px;border:1px solid #22314d;background:#12203a;color:#fff;cursor:pointer}
-    button.primary{background:var(--accent);border-color:#3b82f6}
-    button:disabled{opacity:.5;cursor:not-allowed}
-    .json{font-family:ui-monospace,Menlo,Consolas,monospace;background:#0b1326;color:#e5e7eb;border:1px solid #1f2937;border-radius:10px;padding:10px;height:260px;overflow:auto;white-space:pre-wrap}
-    #report{min-height:360px;padding:0;margin:0;border:0}
-    .hint{font-size:12px;color:var(--muted);margin-top:6px}
-    .ok{color:var(--ok)} .err{color:var(--err)}
-  </style>
-</head>
-<body>
-  <header>
-    <strong>NegotiationPro</strong> <span style="color:#94a3b8">/ Smart Questionnaire</span>
-  </header>
-
-  <div class="wrap">
-    <!-- Left: Form -->
-    <section class="card">
-      <h3>Answer the steps</h3>
-      <div class="body">
-        <div class="row">
-          <div>
-            <label for="role">Role / Target Title</label>
-            <input id="role" placeholder="Senior Editor" />
-          </div>
-          <div>
-            <label for="seniority">Seniority</label>
-            <select id="seniority">
-              <option value="junior">junior</option>
-              <option value="mid" selected>mid</option>
-              <option value="senior">senior</option>
-              <option value="lead">lead</option>
-            </select>
-          </div>
-        </div>
-
-        <div class="row">
-          <div>
-            <label for="country">Country</label>
-            <input id="country" placeholder="UK" />
-          </div>
-          <div>
-            <label for="industry">Industry</label>
-            <input id="industry" placeholder="Tech" />
-          </div>
-        </div>
-
-        <div class="row">
-          <div>
-            <label for="communication_style">Communication Style</label>
-            <input id="communication_style" placeholder="Analytical / Diplomatic / Direct" />
-          </div>
-          <div>
-            <label for="counterpart_persona">Counterpart Persona (optional)</label>
-            <input id="counterpart_persona" placeholder="The Friend / The Analyst / The Dominator" />
-          </div>
-        </div>
-
-        <div class="row">
-          <div>
-            <label for="range_low">Range Low</label>
-            <input id="range_low" placeholder="£65k" />
-          </div>
-          <div>
-            <label for="range_high">Range High</label>
-            <input id="range_high" placeholder="£85k" />
-          </div>
-        </div>
-
-        <div class="row">
-          <div>
-            <label for="target_salary">Target / Anchor (optional)</label>
-            <input id="target_salary" placeholder="£82k" />
-          </div>
-          <div>
-            <label for="market_sources">Market Sources</label>
-            <input id="market_sources" placeholder="Glassdoor, Levels.fyi" />
-          </div>
-        </div>
-
-        <div class="btns">
-          <button id="btn-build" class="primary">Build Presentation Report</button>
-          <button id="btn-reset" type="button">Reset</button>
-          <span id="status" class="hint"></span>
-=======
-<!DOCTYPE html>
-<html lang="en" dir="rtl">
-<head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>Negotiation Pro</title>
 
   <!-- Fonts -->
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Assistant:wght@400;600;700&family=Manrope:wght@600;700;800&display=swap" rel="stylesheet">
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&display=swap" rel="stylesheet" />
 
-  <!-- Icons -->
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css"/>
-
-  <!-- Styles -->
-  <link rel="stylesheet" href="/frontend/style.css" />
+  <!-- MVP-93 theme -->
   <link rel="stylesheet" href="/frontend/mvp93-theme.css" />
-
-  <!-- AOS -->
-  <link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet">
-  <script src="https://unpkg.com/aos@2.3.1/dist/aos.js" defer></script>
-
-  <!-- App (SPA) -->
-  <script src="/frontend/app.js" defer></script>
 </head>
 <body>
-  <div class="app-container">
-    <header class="app-header">
-      <div class="logo">Negotiation <strong>Pro</strong></div>
-
-      <nav class="app-nav">
-        <a href="#dashboard" class="nav-link active" data-target="dashboard"><i class="fa fa-chart-pie"></i> Dashboard</a>
-        <a href="#strategy" class="nav-link" data-target="strategy"><i class="fa fa-chess"></i> Strategy</a>
-        <a href="#practice" class="nav-link" data-target="practice"><i class="fa fa-dumbbell"></i> Practice</a>
-        <a href="#coach" class="nav-link" data-target="coach"><i class="fa fa-headset"></i> AI Coach</a>
-        <a href="#analytics" class="nav-link" data-target="analytics"><i class="fa fa-chart-line"></i> Analytics</a>
-        <a href="#settings" class="nav-link" data-target="settings"><i class="fa fa-cog"></i> Settings</a>
-      </nav>
-
-      <div class="user-profile">
-        <button class="btn btn-profile">Profile <i class="fa fa-user"></i></button>
+  <div class="app-shell">
+    <header class="topbar">
+      <div class="brand">
+        <div class="logo-dot"></div>
+        <span class="brand-name">Negotiation <strong>Pro</strong></span>
       </div>
+      <nav class="nav">
+        <a class="nav-link active" href="#dashboard" data-target="dashboard">Dashboard</a>
+        <a class="nav-link" href="#strategy" data-target="strategy">Strategy</a>
+        <a class="nav-link" href="#practice" data-target="practice">Practice</a>
+        <a class="nav-link" href="#coach" data-target="coach">AI Coach</a>
+        <a class="nav-link" href="#analytics" data-target="analytics">Analytics</a>
+        <a class="nav-link" href="#settings" data-target="settings">Settings</a>
+      </nav>
+      <div class="profile-pill">Profile</div>
     </header>
 
-    <!-- SPA root -->
-    <main id="app-root" class="app-main"></main>
-
-    <!-- Report Modal (hidden by default). The SPA toggles it when report is ready. -->
-    <div id="report-modal" class="np-modal" style="display:none">
-      <div class="np-modal-backdrop"></div>
-      <div class="np-modal-dialog" role="dialog" aria-modal="true" aria-labelledby="reportModalTitle">
-        <div class="np-modal-header">
-          <h3 id="reportModalTitle" class="np-modal-title">Your Strategy Report</h3>
-          <button id="np-modal-close" class="np-modal-close" aria-label="Close"><i class="fa fa-times"></i></button>
-        </div>
-        <div class="np-modal-body">
-          <iframe id="report-iframe" title="Negotiation Report" style="width:100%;height:70vh;border:none;border-radius:12px;"></iframe>
-        </div>
-        <div class="np-modal-footer">
-          <button id="np-modal-download" class="btn">Download</button>
-          <button id="np-modal-save" class="btn">Save to Profile</button>
->>>>>>> 761b083 (Your commit message here)
-        </div>
-      </div>
-    </div>
+    <main id="app-root" class="main"></main>
   </div>
 
-<<<<<<< HEAD
-    <!-- Right: Payload preview -->
-    <section class="card">
-      <h3>Payload Preview</h3>
-      <div class="body">
-        <div id="preview" class="json">{}</div>
-        <div class="hint">The JSON is auto-saved to localStorage and updated in real-time.</div>
-      </div>
-    </section>
-  </div>
-
-  <!-- Report -->
-  <section class="card" style="margin:0 18px 18px">
-    <h3>Report</h3>
-    <div class="body">
-      <iframe id="report" title="Report" style="width:100%;height:560px;background:#0b1326;border-radius:12px"></iframe>
-      <div class="hint">The report is injected into the iframe from the HTML file returned by the API.</div>
-    </div>
-  </section>
-
-  <script src="/app/report_embed.js"></script>
-=======
-  <!-- Minimal modal styles (non-intrusive, blends with theme) -->
-  <style>
-    .np-modal{position:fixed;inset:0;z-index:60}
-    .np-modal-backdrop{position:absolute;inset:0;background:rgba(2,8,23,.55);backdrop-filter:blur(3px)}
-    .np-modal-dialog{position:relative;margin:4vh auto 0 auto;max-width:1100px;background:var(--card-bg,#0f1729);
-      border:1px solid rgba(255,255,255,.06);border-radius:18px;box-shadow:0 10px 28px rgba(0,0,0,.35);padding:16px}
-    .np-modal-header{display:flex;align-items:center;justify-content:space-between;padding:6px 6px 10px 6px}
-    .np-modal-title{margin:0}
-    .np-modal-close{background:transparent;border:none;color:var(--text,#e7ecf7);font-size:18px;cursor:pointer}
-    .np-modal-body{padding:8px}
-    .np-modal-footer{display:flex;gap:10px;justify-content:flex-end;padding:8px}
-  </style>
-
-  <script>
-    document.addEventListener('DOMContentLoaded', function(){
-      if (window.AOS && typeof AOS.init === 'function') { AOS.init(); }
-    });
-  </script>
->>>>>>> 761b083 (Your commit message here)
+  <!-- Helpers (report embed) then app -->
+  <script src="/frontend/report_embed.js"></script>
+  <script src="/frontend/app.js"></script>
 </body>
 </html>

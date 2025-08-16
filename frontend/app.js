@@ -1,642 +1,437 @@
-// frontend/app.js — SPA logic
+/* frontend/app.js — SPA controller */
+const API_BASE = ""; // same origin
 
-const API_BASE = ""; // Same-origin
+// --------- Templates ---------
+const Tpl = {
+  shell(title, subtitle, inner) {
+    return `
+      <h1 class="page-title reveal">${title}</h1>
+      <p class="page-sub reveal">${subtitle}</p>
+      ${inner}
+    `;
+  },
 
-/* ---------------- Templates ---------------- */
-const Templates = {
-  pageShell: (title, subtitle, content) => `
-    <h1 class="page-title">${title}</h1>
-    <p class="page-subtitle">${subtitle}</p>
-    ${content}`,
+  dashboard(data) {
+    const kpis = `
+      <section class="grid grid-4 reveal">
+        ${data.kpis.map(k => `
+          <div class="card kpi">
+            <div class="val">${k.value}</div>
+            <div class="lbl">${k.label}</div>
+          </div>`).join("")}
+      </section>
+    `;
 
-  dashboard: (data) => {
-    const kpiHtml = data.kpis.map(k => {
-      if (k.type === "text") {
-        return `
-          <div class="card kpi-card elevate" data-aos="fade-up">
-            <div class="kpi-value">${k.text}</div>
-            <div class="kpi-label">${k.label}</div>
-          </div>`;
-      }
-      const decimals = k.decimals ?? 0;
-      const suffix = k.suffix ?? "";
-      return `
-        <div class="card kpi-card elevate" data-aos="fade-up">
-          <div class="kpi-value" data-animate="count" data-end="${k.value}" data-decimals="${decimals}" data-suffix="${suffix}">0${suffix}</div>
-          <div class="kpi-label">${k.label}</div>
-        </div>`;
-    }).join("");
+    const skills = `
+      <section class="card reveal" style="margin-top:16px;">
+        <h3 style="margin-bottom:12px;">Negotiation skills</h3>
+        <div class="grid" style="gap:14px;">
+          ${data.skills.map(s => `
+            <div class="skill">
+              <div class="name">${s.name}</div>
+              <div class="track"><div class="fill" style="--w:${s.score}% ; width:${s.score}%"></div></div>
+              <div class="pct">${s.score}%</div>
+            </div>`).join("")}
+        </div>
+      </section>
+    `;
+    return Tpl.shell("Dashboard", "A precise overview of your performance and negotiation skills.", kpis + skills);
+  },
 
-    const skillsHtml = data.skills_breakdown.map(s => `
-      <div class="skill-item" data-aos="fade-up">
-        <div class="skill-label">${s.skill}</div>
-        <div class="skill-bar"><span data-animate="bar" data-width="${s.score}"></span></div>
-        <div class="skill-score">${s.score}%</div>
-      </div>
-    `).join("");
-
-    return Templates.pageShell(
-      "Dashboard",
-      "A precise overview of your performance and negotiation skills.",
+  practice(items) {
+    return Tpl.shell(
+      "Practice Scenarios",
+      "Choose a scenario to practice and improve your negotiation skills",
       `
-      <div class="grid lg:grid-cols-4 gap-6">
-        ${kpiHtml}
-      </div>
-      <div class="card elevate" data-aos="fade-up" style="margin-top:1.5rem">
-        <h2 style="font-size:1.5rem;margin-bottom:.6rem">Negotiation skills</h2>
-        <div class="skills-container">${skillsHtml}</div>
-      </div>`
+      <section class="grid grid-3 reveal">
+        ${items.map(s => `
+          <div class="card" style="display:flex; flex-direction:column; gap:14px;">
+            <div style="display:flex; justify-content:space-between; align-items:center;">
+              <h3>${s.title}</h3>
+              <span class="badge ${s.badgeCls}">${s.level}</span>
+            </div>
+            <div style="color:var(--muted); font-size:.95rem;">Skills: ${s.skills.join(", ")}</div>
+            <div style="display:flex; justify-content:space-between; align-items:center; color:var(--text-1); font-size:.95rem; border-top:1px solid rgba(255,255,255,.08); padding-top:10px;">
+              <span>participants ${s.participants}</span>
+              <span>min ${s.duration}</span>
+            </div>
+            <button class="btn">Start practice</button>
+          </div>
+        `).join("")}
+      </section>
+      `
     );
   },
 
-  strategy: () => Templates.pageShell(
-    "Strategy Engine",
-    "Answer the tailored questionnaire to get a deep strategy report.",
-    `
-    <div class="card stepper-container" data-aos="fade-up">
-      <div id="strategy-stepper">
-        <div class="text-center p-8"><p>Loading questionnaire...</p><div class="loading-spinner"></div></div>
-      </div>
-    </div>
-    `
-  ),
-
-  practice: (scenarios) => Templates.pageShell(
-    "Practice Scenarios",
-    "Choose a scenario or run an AI drill to improve your skills.",
-    `
-    <div class="card" data-aos="fade-up" style="margin-bottom:1rem;">
-      <div class="tabs" role="tablist" style="display:flex;gap:.5rem;flex-wrap:wrap;">
-        <button class="btn secondary" data-tab="scenarios" aria-selected="true">Scenarios</button>
-        <button class="btn secondary" data-tab="ai">AI Drill</button>
-        <button class="btn secondary" data-tab="debrief">Debrief</button>
-      </div>
-    </div>
-
-    <div id="tab-content">
-      <div id="tab-scenarios">
-        <div class="grid lg:grid-cols-3 gap-6">
-          ${scenarios.map(s => `
-            <div class="card practice-card" data-aos="fade-up">
-              <div>
-                <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:.5rem;">
-                  <h3 style="margin-bottom:0;">${s.title}</h3>
-                  <span class="badge ${s.type === 'Hard' ? 'hard' : (s.type === 'Medium' ? 'medium' : 'easy')}">${s.type}</span>
-                </div>
-                <p style="color:var(--text-muted);font-size:.9rem;margin-bottom:1rem;">Skills: ${s.skills.join(", ")}</p>
-              </div>
-              <div>
-                <div class="card-footer">
-                  <span><i class="fa fa-clock" style="margin-left:.5rem;"></i>${s.duration}</span>
-                  <span><i class="fa fa-users" style="margin-left:.5rem;"></i>${s.participants} participants</span>
-                </div>
-                <button class="btn start-practice" style="width:100%;margin-top:1rem;" data-title="${s.title}">Start practice</button>
-              </div>
-            </div>
-          `).join("")}
+  coach() {
+    return Tpl.shell(
+      "AI Coach",
+      "Chat with your negotiation coach for live tips and support",
+      `
+      <section class="card chat reveal">
+        <div id="chat-box" class="chat-box">
+          <div class="bubble ai">Hi! I'm your negotiation coach. What's your goal for today's practice?</div>
         </div>
-      </div>
+        <div class="chat-input">
+          <input id="chat-input" type="text" placeholder="Type your question..." />
+          <button id="chat-send" class="btn">Send</button>
+        </div>
+      </section>
+      `
+    );
+  },
 
-      <div id="tab-ai" style="display:none">
-        <div class="card chat-container" data-aos="fade-up">
-          <div id="ai-drill-box">
-            <div class="bubble ai">Hi! Let's run a short drill. State your goal in one sentence.</div>
-          </div>
-          <div class="chat-input-area">
-            <input id="ai-drill-input" type="text" placeholder="Type your goal or question...">
-            <button id="ai-drill-send" class="btn">Send</button>
+  analytics(data) {
+    const k = `
+      <section class="grid grid-2 reveal">
+        <div class="card">
+          <h3 style="margin-bottom:10px;">Recent scores</h3>
+          <div class="grid" style="gap:10px;">
+            ${data.recent.map(i => `
+              <div class="card" style="display:flex; align-items:center; justify-content:space-between;">
+                <span>${i.label}</span>
+                <strong style="color:var(--primary)">${i.score}</strong>
+              </div>`).join("")}
           </div>
         </div>
-      </div>
-
-      <div id="tab-debrief" style="display:none">
-        <div class="card" data-aos="fade-up">
-          <h2>Debrief</h2>
-          <p style="color:var(--text-muted)">Capture your takeaways after each drill or scenario.</p>
-          <textarea id="debrief-notes" class="form-input" rows="5" placeholder="What worked? What will you try next time?"></textarea>
-          <div style="margin-top:.75rem;display:flex;gap:.5rem;justify-content:flex-end;">
-            <button id="save-debrief" class="btn">Save notes</button>
+        <div class="card">
+          <h3 style="margin-bottom:10px;">Suggestions</h3>
+          <div class="grid" style="gap:10px;">
+            ${data.tips.map(t => `
+              <div class="card">
+                <strong>${t.title}</strong>
+                <p style="color:var(--muted); margin-top:6px;">${t.desc}</p>
+              </div>`).join("")}
           </div>
         </div>
-      </div>
-    </div>
-    `
-  ),
+      </section>
+    `;
+    return Tpl.shell("Analytics", "Trends and insights to level-up your negotiation skills", k);
+  },
 
-  coach: () => Templates.pageShell(
-    "AI Coach",
-    "Chat with your negotiation coach for live tips and support.",
-    `
-    <div class="card chat-container" data-aos="fade-up">
-      <div id="chat-box">
-        <div class="bubble ai">Hi! I'm your negotiation coach. What's your goal for today's practice?</div>
-      </div>
-      <div class="chat-input-area">
-        <input id="chat-input" type="text" placeholder="Type your question...">
-        <button id="chat-send-btn" class="btn">Send</button>
-      </div>
-    </div>`
-  ),
+  settings() {
+    return Tpl.shell(
+      "Settings",
+      "Personalize your experience",
+      `
+        <section class="card grid grid-2 reveal">
+          <div>
+            <div style="font-weight:700">Interface language</div>
+            <div style="color:var(--muted)">English (default)</div>
+          </div>
+          <div style="text-align:right">
+            <button class="btn secondary">Change</button>
+          </div>
+        </section>
+      `
+    );
+  },
 
-  analytics: (data) => Templates.pageShell(
-    "Performance Analytics",
-    "Track your progress and get tailored recommendations.",
-    `
-    <div class="grid md:grid-cols-2 gap-6">
-      <div class="card" data-aos="fade-up">
-        <h2>Recent results</h2>
-        <div style="display:flex;flex-direction:column;gap:.75rem;">
-          ${data.performance_scores.map(item => `
-            <div class="kpi-list-item">
-              <span>${item.label}</span>
-              <span class="kpi-score">${item.score}</span>
-            </div>
-          `).join("")}
+  strategy() {
+    return Tpl.shell(
+      "Strategy Engine",
+      "Answer the tailored questionnaire to get a personalized strategy report",
+      `
+      <section class="card stepper reveal">
+        <div class="progress"><span id="step-progress"></span></div>
+        <div id="stepper-root"><div style="text-align:center; color:var(--muted)">Loading questionnaire…</div></div>
+        <div style="display:flex; gap:10px; justify-content:space-between; margin-top:16px;">
+          <button id="btn-back" class="btn secondary" disabled>Back</button>
+          <button id="btn-next" class="btn">Next</button>
         </div>
-      </div>
-      <div class="card" data-aos="fade-up">
-        <h2>Recommendations</h2>
-        <div style="display:flex;flex-direction:column;gap:1rem;">
-          ${data.improvement_suggestions.map(item => `
-            <div class="suggestion-item">
-              <h4 style="font-weight:700">${item.title}</h4>
-              <p style="color:var(--text-muted);font-size:.9rem;">${item.description}</p>
-            </div>
-          `).join("")}
-        </div>
-      </div>
-    </div>`
-  ),
+      </section>
 
-  settings: () => Templates.pageShell(
-    "Settings",
-    "Adjust your experience and preferences.",
-    `
-    <div class="card" style="max-width:800px;margin:auto;" data-aos="fade-up">
-      <div class="setting-row">
-        <div>
-          <div style="font-weight:600;">Interface language</div>
-          <div style="color:var(--text-muted);font-size:.9rem;">Currently set to English.</div>
-        </div>
-        <button class="btn secondary">Switch</button>
-      </div>
-      <div class="setting-row">
-        <div>
-          <div style="font-weight:600;">Notifications</div>
-          <div style="color:var(--text-muted);font-size:.9rem;">Receive reminders and progress updates.</div>
-        </div>
-      </div>
-    </div>`
-  ),
+      <section id="report-wrap" class="card reveal" style="margin-top:18px; display:none;">
+        <h3 style="margin-bottom:10px;">Your generated report</h3>
+        <iframe id="report-frame" class="report-frame" title="Negotiation report"></iframe>
+      </section>
+      `
+    );
+  }
 };
 
-/* ------------- Strategy Questionnaire ------------- */
-let questionnaireSpec = null;
-let currentPhaseIndex = 0;
-let userAnswers = {};
-
-async function loadQuestionnaire(){
-  if (questionnaireSpec) return;
-  try{
-    const res = await fetch(`${API_BASE}/questionnaire/schema`);
-    if(!res.ok) throw new Error(`Failed to load schema: ${res.statusText}`);
-    questionnaireSpec = await res.json();
-  }catch(e){
-    console.error("Failed to load questionnaire:", e);
-    const stepper = document.getElementById("strategy-stepper");
-    if(stepper) stepper.innerHTML = `<p style="color:var(--color-bad);text-align:center;">Failed to load the questionnaire.</p>`;
-  }
-}
-
-function renderStrategyStep(){
-  const stepperContainer = document.getElementById("strategy-stepper");
-  if(!stepperContainer || !questionnaireSpec) return;
-
-  const phase = questionnaireSpec.phases[currentPhaseIndex];
-  const progress = ((currentPhaseIndex + 1) / questionnaireSpec.phases.length) * 100;
-
-  const questionsHTML = phase.questions.map(q => renderQuestion(q)).join("");
-
-  stepperContainer.innerHTML = `
-    <div class="progress-bar"><div class="progress-bar-inner" style="width:${progress}%"></div></div>
-    <h2 class="question-title">${(phase.title || "").replace(/_/g, " ")}</h2>
-    <p class="page-subtitle">${phase.description || ""}</p>
-    <form id="questionnaire-form" style="display:flex;flex-direction:column;gap:1.5rem;">
-      ${questionsHTML}
-    </form>
-    <div class="stepper-nav">
-      <button id="strategy-back" class="btn secondary" ${currentPhaseIndex === 0 ? "disabled" : ""}>Back</button>
-      <button id="strategy-next" class="btn">${currentPhaseIndex === questionnaireSpec.phases.length - 1 ? "Generate report" : "Next"}</button>
-    </div>
-  `;
-
-  document.querySelectorAll(".choice-btn").forEach(label => {
-    label.addEventListener("click", () => {
-      const input = label.querySelector("input");
-      if (input?.type === "radio") {
-        document.querySelectorAll(`input[name="${input.name}"]`).forEach(radio => {
-          radio.closest("label")?.classList.remove("selected");
-        });
-      }
-      label.classList.toggle("selected", input?.checked);
-    });
-  });
-
-  document.getElementById("strategy-back")?.addEventListener("click", () => {
-    collectAnswers();
-    if (currentPhaseIndex > 0) {
-      currentPhaseIndex--;
-      renderStrategyStep();
-      refreshAOS();
-    }
-  });
-
-  document.getElementById("strategy-next")?.addEventListener("click", (e) => {
-    e.preventDefault();
-    collectAnswers();
-    if (currentPhaseIndex < questionnaireSpec.phases.length - 1) {
-      currentPhaseIndex++;
-      renderStrategyStep();
-      refreshAOS();
-    } else {
-      finishStrategy();
-    }
-  });
-
-  refreshAOS();
-}
-
-function renderQuestion(q){
-  const currentValue = userAnswers[q.id];
-  let inputHTML = "";
-
-  switch (q.answerType) {
-    case "single_choice":
-      inputHTML = `<div class="choices-grid">${(q.options||[]).map(opt => `
-        <label class="choice-btn ${currentValue === opt.value ? "selected" : ""}">
-          <input type="radio" name="${q.id}" value="${opt.value}" ${currentValue === opt.value ? "checked" : ""}>
-          ${opt.label}
-        </label>`).join("")}</div>`;
-      break;
-    case "multiple_choice":
-      inputHTML = `<div class="choices-grid">${(q.options||[]).map(opt => `
-        <label class="choice-btn ${Array.isArray(currentValue) && currentValue.includes(opt.value) ? "selected" : ""}">
-          <input type="checkbox" name="${q.id}" value="${opt.value}" ${Array.isArray(currentValue) && currentValue.includes(opt.value) ? "checked" : ""}>
-          ${opt.label}
-        </label>`).join("")}</div>`;
-      break;
-    case "free_text_limited":
-      inputHTML = `<textarea name="${q.id}" rows="3" class="form-input" placeholder="${q.ui?.placeholder || ""}">${currentValue || ""}</textarea>`;
-      break;
-    case "rating_scale":
-      inputHTML = `<input type="number" name="${q.id}" min="${q.scaleMin}" max="${q.scaleMax}" value="${currentValue || ""}" class="form-input" placeholder="Number between ${q.scaleMin} and ${q.scaleMax}">`;
-      break;
-    default:
-      inputHTML = `<input type="text" name="${q.id}" value="${currentValue || ""}" class="form-input" placeholder="${q.ui?.placeholder || ""}">`;
-  }
-
-  return `<div data-aos="fade-up">
-    <label style="font-weight:600;margin-bottom:.75rem;display:block;">${q.question}</label>
-    ${inputHTML}
-  </div>`;
-}
-
-function collectAnswers(){
-  const form = document.getElementById("questionnaire-form");
-  if(!form) return;
-  const formData = new FormData(form);
-  const names = new Set(Array.from(form.elements).map(el => el.name).filter(Boolean));
-
-  names.forEach(key => {
-    const allValues = formData.getAll(key);
-    if (allValues.length > 1) userAnswers[key] = allValues;
-    else if (allValues.length === 1) userAnswers[key] = allValues[0];
-    else {
-      const el = form.querySelector(`[name="${key}"]`);
-      if (el && el.type === "checkbox") userAnswers[key] = [];
-    }
-  });
-}
-
-/** === Report popup control === */
-function openReportModal(reportUrl){
-  const modal = document.getElementById("report-modal");
-  const iframe = document.getElementById("report-iframe");
-  const closeBtn = document.getElementById("np-modal-close");
-  const downloadBtn = document.getElementById("np-modal-download");
-  const saveBtn = document.getElementById("np-modal-save");
-
-  iframe.src = reportUrl;
-  modal.style.display = "block";
-
-  const onClose = () => { modal.style.display = "none"; iframe.src = "about:blank"; };
-  closeBtn.onclick = onClose;
-  modal.querySelector(".np-modal-backdrop").onclick = onClose;
-
-  downloadBtn.onclick = () => {
-    // prefer server-side PDF if route exists on same path (id embedded in URL)
-    const m = /\/report\/([a-zA-Z0-9]+)$/.exec(reportUrl);
-    if (m) {
-      fetch(`/report/${m[1]}.pdf`).then(res => {
-        if (res.ok && res.headers.get('content-type')?.includes('application/pdf')){
-          return res.blob().then(blob => {
-            const url = URL.createObjectURL(blob);
-            const a = document.createElement('a');
-            a.href = url; a.download = `negotiation_report_${m[1]}.pdf`; a.click();
-            URL.revokeObjectURL(url);
-          });
-        } else {
-          // fallback: open the HTML
-          window.open(reportUrl, "_blank");
-        }
-      }).catch(()=> window.open(reportUrl, "_blank"));
-    } else {
-      window.open(reportUrl, "_blank");
-    }
-  };
-
-  saveBtn.onclick = () => {
-    const m = /\/report\/([a-zA-Z0-9]+)$/.exec(reportUrl);
-    if (!m) return alert('No report id.');
-    fetch('/reports/save', {
-      method:'POST',
-      headers:{'Content-Type':'application/json'},
-      body: JSON.stringify({ report_id: m[1], title: 'Negotiation Report', tags: ['strategy','report'] })
-    }).then(r=>r.json()).then(j=>{
-      if (j.ok) alert('Saved ✓'); else alert('Save failed');
-    }).catch(()=>alert('Save failed'));
-  };
-}
-
-async function finishStrategy(){
-  const stepperContainer = document.getElementById("strategy-stepper");
-  stepperContainer.innerHTML = `<div class="text-center p-8"><div class="loading-spinner"></div><p style="text-align:center;margin-top:1rem;">Generating your strategy report...</p></div>`;
-
-  try{
-    const response = await fetch(`${API_BASE}/questionnaire/report`, {
-      method: "POST",
-      headers: {"Content-Type":"application/json"},
-      body: JSON.stringify({ answers: userAnswers })
-    });
-    if(!response.ok) throw new Error(`Server error: ${response.statusText}`);
-
-    const data = await response.json();
-    if (!data.ok && !data.report_url) throw new Error(data.reason || "Unknown error from server");
-
-    // Popup modal with separate HTML (no inline form block anymore)
-    stepperContainer.innerHTML = `<div class="card" style="text-align:center;padding:2rem;"><h3>Your report is ready</h3><p>Opening…</p></div>`;
-    openReportModal(data.report_url);
-  }catch(err){
-    stepperContainer.innerHTML = `<div class="card text-center p-8" style="color:var(--color-bad);">Failed to generate report: ${err.message}</div>`;
-  }
-}
-
-/* ------------- AI Coach ------------- */
-async function sendChatMessage(){
-  const chatInput = document.getElementById("chat-input");
-  const chatBox = document.getElementById("chat-box");
-  const message = chatInput.value.trim();
-  if(!message) return;
-
-  chatBox.insertAdjacentHTML("beforeend", `<div class="bubble me">${message}</div>`);
-  chatInput.value = "";
-  chatBox.scrollTop = chatBox.scrollHeight;
-
-  const thinkingId = `thinking-${Date.now()}`;
-  chatBox.insertAdjacentHTML("beforeend", `<div id="${thinkingId}" class="bubble ai"><span class="loading-spinner" style="width:20px;height:20px;margin:0;"></span></div>`);
-  chatBox.scrollTop = chatBox.scrollHeight;
-
-  try{
-    const response = await fetch(`${API_BASE}/coach`, {
-      method: "POST",
-      headers: {"Content-Type":"application/json"},
-      body: JSON.stringify({ msg: message })
-    });
-    const data = await response.json();
-    const thinkingBubble = document.getElementById(thinkingId);
-    if (thinkingBubble) thinkingBubble.textContent = data.reply;
-  }catch(err){
-    const thinkingBubble = document.getElementById(thinkingId);
-    if (thinkingBubble) thinkingBubble.textContent = "Error. Try again later.";
-  }
-  chatBox.scrollTop = chatBox.scrollHeight;
-}
-
-/* ------------- Practice Tabs + AI Drill ------------- */
-function initPracticeTabs(){
-  const tabButtons = document.querySelectorAll('.tabs [data-tab]');
-  const views = {
-    scenarios: document.getElementById('tab-scenarios'),
-    ai: document.getElementById('tab-ai'),
-    debrief: document.getElementById('tab-debrief')
-  };
-  tabButtons.forEach(btn=>{
-    btn.addEventListener('click', ()=>{
-      tabButtons.forEach(b=>b.setAttribute('aria-selected','false'));
-      btn.setAttribute('aria-selected','true');
-      const target = btn.dataset.tab;
-      Object.entries(views).forEach(([k,el])=>{ el.style.display = (k===target)?'block':'none'; });
-    });
-  });
-
-  // AI drill send
-  const sendBtn = document.getElementById('ai-drill-send');
-  const input = document.getElementById('ai-drill-input');
-  const box = document.getElementById('ai-drill-box');
-  function sendDrill(){
-    const message = input.value.trim();
-    if(!message) return;
-    box.insertAdjacentHTML('beforeend', `<div class="bubble me">${message}</div>`);
-    input.value = '';
-    const thinkingId = `thinking-${Date.now()}`;
-    box.insertAdjacentHTML('beforeend', `<div id="${thinkingId}" class="bubble ai"><span class="loading-spinner" style="width:20px;height:20px;margin:0;"></span></div>`);
-    box.scrollTop = box.scrollHeight;
-
-    fetch(`${API_BASE}/coach`, {
-      method:'POST',
-      headers:{'Content-Type':'application/json'},
-      body: JSON.stringify({ msg: message })
-    }).then(r=>r.json()).then(j=>{
-      const t = document.getElementById(thinkingId);
-      if (t) t.textContent = j.reply;
-      box.scrollTop = box.scrollHeight;
-    }).catch(()=>{
-      const t = document.getElementById(thinkingId);
-      if (t) t.textContent = 'Error. Try again later.';
-    });
-  }
-  sendBtn?.addEventListener('click', sendDrill);
-  input?.addEventListener('keypress', e=>{ if(e.key==='Enter') sendDrill(); });
-
-  // Start practice buttons (from scenarios)
-  document.querySelectorAll('.start-practice').forEach(btn=>{
-    btn.addEventListener('click', ()=>{
-      // switch to AI tab and seed prompt
-      document.querySelector('.tabs [data-tab="ai"]').click();
-      const seed = `I want to practice: ${btn.dataset.title}. Give me a realistic prompt and a first move.`;
-      input.value = seed;
-    });
-  });
-
-  // Debrief save (local only stub)
-  document.getElementById('save-debrief')?.addEventListener('click', ()=>{
-    const notes = document.getElementById('debrief-notes').value.trim();
-    if (!notes) return alert('Write a note first.');
-    try{
-      const all = JSON.parse(localStorage.getItem('np_debrief') || '[]');
-      all.push({ ts: Date.now(), notes });
-      localStorage.setItem('np_debrief', JSON.stringify(all));
-      alert('Saved ✓');
-    }catch{ alert('Save failed'); }
-  });
-}
-
-/* ------------- Micro-animations (counters/bars) ------------- */
-function animateOnView(){
-  const root = document.getElementById("app-root");
-  if(!root) return;
-
-  const nums = [...root.querySelectorAll('[data-animate="count"]')];
-  const bars = [...root.querySelectorAll('[data-animate="bar"]')];
-
-  const io = new IntersectionObserver((entries)=>{
-    entries.forEach(entry=>{
-      if(!entry.isIntersecting) return;
-      const el = entry.target;
-
-      if (el.dataset.animate === "count"){
-        const end = parseFloat(el.dataset.end || "0");
-        const decimals = parseInt(el.dataset.decimals || "0", 10);
-        const suffix = el.dataset.suffix || "";
-        const start = 0;
-        const dur = 900;
-        const t0 = performance.now();
-        function tick(t){
-          const p = Math.min(1, (t - t0)/dur);
-          const val = start + (end - start)*p;
-          el.textContent = val.toFixed(decimals) + suffix;
-          if (p<1) requestAnimationFrame(tick);
-        }
-        requestAnimationFrame(tick);
-        io.unobserve(el);
-      }
-
-      if (el.dataset.animate === "bar"){
-        const w = parseInt(el.dataset.width || "0", 10);
-        el.style.width = w + "%";
-        io.unobserve(el);
-      }
-    });
-  }, {threshold: .4});
-
-  nums.forEach(n=>io.observe(n));
-  bars.forEach(b=>io.observe(b));
-}
-
-/* ------------- AOS helpers ------------- */
-function initAOS(){
-  if (window.AOS && typeof window.AOS.init === "function"){
-    window.AOS.init({ once: true, duration: 650, easing: "ease-out-cubic" });
-  }
-}
-function refreshAOS(){
-  if (window.AOS && typeof window.AOS.refreshHard === "function") window.AOS.refreshHard();
-  else if (window.AOS && typeof window.AOS.refresh === "function") window.AOS.refresh();
-}
-
-/* ------------- SPA Router ------------- */
-const app = {
+// --------- App state ---------
+const App = {
   root: document.getElementById("app-root"),
-  navLinks: document.querySelectorAll(".nav-link"),
+  navLinks: null,
 
-  mockData: {
+  state: {
+    questionnaire: null,
+    answers: {},
+    phaseIndex: 0
+  },
+
+  mock: {
     dashboard: {
       kpis: [
-        { label: "Total negotiations", value: 47, decimals: 0, suffix: "" },
-        { label: "Success rate", value: 78, decimals: 0, suffix: "%" },
-        { label: "Average score", value: 8.4, decimals: 1, suffix: "" },
-        { label: "Skill level", type: "text", text: "Advanced" },
+        { label: "Skill level", value: "Advanced" },
+        { label: "Average score", value: "8.4" },
+        { label: "Success rate", value: "78%" },
+        { label: "Total negotiations", value: "47" }
       ],
-      skills_breakdown: [
-        { skill: "Communication", score: 85 },
-        { skill: "Strategy", score: 72 },
-        { skill: "Analysis", score: 90 },
-        { skill: "Creativity", score: 68 },
-      ],
+      skills: [
+        { name: "Communication", score: 85 },
+        { name: "Strategy", score: 72 },
+        { name: "Analysis", score: 90 },
+        { name: "Creativity", score: 68 }
+      ]
     },
     practice: [
-      { title: "Salary negotiation", type: "Medium", skills: ["Confidence", "Value framing"], duration: "20–15 min", participants: 2 },
-      { title: "Real-estate deal", type: "Hard", skills: ["Strategy", "Patience"], duration: "30–25 min", participants: 3 },
-      { title: "Business agreement", type: "Easy", skills: ["Creativity", "Active listening"], duration: "15–10 min", participants: 2 },
+      { title:"Business agreement", level:"Easy",   badgeCls:"easy",   skills:["Creativity","Active listening"], participants:2, duration:"15–10" },
+      { title:"Real-estate deal",  level:"Hard",   badgeCls:"hard",   skills:["Strategy","Patience"],          participants:3, duration:"30–25" },
+      { title:"Salary negotiation",level:"Medium", badgeCls:"medium", skills:["Confidence","Value framing"],   participants:2, duration:"20–15" },
     ],
     analytics: {
-      performance_scores: [
-        { label: "Salary negotiation", score: 9.2 },
-        { label: "Real-estate deal", score: 7.8 },
-        { label: "Business agreement", score: 8.9 },
+      recent: [
+        { label:"Salary negotiation", score:"9.2" },
+        { label:"Real-estate deal",   score:"7.8" },
+        { label:"Business agreement", score:"8.9" }
       ],
-      improvement_suggestions: [
-        { title: "Use evidence-based arguments", description: "Bring quantifiable results and highlight impact." },
-        { title: "Strengthen self-selling", description: "Write a strong opening and practice delivering it." },
+      tips: [
+        { title:"Evidence-based pitch", desc:"Use quantified outcomes and impact-oriented phrasing." },
+        { title:"Sharpen your openers", desc:"Craft a strong opening line and rehearse delivery." }
       ]
     }
   },
 
-  async loadPage(page){
-    this.root.innerHTML = `<div class="loading-spinner"></div>`;
-    try{
-      switch(page){
-        case "dashboard":
-          this.root.innerHTML = Templates.dashboard(this.mockData.dashboard);
-          animateOnView();
-          refreshAOS();
-          break;
-        case "practice":
-          this.root.innerHTML = Templates.practice(this.mockData.practice);
-          initPracticeTabs();
-          refreshAOS();
-          break;
-        case "analytics":
-          this.root.innerHTML = Templates.analytics(this.mockData.analytics);
-          refreshAOS();
-          break;
-        case "strategy":
-          this.root.innerHTML = Templates.strategy();
-          await loadQuestionnaire();
-          renderStrategyStep();
-          break;
-        case "coach":
-          this.root.innerHTML = Templates.coach();
-          const btn = document.getElementById("chat-send-btn");
-          const inp = document.getElementById("chat-input");
-          btn?.addEventListener("click", sendChatMessage);
-          inp?.addEventListener("keypress", (e)=>{ if(e.key==="Enter") sendChatMessage(); });
-          refreshAOS();
-          break;
-        case "settings":
-          this.root.innerHTML = Templates.settings();
-          refreshAOS();
-          break;
-        default:
-          this.root.innerHTML = `<div class="card">Not found.</div>`;
-          refreshAOS();
-      }
-    }catch(e){
-      this.root.innerHTML = `<div class="card" style="color:var(--color-bad);text-align:center">Failed to load page: ${e.message}</div>`;
+  // --------- Router ---------
+  handleRoute() {
+    const page = (location.hash.slice(1) || "dashboard").toLowerCase();
+    if (this.navLinks) {
+      this.navLinks.forEach(a => a.classList.toggle("active", a.dataset.target === page));
+    }
+    this.render(page);
+  },
+
+  async render(page) {
+    // Basic loading shimmer
+    this.root.innerHTML = `<div class="card reveal" style="text-align:center; color:var(--muted)">Loading…</div>`;
+
+    switch(page){
+      case "dashboard":
+        this.root.innerHTML = Tpl.dashboard(this.mock.dashboard);
+        break;
+
+      case "practice":
+        this.root.innerHTML = Tpl.practice(this.mock.practice);
+        break;
+
+      case "analytics":
+        this.root.innerHTML = Tpl.analytics(this.mock.analytics);
+        break;
+
+      case "coach":
+        this.root.innerHTML = Tpl.coach();
+        this.bindCoach();
+        break;
+
+      case "strategy":
+        this.root.innerHTML = Tpl.strategy();
+        await this.ensureSchema();
+        this.renderStep();
+        this.bindStepper();
+        break;
+
+      case "settings":
+        this.root.innerHTML = Tpl.settings();
+        break;
+
+      default:
+        this.root.innerHTML = `<div class="card">Page not found</div>`;
     }
   },
 
-  handleRouteChange(){
-    const page = window.location.hash.substring(1) || "dashboard";
-    this.navLinks.forEach(a => a.classList.toggle("active", a.dataset.target === page));
-    this.loadPage(page);
+  init() {
+    this.navLinks = document.querySelectorAll(".nav-link");
+    window.addEventListener("hashchange", () => this.handleRoute());
+    this.handleRoute();
   },
 
-  init(){
-    window.addEventListener("hashchange", ()=>this.handleRouteChange());
-    initAOS();
-    this.handleRouteChange();
+  // --------- AI Coach ---------
+  bindCoach() {
+    const box = document.getElementById("chat-box");
+    const input = document.getElementById("chat-input");
+    const send = document.getElementById("chat-send");
+
+    const sendMsg = async () => {
+      const msg = input.value.trim();
+      if(!msg) return;
+      box.insertAdjacentHTML("beforeend", `<div class="bubble me">${msg}</div>`);
+      input.value = "";
+      box.scrollTop = box.scrollHeight;
+
+      const thinkingId = `t-${Date.now()}`;
+      box.insertAdjacentHTML("beforeend", `<div id="${thinkingId}" class="bubble ai">...</div>`);
+
+      try{
+        const res = await fetch(`${API_BASE}/coach`, {
+          method:"POST",
+          headers:{ "Content-Type":"application/json" },
+          body: JSON.stringify({ msg })
+        });
+        const data = await res.json();
+        document.getElementById(thinkingId).textContent = data.reply || "OK";
+      }catch{
+        document.getElementById(thinkingId).textContent = "Error. Please try again.";
+      }
+      box.scrollTop = box.scrollHeight;
+    };
+
+    send.addEventListener("click", sendMsg);
+    input.addEventListener("keydown", e => { if(e.key === "Enter") sendMsg(); });
+  },
+
+  // --------- Strategy stepper ---------
+  async ensureSchema() {
+    if (this.state.questionnaire) return;
+    const res = await fetch(`${API_BASE}/questionnaire/schema`);
+    if (!res.ok) throw new Error(`Failed to load schema: ${res.statusText}`);
+    this.state.questionnaire = await res.json();
+    this.state.phaseIndex = 0;
+    this.state.answers = {};
+  },
+
+  bindStepper() {
+    const back = document.getElementById("btn-back");
+    const next = document.getElementById("btn-next");
+    back.addEventListener("click", () => {
+      this.collectAnswers();
+      if (this.state.phaseIndex > 0) {
+        this.state.phaseIndex--;
+        this.renderStep();
+      }
+    });
+    next.addEventListener("click", async () => {
+      this.collectAnswers();
+      const last = this.state.phaseIndex >= this.state.questionnaire.phases.length - 1;
+      if (!last) {
+        this.state.phaseIndex++;
+        this.renderStep();
+      } else {
+        await this.finishStrategy();
+      }
+    });
+  },
+
+  renderStep() {
+    const stepRoot = document.getElementById("stepper-root");
+    const prog = document.getElementById("step-progress");
+    const q = this.state.questionnaire;
+    const idx = this.state.phaseIndex;
+    const phase = q.phases[idx];
+
+    const pct = Math.round(((idx) / q.phases.length) * 100);
+    prog.style.width = `${pct}%`;
+
+    const html = phase.questions.map(qq => this.renderQuestion(qq)).join("");
+    stepRoot.innerHTML = html;
+
+    // back button state
+    document.getElementById("btn-back").disabled = (idx === 0);
+
+    // click visuals for choices
+    stepRoot.querySelectorAll(".choice input").forEach(inp => {
+      inp.addEventListener("change", () => {
+        if (inp.type === "radio") {
+          stepRoot.querySelectorAll(`input[name="${inp.name}"]`).forEach(r => {
+            r.closest(".choice").classList.toggle("selected", r.checked);
+          });
+        } else {
+          inp.closest(".choice").classList.toggle("selected", inp.checked);
+        }
+      });
+    });
+  },
+
+  renderQuestion(q) {
+    const saved = this.state.answers[q.id];
+    const label = `<div style="font-weight:700; margin-bottom:8px;">${q.question}</div>`;
+    let inner = "";
+
+    if (q.answerType === "single_choice") {
+      inner = `
+        <div class="grid" style="gap:10px;">
+          ${(q.options || []).map(o => `
+            <label class="choice ${saved === o.value ? "selected" : ""}">
+              <input type="radio" name="${q.id}" value="${o.value}" ${saved === o.value ? "checked": ""} style="position:absolute; opacity:0; width:0; height:0;" />
+              ${o.label}
+            </label>`).join("")}
+        </div>
+      `;
+    } else if (q.answerType === "multiple_choice") {
+      const arr = Array.isArray(saved) ? saved : [];
+      inner = `
+        <div class="grid" style="gap:10px;">
+          ${(q.options || []).map(o => `
+            <label class="choice ${arr.includes(o.value) ? "selected" : ""}">
+              <input type="checkbox" name="${q.id}" value="${o.value}" ${arr.includes(o.value) ? "checked": ""} style="position:absolute; opacity:0; width:0; height:0;" />
+              ${o.label}
+            </label>`).join("")}
+        </div>
+      `;
+    } else if (q.answerType === "rating_scale") {
+      inner = `<input class="input" type="number" min="${q.scaleMin}" max="${q.scaleMax}" name="${q.id}" value="${saved ?? ""}" placeholder="Enter ${q.scaleMin}–${q.scaleMax}" />`;
+    } else if (q.answerType === "free_text_limited") {
+      inner = `<textarea class="input" rows="3" name="${q.id}" placeholder="${(q.ui && q.ui.placeholder) || ""}">${saved ?? ""}</textarea>`;
+    } else {
+      inner = `<input class="input" type="text" name="${q.id}" value="${saved ?? ""}" placeholder="${(q.ui && q.ui.placeholder) || ""}" />`;
+    }
+    return `<div class="question">${label}${inner}</div>`;
+  },
+
+  collectAnswers() {
+    const root = document.getElementById("stepper-root");
+    if (!root) return;
+    const formEls = root.querySelectorAll("input, textarea, select");
+    const grouped = new Map();
+
+    formEls.forEach(el => {
+      if (!el.name) return;
+      if (!grouped.has(el.name)) grouped.set(el.name, []);
+      if (el.type === "checkbox") {
+        if (el.checked) grouped.get(el.name).push(el.value);
+      } else if (el.type === "radio") {
+        if (el.checked) grouped.get(el.name).push(el.value);
+      } else {
+        if (el.value !== "") grouped.get(el.name).push(el.value);
+      }
+    });
+
+    grouped.forEach((vals, key) => {
+      this.state.answers[key] = vals.length > 1 ? vals : (vals[0] ?? "");
+    });
+  },
+
+  async finishStrategy() {
+    // show spinner state in the stepper area
+    const stepRoot = document.getElementById("stepper-root");
+    stepRoot.innerHTML = `<div style="text-align:center; color:var(--muted)">Generating report…</div>`;
+
+    try{
+      const res = await fetch(`${API_BASE}/questionnaire/report`, {
+        method: "POST",
+        headers: { "Content-Type":"application/json" },
+        body: JSON.stringify({ answers: this.state.answers })
+      });
+      const data = await res.json();
+      if (!res.ok || !data.ok) throw new Error(data.reason || "Failed to generate report");
+
+      // fetch report HTML and embed
+      const r = await fetch(data.report_url);
+      if (!r.ok) throw new Error(`Cannot load report: ${r.statusText}`);
+      const html = await r.text();
+
+      const frame = document.getElementById("report-frame");
+      const wrap = document.getElementById("report-wrap");
+      wrap.style.display = "block";
+      frame.srcdoc = html;
+
+      // mark progress bar as full
+      document.getElementById("step-progress").style.width = "100%";
+    }catch(e){
+      stepRoot.innerHTML = `<div class="card">Error: ${(e && e.message) || e}</div>`;
+    }
   }
 };
 
-app.init();
+App.init();
