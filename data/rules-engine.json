@@ -1,78 +1,60 @@
 {
-  "description": "Advanced rule-set with multi-part recommendations, compatible with the updated engine.",
+  "version": "v1",
   "rules": [
     {
-      "id": "R003-Default-Persona-Strategy",
-      "strategy": "Collaborative Information Gathering",
-      "tags": ["opening", "collaborative"],
-      "base_confidence": 0.85,
+      "rule_id": "R001_anchor_with_proof",
+      "title": "Anchoring with proof",
+      "family": "opening",
       "conditions": {
-        "persona": { "types": ["default"] },
-        "emotions": ["neutral", "anxiety"]
+        "deal_type":        { "in": ["salary_negotiation", "vendor_pricing"], "weight": 0.3 },
+        "counterpart_style.decision_making": { "in": ["analytical", "deliberate"], "weight": 0.4 },
+        "anchor_target.target_salary": { "status": "defined", "weight": 0.3 }
       },
-      "recommendations": [
-        {
-          "text": "1. **Build Rapport First:** Start with a collaborative tone. Ask open-ended questions like 'What would a successful outcome look like for you?'",
-          "tone": "collaborative"
-        },
-        {
-          "text": "2. **Present Objective Criteria:** Use market data sources (e.g., Glassdoor, Levels.fyi) to anchor salary ranges in facts, not feelings.",
-          "tone": "analytical"
-        },
-        {
-          "text": "3. **State Your Goal Clearly but Flexibly:** Example: 'I'm targeting a base salary of Z, and I’d also like to discuss bonuses or benefits.'",
-          "tone": "assertive"
-        }
-      ]
+      "activation_threshold": 0.62,
+      "output_tactics": ["data_driven_anchor", "proof_stacking", "logical_progression"],
+      "reasoning": "Analytical counterparts respond well to evidence-backed positions."
     },
+
     {
-      "id": "R004-Aggressive-Persona-Strategy",
-      "strategy": "De-escalation and Control",
-      "tags": ["difficult", "anchoring"],
-      "base_confidence": 0.9,
+      "rule_id": "R002_emotion_first",
+      "title": "Relationship-first opening",
+      "family": "opening",
       "conditions": {
-        "persona": { "types": ["aggressive"] }
+        "counterpart_style.communication": { "in": ["emotional", "expressive"], "weight": 0.5 },
+        "cultural_context.communication_style": { "in": ["high_context"], "weight": 0.3 },
+        "deadline_pressure.urgency_level": { "in": ["low", "medium", null], "weight": 0.2 }
       },
-      "recommendations": [
-        {
-          "text": "Maintain a calm and neutral tone. Do not mirror their aggression. Use fact-based language to de-escalate and redirect.",
-          "tone": "calm"
-        }
-      ]
+      "activation_threshold": 0.6,
+      "output_tactics": ["rapport_building", "shared_goals_framing", "win_win_emphasis"],
+      "reasoning": "Emotional communicators and high-context settings reward relationship priming."
     },
+
     {
-      "id": "R005-Anxiety-Emotion-Strategy",
-      "strategy": "Confidence Building and Reassurance",
-      "tags": ["emotional", "reassurance"],
-      "base_confidence": 0.9,
+      "rule_id": "R003_pressure_quick_framework",
+      "title": "Quick decision framework",
+      "family": "pressure",
       "conditions": {
-        "emotions": ["anxiety"]
+        "deadline_pressure.urgency_level": { "in": ["high", "critical"], "weight": 0.6 },
+        "batna_strength": { "in": ["solid_alternatives", "strong_alternatives"], "weight": 0.4 }
       },
-      "recommendations": [
-        {
-          "text": "Acknowledge the stress: 'I know these talks can be tough.' This builds trust and reduces pressure.",
-          "tone": "empathetic"
-        }
-      ]
+      "activation_threshold": 0.68,
+      "output_tactics": ["time_constraint_ack", "structured_options", "decision_matrix", "walk_away_hint"],
+      "reasoning": "With time pressure and solid BATNA, use structured and firm approach."
     },
+
     {
-      "id": "R999-Fallback-Strategy",
-      "strategy": "Default Neutral Anchoring",
-      "tags": ["fallback", "neutral"],
-      "base_confidence": 0.6,
-      "conditions": {},
-      "recommendations": [
-        {
-          "text": "When no clear persona or emotion is detected, use neutral anchoring: 'Based on my understanding of the role and market, here's what I propose…'",
-          "tone": "neutral"
-        }
-      ]
+      "rule_id": "R004_confidence_support",
+      "title": "Confidence-building opener",
+      "family": "support",
+      "conditions": {
+        "anchor_target.target_salary": { "status": "defined", "weight": 0.3 },
+        "deadline_pressure.time_to_decision": { "range": [0, 30], "weight": 0.2 },
+        "counterpart_style.communication": { "in": ["direct","analytical","amiable","expressive"], "weight": 0.2 },
+        "deal_type": { "in": ["salary_negotiation"], "weight": 0.3 }
+      },
+      "activation_threshold": 0.6,
+      "output_tactics": ["gentle_opener", "value_reminder", "positive_framing"],
+      "reasoning": "Provide steady openings when user confidence is not dominant."
     }
-  ],
-  "_metadata": {
-    "version": "1.0.2",
-    "lang": "en",
-    "lastUpdated": "2025-08-17",
-    "engine": "NegotiationPro-Core"
-  }
+  ]
 }

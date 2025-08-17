@@ -1,0 +1,145 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Strategic Negotiation Report</title>
+<style>
+    :root {{
+        --bg:#0b1220; --panel:#151b2d; --ink:#e8ecff; --muted:#9FB1D9;
+        --border:#28304a; --brand:#6EA8FF; --brand2:#7BF1A8; --accent:#A78BFA;
+        --radius:18px; --shadow: 0 10px 28px rgba(0,0,0,.28);
+    }}
+    html,body{{height:100%}} body{{
+        margin:0; background: radial-gradient(1200px 700px at 80% -10%, rgba(110,168,255,0.10), transparent 60%),
+                                                 radial-gradient(900px 900px at -20% 10%, rgba(167,139,250,0.08), transparent 55%), var(--bg);
+        color:var(--ink); font-family: Inter, system-ui, Segoe UI, Arial; line-height:1.55; padding:28px;
+    }}
+    .wrap{{max-width:1120px;margin:0 auto}}
+    .card{{background:linear-gradient(180deg, rgba(21,27,45,.92), rgba(11,18,32,.86));
+                 border:1px solid var(--border);border-radius:22px;padding:22px;box-shadow:var(--shadow)}}
+    h1{{margin:0 0 10px 0;font-size:28px}} h2,h3{{margin:.25rem 0 .5rem 0}}
+    .meta{{color:var(--muted);font-size:13px;margin-bottom:14px}}
+    .grid{{display:grid;gap:18px;grid-template-columns: 1.1fr .9fr}}
+    @media (max-width: 900px){{.grid{{grid-template-columns:1fr}}}}
+    /* chips */
+    .chips{{display:flex;gap:8px;flex-wrap:wrap;margin-top:8px}}
+    .chip{{background:#0f1729;border:1px solid var(--border);padding:6px 10px;border-radius:999px;font-size:12px;color:var(--muted)}}
+    /* range list */
+    .list{{display:flex;flex-direction:column;gap:10px}}
+    .row{{display:grid;grid-template-columns:140px 1fr 70px;gap:10px;align-items:center}}
+    .pill{{background:#10182a;border:1px solid var(--border);padding:10px 12px;border-radius:14px;color:var(--muted)}}
+    .bar{{position:relative;height:10px;background:#0e1526;border-radius:999px;overflow:hidden;border:1px solid var(--border)}}
+    .fill{{position:absolute;inset:0 0 0 0;transform:scaleX(0);transform-origin:left;animation:grow .9s ease forwards}}
+    @keyframes grow{{to{{transform:scaleX(var(--p))}}}}
+    .k{{
+        background:linear-gradient(90deg, var(--brand), var(--brand2));
+        mask:linear-gradient(90deg, #000 50%, rgba(0,0,0,.5) 100%);
+        -webkit-mask:linear-gradient(90deg, #000 50%, rgba(0,0,0,.5) 100%);
+    }}
+    .actions{{display:flex;gap:10px;margin-top:18px}}
+    .btn{{appearance:none;border:1px solid var(--border);background:#0f1729;color:var(--ink);
+             border-radius:12px;padding:10px 14px;cursor:pointer;font-weight:700}}
+    .btn:hover{{filter:brightness(1.05)}}
+    .section{{margin-top:16px}}
+    details summary{{cursor:pointer;color:var(--muted)}}
+    table{{width:100%;border-collapse:collapse}} td,th{{border-bottom:1px solid var(--border);padding:8px;text-align:right}}
+</style>
+<script>
+    // Animate bars based on data-range attributes
+    document.addEventListener('DOMContentLoaded', ()=>{
+        document.querySelectorAll('[data-p]').forEach(el=>{
+            const p = Math.max(0, Math.min(1, parseFloat(el.getAttribute('data-p')||'0')));
+            el.style.setProperty('--p', p.toString());
+        });
+    });
+</script>
+</head>
+<body>
+    <div class="wrap">
+        <div class="card">
+            
+<div class="np-report">
+  <h2>Negotiation Strategy Report</h2>
+  <div class="meta"><span class="pill">Persona: -</span> <span class="pill">Emotions: -</span> <span class="pill">Region: </span></div>
+
+  <section>
+    <h3>Snapshot</h3>
+    <div class="card">
+      <div>Region: <b></b> &nbsp;·&nbsp;
+           Type: <b>custom</b> &nbsp;·&nbsp;
+           Conflict style: <b>compromise</b></div>
+    </div>
+  </section>
+
+  <section>
+    <h3>Highlights</h3>
+    <ul>
+      <li>Use data-backed framing and tie requests to impact.</li><li>Keep tone professional; aim for collaborative language.</li><li>Make timing explicit; suggest a decision window of ~5 business days.</li>
+    </ul>
+  </section>
+
+  <section>
+    <h3>Opening Options (ready to say)</h3>
+    <ul>
+      <li>Start with a concise value statement tied to market context.</li><li>Offer a data-backed anchor and pause for their view.</li><li>Invite alignment on the shared goal before diving into numbers.</li>
+    </ul>
+  </section>
+
+  <section>
+    <h3>Counters You’ll Need</h3>
+    <ul>
+      <li>If they say 'budget is tight' → propose a performance-based structure.</li><li>If they lowball → bridge with ROI and credible proof.</li><li>If they challenge market data → align on sources, then re-anchor.</li>
+    </ul>
+  </section>
+
+  <section>
+    <h3>Micro-tactics</h3>
+    <ul>
+      <li>Use a 3–5 second strategic pause after your anchor.</li><li>Label emotions you notice to reduce friction.</li><li>Ask one high-leverage question per objection.</li>
+    </ul>
+  </section>
+
+  <section>
+    <h3>Play-ahead (what likely happens next)</h3>
+    <ul>
+      <li>Opening → Lowball → Bridge with proof → Agree on middle ground.</li><li>Opening → Budget constraint → Performance triggers → Review timeline.</li><li>Opening → Data challenge → Source alignment → Re-state anchor.</li>
+    </ul>
+  </section>
+
+  <details class="debug">
+    <summary>Debug Snapshot</summary>
+    <div><b>Matches:</b> 0</div>
+    <ol><li class='muted'>No specific rules matched; using a robust default plan.</li></ol>
+    <div class="muted">Rules: /workspaces/neg-pro/data/rules-engine.json · Map: /workspaces/neg-pro/data/rules_signal_map.json</div>
+  </details>
+</div>
+
+<style>
+.np-report { color: #dbe8ff; }
+.np-report h2 { margin: 0.25rem 0 0.75rem; }
+.np-report .meta { margin: 0 0 1rem; }
+.np-report section { margin: 1rem 0 1.25rem; }
+.np-report .card {
+  background: rgba(255,255,255,0.03);
+  border: 1px solid rgba(255,255,255,0.06);
+  border-radius: 12px; padding: 0.75rem 1rem;
+  box-shadow: 0 8px 20px rgba(0,0,0,0.3);
+}
+.np-report ul { margin: 0.25rem 0 0 1.25rem; }
+.np-report .pill {
+  display: inline-block; padding: .25rem .6rem; margin-right: .4rem;
+  border-radius: 999px; background: linear-gradient(90deg,#0ea5ea,#2563eb);
+  color: #fff; font-size: .8rem;
+}
+.np-report .muted { color: #9fb2cc; font-size: .9rem; }
+.np-report details.debug { margin-top: .75rem; }
+</style>
+
+            <div class="actions">
+                <button class="btn" onclick="window.parent?.NP_Report?.downloadPDF()">Download PDF</button>
+                <button class="btn" onclick="window.parent?.NP_Report?.saveToProfile()">Save to Profile</button>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

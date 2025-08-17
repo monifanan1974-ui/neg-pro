@@ -1,48 +1,19 @@
 {
-  "_metadata": {
-    "version": "1.0.0",
-    "updated_at": "2025-08-17T00:00:00Z",
-    "description": "Mapping from questionnaire signals to rules-engine conditions (persona/emotions/tags)."
-  },
+  "deal_type": "deal_type",
 
-  "persona_from_conflict_style": {
-    "collaborative": ["collaborative"],
-    "competing": ["aggressive"],
-    "aggressive": ["aggressive"],
-    "analytical": ["analytical"],
-    "accommodating": ["collaborative"],
-    "avoiding": ["analytical"]
-  },
+  "target_salary": "anchor_target.target_salary",
+  "min_acceptable": "anchor_target.min_acceptable",
+  "dream_number": "anchor_target.dream_number",
 
-  "emotions_from_dominant": {
-    "😊": ["calm"],
-    "🙂": ["calm"],
-    "neutral": ["calm"],
-    "😟": ["anxiety"],
-    "😰": ["anxiety"],
-    "anxious": ["anxiety"],
-    "fear": ["anxiety"]
-  },
+  "deadline_days": "deadline_pressure.time_to_decision",
+  "urgency_level": "deadline_pressure.urgency_level",
 
-  "emotions_from_anxiety_rating": [
-    { "min": 0, "max": 2, "emotions": ["calm"] },
-    { "min": 3, "max": 5, "emotions": ["anxiety"] }
-  ],
+  "counterpart_style": "counterpart_style.communication",
+  "counterpart_decision_style": "counterpart_style.decision_making",
 
-  "tags_from_negotiation_type": {
-    "salary": ["salary", "market"],
-    "business_deal": ["deal", "market"],
-    "real_estate": ["deal"]
-  },
+  "culture_region": "cultural_context.region",
+  "culture_context": "cultural_context.communication_style",
 
-  "tags_from_culture_region": {
-    "us": ["us"],
-    "eu_north": ["eu_north"],
-    "eu_south": ["eu_south"],
-    "asia_east": ["asia_east"]
-  },
-
-  "default_persona": ["collaborative"],
-  "default_emotions": ["calm"],
-  "default_tags": ["neutral"]
+  "batna_strength": "batna_strength",
+  "conflict_style": "conflict_style"
 }

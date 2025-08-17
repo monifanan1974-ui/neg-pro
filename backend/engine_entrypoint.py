@@ -1,249 +1,276 @@
 from __future__ import annotations
-
-import json
+import json, os
 from pathlib import Path
 from typing import Any, Dict, List, Tuple
 
 from .signal_adapter import SignalAdapter
 
-
 ROOT = Path(__file__).resolve().parents[1]
-DATA_DIR = ROOT / "data"
-RULES_PATH = DATA_DIR / "rules-engine.json"
-MAP_PATH = DATA_DIR / "rules_signal_map.json"
+DATA = ROOT / "data"
 
+RULES_PATHS = [
+    DATA / "rules-engine.json",
+    ROOT / "rules-engine.json",
+]
+MAP_PATHS = [
+    DATA / "rules_signal_map.json",
+    ROOT / "rules_signal_map.json",
+]
 
-def _as_list(x: Any) -> List[Any]:
+def _read_json_first(paths: List[Path]) -> Tuple[Dict[str, Any], str]:
+    for p in paths:
+        if p.exists():
+            with p.open("r", encoding="utf-8") as f:
+                return json.load(f), str(p)
+    return {}, "<missing>"
+
+def _norm_list(x: Any) -> List[str]:
     if x is None:
         return []
     if isinstance(x, list):
-        return x
-    if isinstance(x, (tuple, set)):
-        return list(x)
-    return [x]
-
-
-def _csv(x: Any) -> str:
-    if x is None:
-        return ""
-    if isinstance(x, (list, tuple, set)):
-        return ", ".join(str(v) for v in x)
-    return str(x)
-
-
-def _list_intersects(a: Any, b: Any) -> bool:
-    la = {str(v).strip().lower() for v in _as_list(a)}
-    lb = {str(v).strip().lower() for v in _as_list(b)}
-    return not la.isdisjoint(lb)
-
+        return [str(v) for v in x]
+    return [str(x)]
 
 class QuestionnaireEngine:
-    """
-    Loads the signal map + rules, builds a normalized context from answers,
-    matches rules, and renders a compact HTML report.
-    """
-
-    def __init__(self, debug: bool = False) -> None:
+    def __init__(self, debug: bool = True):
         self.debug = debug
-        self.signal_map = self._load_json(MAP_PATH, default={})
-        rules_blob = self._load_json(RULES_PATH, default={"rules": []})
-        self.rules: List[Dict[str, Any]] = rules_blob.get("rules", [])
+        self.rules, self.rules_path = _read_json_first(RULES_PATHS)
+        self.signal_map, self.map_path = _read_json_first(MAP_PATHS)
         self.adapter = SignalAdapter(self.signal_map)
 
-    # ---------- IO ----------
-    def _load_json(self, path: Path, default: Any) -> Any:
-        try:
-            with path.open("r", encoding="utf-8") as f:
-                return json.load(f)
-        except FileNotFoundError:
-            if self.debug:
-                print(f"[engine] JSON file not found: {path}")
-            return default
-        except Exception as e:
-            if self.debug:
-                print(f"[engine] Failed to load {path}: {e}")
-            return default
+        if not isinstance(self.rules.get("rules"), list):
+            self.rules["rules"] = []
 
-    # ---------- matching ----------
-    def _match_rule(self, rule: Dict[str, Any], ctx: Dict[str, Any]) -> Tuple[bool, Dict[str, Any]]:
+    # ---------- Matching ----------
+    def _match_condition(self, value: Any, cond: Dict[str, Any]) -> float:
         """
-        Very simple matcher:
-          - persona_any: list of persona types (any match)
-          - emotions_any: list of emotions (any match)
-          - tags_any: list of tags (any match)
-
-        A rule passes if all declared clauses pass (AND across clauses).
+        Return a match factor in [0,1] for a single condition.
+        Supports: equals / in / range / defined
         """
-        cond = rule.get("conditions", {}) or {}
+        if cond.get("status") == "defined":
+            return 1.0 if value not in (None, "", []) else 0.0
 
-        persona_types = (ctx.get("persona", {}) or {}).get("types", [])
-        emotions = ctx.get("emotions", []) or []
-        tags = ctx.get("tags", []) or []
+        if "equals" in cond:
+            return 1.0 if str(value) == str(cond["equals"]) else 0.0
 
-        checks = []
-        why: Dict[str, Any] = {}
+        if "in" in cond:
+            return 1.0 if str(value) in {str(v) for v in cond["in"]} else 0.0
 
-        if "persona_any" in cond:
-            ok = _list_intersects(persona_types, cond["persona_any"])
-            checks.append(ok)
-            why["persona_any"] = {"have": persona_types, "want": cond["persona_any"], "ok": ok}
+        if "range" in cond and isinstance(value, (int, float)):
+            lo, hi = cond["range"]
+            return 1.0 if (lo <= float(value) <= hi) else 0.0
 
-        if "emotions_any" in cond:
-            ok = _list_intersects(emotions, cond["emotions_any"])
-            checks.append(ok)
-            why["emotions_any"] = {"have": emotions, "want": cond["emotions_any"], "ok": ok}
+        if "min_items" in cond and isinstance(value, list):
+            return 1.0 if len(value) >= int(cond["min_items"]) else 0.0
 
-        if "tags_any" in cond:
-            ok = _list_intersects(tags, cond["tags_any"])
-            checks.append(ok)
-            why["tags_any"] = {"have": tags, "want": cond["tags_any"], "ok": ok}
+        return 0.0
 
-        # If no conditions are declared, consider it non-matching (avoid catch-all).
-        if not cond:
-            return False, {"reason": "no_conditions"}
+    def _score_rule(self, signals: Dict[str, Any], rule: Dict[str, Any]) -> float:
+        conds = rule.get("conditions", {})
+        if not conds:
+            return 0.0
 
-        matched = all(checks) if checks else False
-        return matched, why
+        total_w = 0.0
+        acc = 0.0
+        for sig_path, cfg in conds.items():
+            # resolve nested signal path, e.g. "counterpart_style.decision_making"
+            parts = sig_path.split(".")
+            cur = signals
+            for p in parts:
+                cur = (cur or {}).get(p) if isinstance(cur, dict) else None
+            weight = float(cfg.get("weight", 1.0))
+            m = self._match_condition(cur, cfg)
+            acc += m * weight
+            total_w += weight
 
-    # ---------- render ----------
-    def _render_html(self, answers: Dict[str, Any], ctx: Dict[str, Any], hits: List[Dict[str, Any]]) -> str:
-        persona_types = (ctx.get("persona", {}) or {}).get("types", [])
-        emotions = ctx.get("emotions", []) or []
-        tags = ctx.get("tags", []) or []
+        return acc / total_w if total_w > 0 else 0.0
 
-        # Build recommendation cards
-        cards: List[str] = []
-        for r in hits:
-            recs = _as_list(r.get("recommendations"))
-            title = r.get("title") or r.get("id") or "Recommendation"
-            body = ""
-            if recs:
-                body = "".join(f"<li>{str(item)}</li>" for item in recs)
-                body = f"<ul class='rec-list'>{body}</ul>"
-            cards.append(
-                f"""
-                <div class="card">
-                  <div class="card-title">{title}</div>
-                  <div class="card-body">{body}</div>
-                  <div class="card-meta">Rule: {r.get('id','-')} • Tags: {_csv(r.get('tags'))}</div>
-                </div>
-                """
-            )
+    def _activate_rules(self, signals: Dict[str, Any]) -> List[Dict[str, Any]]:
+        active: List[Dict[str, Any]] = []
+        for rule in self.rules.get("rules", []):
+            score = self._score_rule(signals, rule)
+            threshold = float(rule.get("activation_threshold", 0.6))
+            if score >= threshold:
+                active.append({
+                    "id": rule.get("rule_id"),
+                    "title": rule.get("title", rule.get("rule_id", "rule")),
+                    "family": rule.get("family", "general"),
+                    "score": round(score, 3),
+                    "tactics": rule.get("output_tactics", []),
+                    "reasoning": rule.get("reasoning", ""),
+                })
+        active.sort(key=lambda r: r["score"], reverse=True)
+        return active
 
-        cards_html = "\n".join(cards) if cards else "<div class='muted'>No specific recommendations matched the current context.</div>"
+    # ---------- Rendering ----------
+    def _pill(self, text: str) -> str:
+        return f'<span class="pill">{text}</span>'
 
-        # Minimal, business-lean styling (MVP-93 palette compatible)
-        html = f"""<!doctype html>
-<html lang="en">
-<head>
-<meta charset="utf-8">
-<title>Negotiation Strategy Report</title>
-<meta name="viewport" content="width=device-width, initial-scale=1">
-<style>
-:root {{
-  --bg: #0b1220;
-  --panel: #121a2a;
-  --border: #1e2a43;
-  --text: #e6f0ff;
-  --muted: #9fb3d9;
-  --accent: #5aa9ff;
-  --accent-2: #7c5cff;
-  --glow: 0 10px 30px rgba(90,169,255,0.25);
-}}
-body {{
-  margin:0; padding:32px 24px; background: radial-gradient(1200px 600px at 70% -10%, #152036 0%, #0b1220 60%) fixed, var(--bg);
-  color: var(--text); font: 16px/1.6 Inter, system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
-}}
-.container {{ max-width: 1024px; margin: 0 auto; }}
-.h1 {{ font-size: 34px; font-weight: 800; letter-spacing: .2px; margin: 8px 0 4px; }}
-.sub {{ color: var(--muted); margin-bottom: 24px; }}
-.header {{
-  display:flex; align-items:center; justify-content:space-between; gap: 16px; margin-bottom: 20px;
-}}
-.badges {{ display:flex; gap: 8px; flex-wrap: wrap; }}
-.badge {{
-  background: linear-gradient(180deg, #12203a, #10192b);
-  border: 1px solid var(--border);
-  color: var(--text);
-  padding: 6px 10px; border-radius: 10px; font-size: 12px; opacity:.95;
-}}
-.grid {{ display:grid; grid-template-columns: 1fr; gap: 16px; }}
-@media(min-width: 800px) {{ .grid {{ grid-template-columns: 1fr 1fr; }} }}
-.card {{
-  background: linear-gradient(180deg, #0f1728, #0e1524);
-  border: 1px solid var(--border); border-radius: 14px; padding: 18px 16px; box-shadow: var(--glow);
-}}
-.card-title {{ font-weight: 700; margin-bottom: 6px; color: #eaf2ff; }}
-.card-meta {{ color: var(--muted); font-size: 12px; margin-top: 8px; }}
-.rec-list {{ padding-left: 18px; margin: 6px 0 0; }}
-.kv {{ display:flex; gap: 8px; flex-wrap: wrap; margin-top: 8px; }}
-.kv .k {{ color: var(--muted); }}
-.muted {{ color: var(--muted); }}
-.hr {{ height: 1px; background: linear-gradient(90deg, transparent, #1c2741 20%, #1c2741 80%, transparent); margin: 18px 0; }}
-</style>
-</head>
-<body>
-  <div class="container">
-    <div class="header">
-      <div>
-        <div class="h1">Negotiation Strategy Report</div>
-        <div class="sub">A tailored brief derived from your questionnaire.</div>
-        <div class="badges">
-          <span class="badge">Persona: {_csv(persona_types) or "-"}</span>
-          <span class="badge">Emotions: {_csv(emotions) or "-"}</span>
-          <span class="badge">Tags: {_csv(tags) or "-"}</span>
-        </div>
-      </div>
-    </div>
+    def _baseline_pack(self, signals: Dict[str, Any]) -> Dict[str, Any]:
+        # Always-present, decent content even with zero matches.
+        persona = ", ".join(_norm_list((signals.get("persona") or {}).get("types"))) or "-"
+        emotions = ", ".join(_norm_list(signals.get("emotions"))) or "-"
+        region = (signals.get("cultural_context") or {}).get("region", "—")
+        conflict = signals.get("conflict_style", "-")
 
+        openers = [
+            "Start with a concise value statement tied to market context.",
+            "Offer a data-backed anchor and pause for their view.",
+            "Invite alignment on the shared goal before diving into numbers."
+        ]
+        counters = [
+            "If they say 'budget is tight' → propose a performance-based structure.",
+            "If they lowball → bridge with ROI and credible proof.",
+            "If they challenge market data → align on sources, then re-anchor."
+        ]
+        micro = [
+            "Use a 3–5 second strategic pause after your anchor.",
+            "Label emotions you notice to reduce friction.",
+            "Ask one high-leverage question per objection."
+        ]
+        play = [
+            "Opening → Lowball → Bridge with proof → Agree on middle ground.",
+            "Opening → Budget constraint → Performance triggers → Review timeline.",
+            "Opening → Data challenge → Source alignment → Re-state anchor."
+        ]
+
+        return {
+            "snapshot": {
+                "region": region, "persona": persona, "emotions": emotions, "conflict": conflict
+            },
+            "highlights": [
+                "Use data-backed framing and tie requests to impact.",
+                "Keep tone professional; aim for collaborative language.",
+                "Make timing explicit; suggest a decision window of ~5 business days."
+            ],
+            "openers": openers,
+            "counters": counters,
+            "micro": micro,
+            "play": play
+        }
+
+    def _render_html(self, answers: Dict[str, Any], signals: Dict[str, Any], matches: List[Dict[str, Any]]) -> str:
+        # Snapshot
+        persona = ", ".join(_norm_list((signals.get("persona") or {}).get("types"))) or "-"
+        emotions = ", ".join(_norm_list(signals.get("emotions"))) or "-"
+        region = (signals.get("cultural_context") or {}).get("region", "—")
+        conflict = signals.get("conflict_style", "-")
+
+        base = self._baseline_pack(signals)
+        hl = base["highlights"]
+        if matches:
+            # Enrich highlights from matched rules
+            for m in matches[:5]:
+                if m["tactics"]:
+                    hl.append(f"{m['title']}: " + ", ".join(m["tactics"][:3]))
+                elif m["reasoning"]:
+                    hl.append(m["title"] + " — " + m["reasoning"])
+
+        pills = " ".join([
+            self._pill(f"Persona: {persona or '-'}"),
+            self._pill(f"Emotions: {emotions or '-'}"),
+            self._pill(f"Region: {region}"),
+        ])
+
+        match_rows = "".join(
+            f"<li><b>{m['title']}</b> &middot; score {m['score']}<br>"
+            f"<span class='muted'>{m.get('reasoning','')}</span>"
+            f"{('<br><span class=\"muted\">' + ', '.join(m['tactics']) + '</span>') if m['tactics'] else ''}"
+            f"</li>"
+            for m in matches
+        ) or "<li class='muted'>No specific rules matched; using a robust default plan.</li>"
+
+        html = f"""
+<div class="np-report">
+  <h2>Negotiation Strategy Report</h2>
+  <div class="meta">{pills}</div>
+
+  <section>
+    <h3>Snapshot</h3>
     <div class="card">
-      <div class="card-title">Snapshot</div>
-      <div class="kv">
-        <span class="k">Region:</span><span>{answers.get("culture_region", "-")}</span>
-        <span class="k">Type:</span><span>{answers.get("negotiation_type", "-")}</span>
-        <span class="k">Conflict style:</span><span>{answers.get("conflict_style", "-")}</span>
-      </div>
+      <div>Region: <b>{base['snapshot']['region']}</b> &nbsp;·&nbsp;
+           Type: <b>custom</b> &nbsp;·&nbsp;
+           Conflict style: <b>{base['snapshot']['conflict']}</b></div>
     </div>
+  </section>
 
-    <div class="hr"></div>
+  <section>
+    <h3>Highlights</h3>
+    <ul>
+      {''.join(f'<li>{h}</li>' for h in hl)}
+    </ul>
+  </section>
 
-    <div class="grid">
-      {cards_html}
-    </div>
+  <section>
+    <h3>Opening Options (ready to say)</h3>
+    <ul>
+      {''.join(f'<li>{t}</li>' for t in base['openers'])}
+    </ul>
+  </section>
 
-    <div class="hr"></div>
-    <div class="muted">Build: engine v1 • Matches: {len(hits)}</div>
-  </div>
-</body>
-</html>"""
+  <section>
+    <h3>Counters You’ll Need</h3>
+    <ul>
+      {''.join(f'<li>{t}</li>' for t in base['counters'])}
+    </ul>
+  </section>
+
+  <section>
+    <h3>Micro-tactics</h3>
+    <ul>
+      {''.join(f'<li>{t}</li>' for t in base['micro'])}
+    </ul>
+  </section>
+
+  <section>
+    <h3>Play-ahead (what likely happens next)</h3>
+    <ul>
+      {''.join(f'<li>{t}</li>' for t in base['play'])}
+    </ul>
+  </section>
+
+  <details class="debug">
+    <summary>Debug Snapshot</summary>
+    <div><b>Matches:</b> {len(matches)}</div>
+    <ol>{match_rows}</ol>
+    <div class="muted">Rules: {self.rules_path} · Map: {self.map_path}</div>
+  </details>
+</div>
+
+<style>
+.np-report {{ color: #dbe8ff; }}
+.np-report h2 {{ margin: 0.25rem 0 0.75rem; }}
+.np-report .meta {{ margin: 0 0 1rem; }}
+.np-report section {{ margin: 1rem 0 1.25rem; }}
+.np-report .card {{
+  background: rgba(255,255,255,0.03);
+  border: 1px solid rgba(255,255,255,0.06);
+  border-radius: 12px; padding: 0.75rem 1rem;
+  box-shadow: 0 8px 20px rgba(0,0,0,0.3);
+}}
+.np-report ul {{ margin: 0.25rem 0 0 1.25rem; }}
+.np-report .pill {{
+  display: inline-block; padding: .25rem .6rem; margin-right: .4rem;
+  border-radius: 999px; background: linear-gradient(90deg,#0ea5ea,#2563eb);
+  color: #fff; font-size: .8rem;
+}}
+.np-report .muted {{ color: #9fb2cc; font-size: .9rem; }}
+.np-report details.debug {{ margin-top: .75rem; }}
+</style>
+"""
         return html
 
-    # ---------- public API ----------
+    # ---------- Public API ----------
     def run(self, answers: Dict[str, Any]) -> Dict[str, Any]:
-        """
-        Main entry: answers -> context -> rule matches -> HTML
-        Returns: {"status":"ok","html":..., "matched": [...], "context": {...}}
-        """
         try:
-            ctx = self.adapter.build_context(answers or {})
-
-            matches: List[Dict[str, Any]] = []
-            for r in self.rules:
-                ok, why = self._match_rule(r, ctx)
-                if ok:
-                    r_copy = dict(r)
-                    if self.debug:
-                        r_copy["_why"] = why
-                    matches.append(r_copy)
-
-            html = self._render_html(answers, ctx, matches)
+            signals = self.adapter.to_signals(answers or {})
+            matches = self._activate_rules(signals)
+            html = self._render_html(answers, signals, matches)
             return {
                 "status": "ok",
-                "html": html,
-                "matched": [m.get("id") for m in matches],
-                "context": ctx,
+                "matches": matches,
+                "signals": signals if self.debug else {},
+                "html": html
             }
-        except Exception as e:
-            if self.debug:
-                raise
-            return {"status": "error", "reason": str(e)}
+        except Exception as ex:
+            return {"status": "error", "reason": str(ex)}

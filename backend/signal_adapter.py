@@ -1,125 +1,121 @@
 from __future__ import annotations
-
-from typing import Any, Dict, List
-
-
-def _ensure_list(x: Any) -> List[Any]:
-    if x is None:
-        return []
-    if isinstance(x, list):
-        return x
-    return [x]
+from typing import Dict, Any, List
 
 
 class SignalAdapter:
     """
-    Adapts raw questionnaire answers into a normalized context
-    used by the rules engine:
-
-      {
-        "persona": {"types": [...]},
-        "emotions": [...],
-        "tags": [...]
-      }
-
-    All lookups are driven by a mapping JSON (rules_signal_map.json).
+    Normalize raw questionnaire answers into a clean 'signals' dict
+    that the rules engine can reason about.
+    Supports mapping values as:
+      - "anchor_target.target_salary"               (string path)
+      - {"path": "anchor_target.target_salary"}     (object with path/signal/target/name)
+      - ["a.b", "c.d"]                              (duplicate same answer into multiple paths)
     """
 
-    def __init__(self, mapping: Dict[str, Any]) -> None:
-        self.map: Dict[str, Any] = mapping or {}
+    def __init__(self, signal_map: Dict[str, Any]):
+        self.signal_map = signal_map or {}
 
-    # ---------- persona ----------
-    def _persona_from_conflict(self, conflict_style: str) -> List[str]:
-        table = self.map.get("persona_from_conflict_style", {})
-        key = (conflict_style or "").strip().lower()
-        return _ensure_list(table.get(key, []))
+    # ------------- utils -------------
+    def _ensure_list(self, v: Any) -> List[Any]:
+        if v is None:
+            return []
+        if isinstance(v, list):
+            return v
+        return [v]
 
-    # ---------- emotions ----------
-    def _emotions_from_dominant(self, dominant: str) -> List[str]:
-        table = self.map.get("emotions_from_dominant", {})
-        key = (dominant or "").strip().lower()
-        return _ensure_list(table.get(key, []))
-
-    def _emotions_from_anxiety(self, rating: Any) -> List[str]:
+    def _resolve_mapping_paths(self, mapping_value: Any) -> List[str]:
         """
-        Map a numeric anxiety rating to emotion buckets using ranges from mapping.
-        The mapping should look like:
-          "emotions_from_anxiety_rating": [
-            {"min": 0, "max": 2, "emotions": ["calm"]},
-            {"min": 3, "max": 5, "emotions": ["anxiety"]}
-          ]
+        Turn a mapping value into list of string paths.
+        Accepts string, list[str], or dict with 'path'/'signal'/'target'/'name'.
+        Silently drops invalid items.
         """
-        out: List[str] = []
-        try:
-            r = int(rating)
-        except Exception:
-            return out
+        if isinstance(mapping_value, str):
+            return [mapping_value]
 
-        ranges = _ensure_list(self.map.get("emotions_from_anxiety_rating"))
-        for rng in ranges:
-            try:
-                lo = int(rng.get("min"))
-                hi = int(rng.get("max"))
-                if lo <= r <= hi:
-                    out.extend(_ensure_list(rng.get("emotions")))
-            except Exception:
-                # ignore malformed range objects
-                pass
-        # make unique, keep order
-        return list(dict.fromkeys(out))
+        if isinstance(mapping_value, list):
+            return [p for p in mapping_value if isinstance(p, str)]
 
-    # ---------- tags ----------
-    def _tags_from_negotiation_type(self, negotiation_type: str) -> List[str]:
-        table = self.map.get("tags_from_negotiation_type", {})
-        key = (negotiation_type or "").strip().lower()
-        return _ensure_list(table.get(key, []))
+        if isinstance(mapping_value, dict):
+            cand = (
+                mapping_value.get("path")
+                or mapping_value.get("signal")
+                or mapping_value.get("target")
+                or mapping_value.get("name")
+            )
+            if isinstance(cand, list):
+                return [p for p in cand if isinstance(p, str)]
+            if isinstance(cand, str):
+                return [cand]
 
-    def _tags_from_culture_region(self, region: str) -> List[str]:
-        table = self.map.get("tags_from_culture_region", {})
-        key = (region or "").strip().lower()
-        return _ensure_list(table.get(key, []))
+        return []
 
-    # ---------- main adapter ----------
-    def build_context(self, answers: Dict[str, Any]) -> Dict[str, Any]:
-        """
-        Expected incoming answer keys (customize to your questionnaire schema):
-          - conflict_style: str
-          - dominant_emotion: str or emoji
-          - anxiety_rating: int
-          - negotiation_type: str
-          - culture_region: str
-        """
-        conflict_style = str(answers.get("conflict_style") or "")
-        dominant_emotion = str(answers.get("dominant_emotion") or "")
-        anxiety_rating = answers.get("anxiety_rating")
-        negotiation_type = str(answers.get("negotiation_type") or "")
-        culture_region = str(answers.get("culture_region") or "")
+    # ------------- main -------------
+    def to_signals(self, answers: Dict[str, Any]) -> Dict[str, Any]:
+        signals: Dict[str, Any] = {}
 
-        persona_types: List[str] = self._persona_from_conflict(conflict_style)
+        # Map answers -> signals (robust to different mapping formats)
+        for answer_key, mapping_val in (self.signal_map or {}).items():
+            if answer_key not in answers:
+                continue
+            value = answers.get(answer_key)
+            paths = self._resolve_mapping_paths(mapping_val)
+            for path in paths:
+                try:
+                    containers = signals
+                    parts = path.split(".")
+                    for p in parts[:-1]:
+                        if not isinstance(containers.get(p), dict):
+                            containers[p] = {}
+                        containers = containers[p]
+                    containers[parts[-1]] = value
+                except Exception:
+                    # Defensive: never break the whole build on a single bad mapping
+                    signals.setdefault("_warnings", []).append(
+                        f"Invalid map for {answer_key} -> {mapping_val}"
+                    )
 
-        emotions: List[str] = []
-        emotions += self._emotions_from_dominant(dominant_emotion)
-        emotions += self._emotions_from_anxiety(anxiety_rating)
+        # Soft defaults so rendering never explodes
+        persona_types = answers.get("persona_types") or answers.get("persona") or []
+        if isinstance(persona_types, str):
+            persona_types = [persona_types]
+        signals.setdefault("persona", {})["types"] = persona_types
 
-        tags: List[str] = []
-        tags += self._tags_from_negotiation_type(negotiation_type)
-        tags += self._tags_from_culture_region(culture_region)
+        emotions = answers.get("emotions") or []
+        if isinstance(emotions, str):
+            emotions = [emotions]
+        signals["emotions"] = emotions
 
-        # fallbacks from mapping defaults
-        if not persona_types:
-            persona_types = _ensure_list(self.map.get("default_persona"))
-        if not emotions:
-            emotions = _ensure_list(self.map.get("default_emotions"))
-        if not tags:
-            tags = _ensure_list(self.map.get("default_tags"))
+        # Normalize counterpart style
+        cp = signals.setdefault("counterpart_style", {})
+        cp.setdefault("communication", answers.get("counterpart_style") or answers.get("counterpart_personality"))
+        cp.setdefault("decision_making", answers.get("counterpart_decision_style"))
 
-        # de-duplicate while preserving order
-        persona_types = list(dict.fromkeys(persona_types))
-        emotions = list(dict.fromkeys(emotions))
-        tags = list(dict.fromkeys(tags))
+        # Deadline normalization
+        dp = signals.setdefault("deadline_pressure", {})
+        if dp.get("urgency_level") is None and answers.get("urgency_level"):
+            dp["urgency_level"] = answers["urgency_level"]
+        if dp.get("time_to_decision") is None and answers.get("deadline_days") is not None:
+            dp["time_to_decision"] = answers["deadline_days"]
 
-        return {
-            "persona": {"types": persona_types},
-            "emotions": emotions,
-            "tags": tags,
-        }
+        # Culture
+        cc = signals.setdefault("cultural_context", {})
+        if answers.get("culture_region"):
+            cc["region"] = answers["culture_region"]
+        if answers.get("culture_context"):
+            cc["communication_style"] = answers["culture_context"]
+
+        # BATNA, conflict, deal type
+        if "batna_strength" not in signals and answers.get("batna_strength"):
+            signals["batna_strength"] = answers["batna_strength"]
+        if answers.get("conflict_style"):
+            signals["conflict_style"] = answers["conflict_style"]
+        if answers.get("deal_type") is not None:
+            signals["deal_type"] = answers["deal_type"]
+
+        # Anchor (salary/pricing)
+        at = signals.setdefault("anchor_target", {})
+        for k in ("target_salary", "min_acceptable", "dream_number"):
+            if answers.get(k) is not None and at.get(k) is None:
+                at[k] = answers[k]
+
+        return signals
