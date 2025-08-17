@@ -1,0 +1,25 @@
+{
+  "answers": {
+    "core_fear": "Losing leverage and getting anchored too low",
+    "dominant_emotion": "neutral",
+    "negotiation_type": "salary",
+    "core_win": "A fair package and title alignment",
+    "main_leverage": "Proven impact with quantified results",
+    "walkaway_limit_type": "flexible_floor",
+    "target_salary": 185000,
+    "target_bonus_percentage": 15,
+    "key_benefits": ["rsu_equity", "flexible_hours", "education_budget"],
+    "anxiety_rating": 2,
+    "conflict_style": "collaborative",
+    "counterpart_style": "analytical",
+    "counterpart_power": "higher",
+    "counterpart_walkaway_signals": ["time_pressure"],
+    "prior_offer_status": "verbal_offer_received",
+    "relationship_importance": "high",
+    "deadline_type": "soft_5_business_days",
+    "culture_region": "eu_north",
+    "market_data_sources": ["glassdoor", "levels_fyi"],
+    "current_challenges": ["role_unclear", "budget_constraints"],
+    "preferred_communication_method": "email"
+  }
+}

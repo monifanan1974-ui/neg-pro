@@ -1,0 +1,53 @@
+mkdir -p data
+cat > data/rules_signal_map.json <<'JSON'
+{
+  "_metadata": {
+    "version": "1.0.0",
+    "updated_at": "2025-08-17T00:00:00Z",
+    "description": "Mapping from questionnaire signals to rules-engine conditions (persona/emotions/tags)."
+  },
+
+  "persona_from_conflict_style": {
+    "collaborative": ["collaborative"],
+    "competing": ["aggressive"],
+    "aggressive": ["aggressive"],
+    "analytical": ["analytical"],
+    "accommodating": ["collaborative"],
+    "avoiding": ["analytical"]
+  },
+
+  "emotions_from_dominant": {
+    "neutral": ["calm"],
+    "calm": ["calm"],
+    "🙂": ["calm"],
+    "😀": ["calm"],
+    "😐": ["calm"],
+    "😟": ["anxiety"],
+    "😰": ["anxiety"],
+    "anxious": ["anxiety"],
+    "fear": ["anxiety"]
+  },
+
+  "emotions_from_anxiety_rating": [
+    { "min": 0, "max": 2,  "emotions": ["calm"] },
+    { "min": 3, "max": 5,  "emotions": ["anxiety"] }
+  ],
+
+  "tags_from_negotiation_type": {
+    "salary": ["salary", "market"],
+    "business_deal": ["deal", "market"],
+    "real_estate": ["deal"]
+  },
+
+  "tags_from_culture_region": {
+    "us": ["us"],
+    "eu_north": ["eu_north"],
+    "eu_south": ["eu_south"],
+    "asia_east": ["asia_east"]
+  },
+
+  "default_persona": ["collaborative"],
+  "default_emotions": ["calm"],
+  "default_tags": ["neutral"]
+}
+JSON

@@ -1,0 +1,25 @@
+{
+  "answers": {
+    "core_fear": "Losing leverage and getting anchored too low",
+    "dominant_emotion": "🙂 calm but alert",
+    "negotiation_type": "salary",
+    "core_win": "Scope clarity and growth path with fair pay",
+    "main_leverage": "Launched 2 products; improved conversion by 18%",
+    "walkaway_limit_type": "firm_number",
+    "target_salary": 85000,
+    "target_bonus_percentage": 10,
+    "key_benefits": ["remote", "learning_budget", "equity"],
+    "anxiety_rating": 2,
+    "conflict_style": "collaborative",
+    "counterpart_style": "hardball",
+    "counterpart_power": "higher",
+    "counterpart_walkaway_signals": ["silent_treatment", "take_it_or_leave_it"],
+    "prior_offer_status": "have_offer_pending",
+    "relationship_importance": "high",
+    "deadline_type": "hard_deadline_7d",
+    "culture_region": "UK",
+    "market_data_sources": ["Glassdoor", "Levels.fyi"],
+    "current_challenges": ["budget_freeze", "role_unclear"],
+    "preferred_communication_method": "email"
+  }
+}

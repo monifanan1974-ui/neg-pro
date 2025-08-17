@@ -1,0 +1,70 @@
+{
+  "paths": {
+    "questionnaire": "/workspaces/neg-pro/./questionnaire.json",
+    "rules_engine": "/workspaces/neg-pro/data/rules-engine.json",
+    "answers": "answers.sample.ui.json"
+  },
+  "coverage": {
+    "questions_total": 22,
+    "questions_answered": 21,
+    "questions_coverage_pct": 95.45454545454545,
+    "signals_total": 21,
+    "signals_covered": 21,
+    "signals_covered_pct": 100.0,
+    "covered_signal_names": [
+      "fear_core_text",
+      "emotion_dominant",
+      "negotiation_type",
+      "goal_primary",
+      "leverage_main",
+      "walkaway_limit_type",
+      "target_salary",
+      "target_bonus_percentage",
+      "key_benefits",
+      "anxiety_rating",
+      "conflict_style",
+      "counterpart_style",
+      "counterpart_power",
+      "counterpart_walkaway_signals",
+      "prior_offer_status",
+      "relationship_importance",
+      "deadline_type",
+      "culture_region",
+      "market_sources",
+      "current_challenges",
+      "preferred_communication"
+    ],
+    "missing_signal_names": [],
+    "answered_ids": [
+      "core_fear",
+      "dominant_emotion",
+      "negotiation_type",
+      "core_win",
+      "main_leverage",
+      "walkaway_limit_type",
+      "target_salary",
+      "target_bonus_percentage",
+      "key_benefits",
+      "anxiety_rating",
+      "conflict_style",
+      "counterpart_style",
+      "counterpart_power",
+      "counterpart_walkaway_signals",
+      "prior_offer_status",
+      "relationship_importance",
+      "deadline_type",
+      "culture_region",
+      "market_data_sources",
+      "current_challenges",
+      "preferred_communication_method"
+    ]
+  },
+  "signal_frequency_top5": [],
+  "top_missing_signals": [],
+  "potential_rule_matches": {
+    "full": 0,
+    "partial": 0,
+    "zero": 0,
+    "total_sets": 0
+  }
+}

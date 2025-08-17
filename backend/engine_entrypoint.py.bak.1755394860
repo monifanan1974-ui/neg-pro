@@ -1,39 +1,30 @@
+cat > backend/engine_entrypoint.py <<'PY'
 # backend/engine_entrypoint.py
 # QuestionnaireEngine: small rules matcher + HTML report.
 
 from __future__ import annotations
-
-import json
+import json, os
 from pathlib import Path
 from typing import Any, Dict, List, Tuple
 
 from .signal_adapter import SignalAdapter
 
-# ---------------------------------------------------------------------
-# Paths
-# ---------------------------------------------------------------------
 ROOT = Path(__file__).resolve().parents[1]
-RULES_PATHS: List[Path] = [
+RULES_PATHS = [
     ROOT / "data" / "rules-engine.json",
     ROOT / "rules-engine.json",
 ]
-MAP_PATH: Path = ROOT / "data" / "rules_signal_map.json"
+MAP_PATH = ROOT / "data" / "rules_signal_map.json"
 
-
-# ---------------------------------------------------------------------
-# Helpers
-# ---------------------------------------------------------------------
 def _read_json(p: Path) -> Any:
     with open(p, "r", encoding="utf-8") as f:
         return json.load(f)
-
 
 def _load_rules() -> Dict[str, Any]:
     for p in RULES_PATHS:
         if p.exists():
             return _read_json(p)
     raise FileNotFoundError("rules-engine.json not found in data/ or project root.")
-
 
 def _safe_get(d: dict, path: List[str], default=None):
     cur = d
@@ -44,65 +35,46 @@ def _safe_get(d: dict, path: List[str], default=None):
             return default
     return cur
 
-
 def _intersects(a: List[str], b: List[str]) -> bool:
     return bool(set(a) & set(b))
 
-
-# ---------------------------------------------------------------------
-# Engine
-# ---------------------------------------------------------------------
 class QuestionnaireEngine:
-    """
-    Minimal rule matcher:
-    - Reads rules from data/rules-engine.json
-    - Adapts questionnaire answers -> context via SignalAdapter + rules_signal_map.json
-    - Matches rules by simple AND-logic on persona/emotions/tags
-    - Renders a compact HTML report (iframe-ready)
-    """
-
     def __init__(self, debug: bool = False):
         self.debug = bool(debug)
         self.rules = _load_rules()
         self.mapping = _read_json(MAP_PATH) if MAP_PATH.exists() else {}
         self.adapter = SignalAdapter(self.mapping)
 
-    # ---------- Matching ----------
     def _match_rules(self, ctx: Dict[str, Any]) -> List[Dict[str, Any]]:
+        """Return rules whose conditions match our context."""
         rules = self.rules.get("rules") or []
         hits: List[Dict[str, Any]] = []
-
         for r in rules:
             cond = r.get("conditions") or {}
             ok = True
 
             # persona.types
             persona_types = _safe_get(cond, ["persona", "types"], [])
-            if persona_types and not _intersects(
-                persona_types, _safe_get(ctx, ["persona", "types"], [])
-            ):
-                ok = False
+            if persona_types:
+                if not _intersects(persona_types, _safe_get(ctx, ["persona", "types"], [])):
+                    ok = False
 
             # emotions
             if ok and cond.get("emotions"):
                 if not _intersects(cond["emotions"], ctx.get("emotions", [])):
                     ok = False
 
-            # tags (generic)
+            # tags
             if ok and cond.get("tags"):
                 if not _intersects(cond["tags"], ctx.get("tags", [])):
                     ok = False
 
             if ok:
                 hits.append(r)
-
         return hits
 
-    # ---------- HTML ----------
-    def _render_html(
-        self, answers: Dict[str, Any], ctx: Dict[str, Any], recs: List[Dict[str, Any]]
-    ) -> str:
-        # Highlights from recommendations.text (up to 6 bullets)
+    def _render_html(self, answers: Dict[str, Any], ctx: Dict[str, Any], recs: List[Dict[str, Any]]) -> str:
+        # Highlights from recommendations.text
         hi_items: List[str] = []
         for r in recs:
             for it in (r.get("recommendations") or [])[:3]:
@@ -111,21 +83,20 @@ class QuestionnaireEngine:
                     hi_items.append(f"<li>{t}</li>")
             if len(hi_items) >= 6:
                 break
+
         hi_html = "<ul>" + "".join(hi_items) + "</ul>" if hi_items else "<p>—</p>"
 
-        # badges: persona types + emotions + tags
         badges = " ".join(
-            [
-                f'<span class="badge">{x}</span>'
-                for x in (
-                    (ctx.get("persona", {}).get("types") or [])
-                    + (ctx.get("emotions") or [])
-                    + (ctx.get("tags") or [])
-                )
-            ]
+            [f'<span class="badge">{x}</span>' for x in (
+                (ctx.get("persona", {}).get("types") or []) +
+                (ctx.get("emotions") or []) +
+                (ctx.get("tags") or [])
+            )]
         )
 
-        # Minimal CSS
+        summary = "Report generated from rules-engine matches. If highlights are few, expand answers or adjust mapping."
+
+        # Minimal CSS to look decent in iframe
         return f"""
 <!doctype html>
 <html>
@@ -162,7 +133,7 @@ class QuestionnaireEngine:
 
       <div style="margin-top:14px;">
         <h3>Summary</h3>
-        <p class="muted">Report generated from rules-engine matches. If highlights are few, expand answers or adjust mapping.</p>
+        <p class="muted">{summary}</p>
       </div>
 
       <details style="margin-top:10px;">
@@ -174,13 +145,8 @@ class QuestionnaireEngine:
 </html>
 """.strip()
 
-    # ---------- Public API ----------
     def run(self, answers: Dict[str, Any]) -> Dict[str, Any]:
-        """
-        answers: either the raw answers dict, or {"answers": {...}}
-        returns: {"status": "ok", "html": "...", "chart_data": None, "debug": {...?}}
-        """
-        # normalize incoming shape
+        # normalize shape
         if "answers" in answers and isinstance(answers["answers"], dict):
             a = answers["answers"]
         else:
@@ -194,5 +160,19 @@ class QuestionnaireEngine:
             "status": "ok",
             "html": html,
             "chart_data": None,
-            "debug": self.debug and {"ctx": ctx, "hits": [h.get("id") for h in hits]},
+            "debug": self.debug and {"ctx": ctx, "hits": [h.get("id") for h in hits]}
         }
+
+# === Diagnostics: /about ======================================================
+from datetime import datetime
+from flask import jsonify
+
+@app.get("/about")
+def about():
+    return jsonify({
+        "ok": True,
+        "engine_mode": "full",
+        "build": "negpro-diag-stage1",
+        "ts": datetime.utcnow().isoformat() + "Z"
+    })
+# ============================================================================
