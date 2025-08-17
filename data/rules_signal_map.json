@@ -1,5 +1,3 @@
-mkdir -p data
-cat > data/rules_signal_map.json <<'JSON'
 {
   "_metadata": {
     "version": "1.0.0",
@@ -17,11 +15,9 @@ cat > data/rules_signal_map.json <<'JSON'
   },
 
   "emotions_from_dominant": {
-    "neutral": ["calm"],
-    "calm": ["calm"],
+    "😊": ["calm"],
     "🙂": ["calm"],
-    "😀": ["calm"],
-    "😐": ["calm"],
+    "neutral": ["calm"],
     "😟": ["anxiety"],
     "😰": ["anxiety"],
     "anxious": ["anxiety"],
@@ -29,8 +25,8 @@ cat > data/rules_signal_map.json <<'JSON'
   },
 
   "emotions_from_anxiety_rating": [
-    { "min": 0, "max": 2,  "emotions": ["calm"] },
-    { "min": 3, "max": 5,  "emotions": ["anxiety"] }
+    { "min": 0, "max": 2, "emotions": ["calm"] },
+    { "min": 3, "max": 5, "emotions": ["anxiety"] }
   ],
 
   "tags_from_negotiation_type": {
@@ -50,4 +46,3 @@ cat > data/rules_signal_map.json <<'JSON'
   "default_emotions": ["calm"],
   "default_tags": ["neutral"]
 }
-JSON
